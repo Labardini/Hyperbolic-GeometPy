@@ -68,7 +68,8 @@ class appMainWindow(QtWidgets.QDialog, appWindowDesign.Ui_MainWindow):
         super(appMainWindow,self).__init__(parent)
         self.setupUi(self)
         
-
+        self.timer = None # in some animations it will become QtCore.QTimer(self)
+        
 
 ##################
 ##################
@@ -333,13 +334,10 @@ class appMainWindow(QtWidgets.QDialog, appWindowDesign.Ui_MainWindow):
 ##### DEFINITIONS OF SIGNALS
 
     def effectOf_pushButtonCPClearCanvas(self):
-        try:
+        if self.timer:
             self.timer.stop()
             self.timer.deleteLater()
-        except:
-            pass
-#        self.timer = None
-#        del self.timer
+            self.timer = None
         self.PlotWidgetIn_pageCP.clear()
         for clicked in Clicks:
             clicked.clear()
@@ -476,15 +474,15 @@ class appMainWindow(QtWidgets.QDialog, appWindowDesign.Ui_MainWindow):
         #    QtCore.QTimer.singleShot(1000, update)
         #update()
         
-##        timer = QtCore.QTimer(self)
-##        timer.timeout.connect(update)
-##        timer.start(250)
-#        self.timer = QtCore.QTimer(self)
-#        self.timer.timeout.connect(update)
-#        self.timer.start(250)
-
-        self.anim = QtCore.QAbstractAnimation(self)
-        self.anim.start(update)
+#        timer = QtCore.QTimer(self)
+#        timer.timeout.connect(update)
+#        timer.start(250)
+        if self.timer:
+            self.timer.stop()
+            self.timer.deleteLater()
+        self.timer = QtCore.QTimer(self)
+        self.timer.timeout.connect(update)
+        self.timer.start(250)
         
 ##############
 ############## 
@@ -530,7 +528,9 @@ class appMainWindow(QtWidgets.QDialog, appWindowDesign.Ui_MainWindow):
         #    QtCore.QTimer.singleShot(1000, update)
         #update()
         
-        
+        if self.timer:
+            self.timer.stop()
+            self.timer.deleteLater()
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(update)
         self.timer.start(100)
@@ -712,6 +712,10 @@ class appMainWindow(QtWidgets.QDialog, appWindowDesign.Ui_MainWindow):
 
 
     def effectOf_pushButtonUHPClearCanvas(self):
+        if self.timer:
+            self.timer.stop()
+            self.timer.deleteLater()
+            self.timer = None
         self.PlotWidgetIn_pageUHP.clear()
         self.PlotWidgetIn_pageUHP.addItem(self.boundingLineUHP)
         self.boundingLineUHP.setPen(pg.mkPen('g', width=self.widthBoundingLineUHP))
@@ -924,8 +928,14 @@ class appMainWindow(QtWidgets.QDialog, appWindowDesign.Ui_MainWindow):
                         if k == len(t)-1:
                             finalPointRed = pg.ScatterPlotItem([Q.real],[Q.imag],pen='r',brush = 'r')
                             self.PlotWidgetIn_pageUHP.addItem(finalPointRed)
-                        QtCore.QTimer.singleShot(1000*s/numberOfSteps, update)
-                    update()
+#                        QtCore.QTimer.singleShot(1000*s/numberOfSteps, update)
+ #                   update()
+                    if self.timer:
+                        self.timer.stop()
+                        self.timer.deleteLater()
+                    self.timer = QtCore.QTimer(self)
+                    self.timer.timeout.connect(update)
+                    self.timer.start(1000*s/numberOfSteps)
                     #print(numpy.ceil(s))
                 
         #        timer = QtCore.QTimer(self)
