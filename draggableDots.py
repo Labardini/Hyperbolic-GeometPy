@@ -14,20 +14,30 @@ import numpy
 
 
 class DotDragSignal(QtCore.QObject):
-    moved = QtCore.pyqtSignal(object)
+    moved = QtCore.pyqtSignal(object,int)
 
-    def __init__(self, pt):
+    def __init__(self, pt, ind):
         QtCore.QObject.__init__(self)
         self._pt = pt
+        self._ind = ind
 
     @property
     def pt(self):
         return self._pt
     
+    @property
+    def ind(self):
+        return self._ind
+
+    
     @pt.setter
     def pt(self, new_pt):
         self._pt = new_pt
-        self.moved.emit(new_pt)
+        self.moved.emit(new_pt,self.ind)
+        
+    @ind.setter
+    def ind(self, new_ind):
+        self._ind = new_ind
 
 
 
@@ -37,7 +47,7 @@ class draggableDot(pg.GraphItem):
     def __init__(self):
         self.dragPoint = None
         self.dragOffset = None
-        self.Dot = DotDragSignal([0,0])
+        self.Dot = DotDragSignal([0,0],0)
 #        self.textItems = []
         pg.GraphItem.__init__(self)
         #self.scatter.sigClicked.connect(self.clicked)
@@ -97,6 +107,7 @@ class draggableDot(pg.GraphItem):
         ind = self.dragPoint.data()[0]
         self.data['pos'][ind] = ev.pos() + self.dragOffset
         self.Dot.pt = self.data['pos'][ind]
+        self.Dot.ind = ind
         self.updateGraph()
         ev.accept()
         
