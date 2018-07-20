@@ -29,6 +29,7 @@ import pyqtgraph.opengl as gl
 
 
 import appWindowDesign
+import draggableDots as dD
 
 from exception_handling import Maybe
 from exception_handling import myInputError
@@ -62,6 +63,20 @@ auxStorage = []
 Clicks = [oneClick,twoClicks,threeClicks,arbManyClicks,auxStorage]
 
 
+
+
+        
+
+       
+
+
+
+
+
+
+
+
+
 class appMainWindow(QtWidgets.QDialog, appWindowDesign.Ui_MainWindow):
     
     def __init__(self, parent=None):
@@ -69,7 +84,6 @@ class appMainWindow(QtWidgets.QDialog, appWindowDesign.Ui_MainWindow):
         self.setupUi(self)
         
         self.timer = None # in some animations it will become QtCore.QTimer(self)
-        
 
 ##################
 ##################
@@ -107,6 +121,10 @@ class appMainWindow(QtWidgets.QDialog, appWindowDesign.Ui_MainWindow):
         self.widthBoundingLineUHP = 5
         self.boundingLineUHP = pg.InfiniteLine(pos=0, angle=0, pen=pg.mkPen('g', width=self.widthBoundingLineUHP))
         self.PlotWidgetIn_pageUHP.addItem(self.boundingLineUHP)
+        self.UHPdraggableDots = dD.draggableDot()
+        self.PlotWidgetIn_pageUHP.addItem(self.UHPdraggableDots)
+        
+
         
   
         self.PlotWidgetIn_pageUHPGeodesicMotion.setXRange(-2,2)
@@ -236,7 +254,10 @@ class appMainWindow(QtWidgets.QDialog, appWindowDesign.Ui_MainWindow):
         self.pushButtonCPMTOrbitsSteinerGrid.clicked.connect(self.effectOf_pushButtonCPMTOrbitsSteinerGrid)
 
         self.pushButtonUHPClearCanvas.clicked.connect(self.effectOf_pushButtonUHPClearCanvas)
+        self.radioButtonUHPBCGeodesicSegments.clicked.connect(self.deleteClicks)
+        self.radioButtonUHPBCConvexHull.clicked.connect(self.deleteClicks)
         self.proxyUHP = pg.SignalProxy(self.PlotWidgetIn_pageUHP.scene().sigMouseMoved, rateLimit=60, slot=self.UHPmouseMoved)
+        self.UHPdraggableDots.Dot.moved.connect(self.UHPBCDragGeodesicSegment)
         self.PlotWidgetIn_pageUHP.scene().sigMouseClicked.connect(self.UHPBCGeodesicSegmentStatic)
         self.PlotWidgetIn_pageUHP.scene().sigMouseClicked.connect(self.UHPBCConvexHull)
         self.proxyUHPGM = pg.SignalProxy(self.PlotWidgetIn_pageUHPGeodesicMotion.scene().sigMouseMoved, rateLimit=60, slot=self.UHPGMmouseMoved)
@@ -285,6 +306,10 @@ class appMainWindow(QtWidgets.QDialog, appWindowDesign.Ui_MainWindow):
     
     def effectOf_toolButtonArt(self):
         self.stackedWidgetAllPages.setCurrentIndex(5)
+        
+    def deleteClicks(self):
+        for clicked in Clicks:
+            clicked.clear()
         
         
 #######################
@@ -717,10 +742,15 @@ class appMainWindow(QtWidgets.QDialog, appWindowDesign.Ui_MainWindow):
             self.timer.deleteLater()
             self.timer = None
         self.PlotWidgetIn_pageUHP.clear()
+        self.UHPdraggableDots.setData(pos=numpy.array([[0,-100]]))
+        self.PlotWidgetIn_pageUHP.addItem(self.UHPdraggableDots)
         self.PlotWidgetIn_pageUHP.addItem(self.boundingLineUHP)
         self.boundingLineUHP.setPen(pg.mkPen('g', width=self.widthBoundingLineUHP))
         for clicked in Clicks:
             clicked.clear()
+            
+
+        
 
 
 
@@ -764,41 +794,93 @@ class appMainWindow(QtWidgets.QDialog, appWindowDesign.Ui_MainWindow):
         self.vertLineCrosshairUHPGM.setPos(mousePoint.x())
         
 
-
+    
     
     def UHPBCGeodesicSegmentStatic(self,ev):
         if self.radioButtonUHPBCGeodesicSegments.isChecked() == True and self.stackedWidgetIn_pageUHP.currentIndex() == 0:
-            global twoClicks
+            global arbManyClicks
+            global auxStorage
             x = self.PlotWidgetIn_pageUHP.plotItem.vb.mapSceneToView(ev.scenePos()).x()
             y = self.PlotWidgetIn_pageUHP.plotItem.vb.mapSceneToView(ev.scenePos()).y()
             if y < 0:
                 pass
             else:
-                while len(twoClicks) < 3:  
-                    twoClicks.append([x,y])
-                if len(twoClicks) == 3:  
-                    del twoClicks[0]
-                #print(twoClicks)
-                if twoClicks[0] == twoClicks[1]:
-                    initialPoint = pg.ScatterPlotItem([twoClicks[0][0]],[twoClicks[0][1]])
-                    self.PlotWidgetIn_pageUHP.addItem(initialPoint)
-                    self.lineEditUHPGMComplexNumber1.setText(str(twoClicks[0][0]+twoClicks[0][1]*(1j)))
+                arbManyClicks.append([x,y])
+                if len(arbManyClicks)==1:
+                    points = numpy.array([[arbManyClicks[0][0],arbManyClicks[0][1]]],dtype=float)
+                    #initialPoint = pg.GraphItem(pos=[[twoClicks[0][0],twoClicks[0][1]]])
+                    self.UHPdraggableDots.setData(pos=points,  pxMode=True)
                 else:
                     #print(twoClicks)
-                    finalPoint = pg.ScatterPlotItem([twoClicks[1][0]],[twoClicks[1][1]])
-                    self.PlotWidgetIn_pageUHP.addItem(finalPoint)
-                    P = twoClicks[0][0]+twoClicks[0][1]*(1j)
-                    Q = twoClicks[1][0]+twoClicks[1][1]*(1j)
+                    points = numpy.array([[arbManyClicks[k][0],arbManyClicks[k][1]] for k in range(len(arbManyClicks))],dtype=float)
+                    self.UHPdraggableDots.setData(pos=points,  pxMode=True)
+                    #self.PlotWidgetIn_pageUHP.addItem(finalPoint)
+                    P = arbManyClicks[-2][0]+arbManyClicks[-2][1]*(1j)
+                    Q = arbManyClicks[-1][0]+arbManyClicks[-1][1]*(1j)
+                    self.lineEditUHPGMComplexNumber1.setText(str(P))
                     self.lineEditUHPGMComplexNumber2.setText(str(Q))
                     #print(P,Q)
                     geodesicSegment = UHP_HP.UHPBasics().UHPGeodesicSegment_rcostrsint(P,Q)
                     x_coord, y_coord = geodesicSegment.real, geodesicSegment.imag
-                    self.PlotWidgetIn_pageUHP.plot(x_coord,y_coord,pen='w')
+                    drawing = pg.PlotCurveItem(x_coord,y_coord,pen='w')
+                    self.PlotWidgetIn_pageUHP.addItem(drawing)
+                    auxStorage.append(drawing)
+                    #print(arbManyClicks)
+#                    print(auxStorage)
                     self.labelUHPBChdistancenumber.setNum(UHP_HP.UHPBasics().UHPDist(P,Q))
+                    
 #        if self.checkBoxUHPEnableClickOnCanvas.isChecked() == False:
 #            for clicked in Clicks:
 #                clicked.clear()
             #print("as expected")        
+#    @QtCore.pyqtSlot(object,int)
+    def UHPBCDragGeodesicSegment(self,pt,ind):
+        global arbManyClicks
+        global auxStorage
+        if len(arbManyClicks) < 2 or ind == -1:
+            pass
+        else:
+            P = pt[0]+pt[1]*(1j)
+            if ind == 0:
+                neighbour = arbManyClicks[1]
+                Q = neighbour[0]+neighbour[1]*(1j)
+                curve = auxStorage[0]   
+                geodesicSegment = UHP_HP.UHPBasics().UHPGeodesicSegment_rcostrsint(P,Q)
+                x_coord, y_coord = geodesicSegment.real, geodesicSegment.imag
+                curve.setData(x_coord,y_coord)
+                self.labelUHPBChdistancenumber.setNum(UHP_HP.UHPBasics().UHPDist(P,Q))
+            if ind == len(arbManyClicks)-1:
+                neighbour = arbManyClicks[ind-1]
+                Q = neighbour[0]+neighbour[1]*(1j)
+                curve = auxStorage[ind-1]
+                geodesicSegment = UHP_HP.UHPBasics().UHPGeodesicSegment_rcostrsint(P,Q)
+                x_coord, y_coord = geodesicSegment.real, geodesicSegment.imag
+                curve.setData(x_coord,y_coord)
+                self.labelUHPBChdistancenumber.setNum(UHP_HP.UHPBasics().UHPDist(P,Q))
+            if 0 < ind and ind < len(arbManyClicks)-1:
+                neighbour1 = arbManyClicks[ind-1]
+                neighbour2 = arbManyClicks[ind+1]
+                Q1 =neighbour1[0]+neighbour1[1]*(1j)
+                Q2 = neighbour2[0]+neighbour2[1]*(1j)
+                curve1 = auxStorage[ind-1]
+                curve2 = auxStorage[ind]
+                geodesicSegment1 = UHP_HP.UHPBasics().UHPGeodesicSegment_rcostrsint(P,Q1)
+                geodesicSegment2 = UHP_HP.UHPBasics().UHPGeodesicSegment_rcostrsint(P,Q2)
+                x_coord1, y_coord1 = geodesicSegment1.real, geodesicSegment1.imag
+                x_coord2, y_coord2 = geodesicSegment2.real, geodesicSegment2.imag
+                curve1.setData(x_coord1,y_coord1)
+                curve2.setData(x_coord2,y_coord2)
+                #self.labelUHPBChdistancenumber.setNum(UHP_HP.UHPBasics().UHPDist(P,Q1))
+            arbManyClicks.remove(arbManyClicks[ind])
+            arbManyClicks.insert(ind,[pt[0],pt[1]])
+                
+                
+                
+                
+            
+                
+            
+                
     
     def UHPBCConvexHull(self,ev):
         if self.radioButtonUHPBCConvexHull.isChecked() == True and self.stackedWidgetIn_pageUHP.currentIndex() == 0:
@@ -809,8 +891,10 @@ class appMainWindow(QtWidgets.QDialog, appWindowDesign.Ui_MainWindow):
             if y < 0:
                 pass
             else:
-                currentPoint = pg.ScatterPlotItem([x],[y])
-                self.PlotWidgetIn_pageUHP.addItem(currentPoint)
+                points = numpy.array([[x,y]],dtype=float)
+                self.UHPdraggableDots.setData(pos=points,  pxMode=True)
+#                currentPoint = pg.ScatterPlotItem([x],[y])
+#                self.PlotWidgetIn_pageUHP.addItem(currentPoint)
                 arbManyClicks.append(x+y*(1j))
                 if len(arbManyClicks) < 2:
                     auxStorage.append(x+y*(1j))
@@ -892,7 +976,7 @@ class appMainWindow(QtWidgets.QDialog, appWindowDesign.Ui_MainWindow):
                     t = numpy.linspace(0,s,numberOfSteps+1)
                     plottedCurve = self.PlotWidgetIn_pageUHP.plot(pen = 'w')
                     k=0
-#                    initialTime = time()
+                    initialTime = time()
 #                    lastTime = time()
 #                    speed = None
 #                    def update():
@@ -918,16 +1002,20 @@ class appMainWindow(QtWidgets.QDialog, appWindowDesign.Ui_MainWindow):
                             x_coord = geodesicParametrization(partialInterval).real
                             y_coord = geodesicParametrization(partialInterval).imag
                             plottedCurve.setData(x_coord,y_coord)
+                            print("d = " + str(t[k+1]))
+                            print("t = " + str(time()-initialTime))
                             #self.PlotWidgetIn_pageUHP.plot(x_coord,y_coord,pen='w')   
 #                            pos = numpy.empty((k+1,3))
 #                            for i in range(0,k+1):
 #                                pos[i]=(x_coord[i],y_coord[i],0)
 #                            trial = gl.GLScatterPlotItem(pos=pos,color=(1,1,1,.3), size=1, pxMode=False)
 #                            self.openGLWidget.addItem(trial)
-                        k = (k+1)
+                            k = (k+1)
                         if k == len(t)-1:
                             finalPointRed = pg.ScatterPlotItem([Q.real],[Q.imag],pen='r',brush = 'r')
                             self.PlotWidgetIn_pageUHP.addItem(finalPointRed)
+                            print(time()-initialTime)
+                            self.timer.stop()
 #                        QtCore.QTimer.singleShot(1000*s/numberOfSteps, update)
  #                   update()
                     if self.timer:
