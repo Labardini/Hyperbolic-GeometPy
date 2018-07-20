@@ -1590,7 +1590,7 @@ p, li { white-space: pre-wrap; }
          </rect>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="pageUHPBasicConstructions">
          <widget class="QLabel" name="labelUHPBChdistance">
@@ -1970,7 +1970,7 @@ p, li { white-space: pre-wrap; }
          </rect>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="tabPDBasicConstructions">
          <attribute name="title">
@@ -2019,7 +2019,7 @@ p, li { white-space: pre-wrap; }
          </rect>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="pageUHPBasicConstructions_2">
          <widget class="QLabel" name="labelPDBChdistance">
@@ -2210,6 +2210,25 @@ p, li { white-space: pre-wrap; }
           </property>
           <property name="text">
            <string>To:</string>
+          </property>
+         </widget>
+         <widget class="PlotWidget" name="PlotWidgetIn_pageUHPGeodesicMotion_2">
+          <property name="geometry">
+           <rect>
+            <x>2</x>
+            <y>310</y>
+            <width>150</width>
+            <height>150</height>
+           </rect>
+          </property>
+          <property name="backgroundBrush">
+           <brush brushstyle="NoBrush">
+            <color alpha="255">
+             <red>255</red>
+             <green>255</green>
+             <blue>255</blue>
+            </color>
+           </brush>
           </property>
          </widget>
         </widget>
@@ -2557,36 +2576,6 @@ p, li { white-space: pre-wrap; }
           <string>Isometries</string>
          </attribute>
         </widget>
-       </widget>
-       <widget class="MplWidget" name="mplWidgetIn_tabThreeModels_Upper" native="true">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>20</y>
-          <width>291</width>
-          <height>271</height>
-         </rect>
-        </property>
-       </widget>
-       <widget class="MplWidget" name="mplWidgetIn_tabThreeModels_Hyper" native="true">
-        <property name="geometry">
-         <rect>
-          <x>600</x>
-          <y>20</y>
-          <width>291</width>
-          <height>271</height>
-         </rect>
-        </property>
-       </widget>
-       <widget class="MplWidget" name="mplWidgetIn_tabThreeModels_Poincare" native="true">
-        <property name="geometry">
-         <rect>
-          <x>300</x>
-          <y>20</y>
-          <width>291</width>
-          <height>271</height>
-         </rect>
-        </property>
        </widget>
       </widget>
      </widget>

@@ -47,7 +47,7 @@ class draggableDot(pg.GraphItem):
     def __init__(self):
         self.dragPoint = None
         self.dragOffset = None
-        self.Dot = DotDragSignal([0,0],0)
+        self.Dot = DotDragSignal([0,0],-1)
 #        self.textItems = []
         pg.GraphItem.__init__(self)
         #self.scatter.sigClicked.connect(self.clicked)
@@ -95,6 +95,7 @@ class draggableDot(pg.GraphItem):
                 return
             self.dragPoint = pts[0]
             ind = pts[0].data()[0]
+            self.Dot.ind = ind
             self.dragOffset = self.data['pos'][ind] - pos
         elif ev.isFinish():
             self.dragPoint = None
@@ -107,7 +108,6 @@ class draggableDot(pg.GraphItem):
         ind = self.dragPoint.data()[0]
         self.data['pos'][ind] = ev.pos() + self.dragOffset
         self.Dot.pt = self.data['pos'][ind]
-        self.Dot.ind = ind
         self.updateGraph()
         ev.accept()
         
