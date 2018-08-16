@@ -121,8 +121,8 @@ class appMainWindow(QtWidgets.QDialog, appWindowDesign.Ui_MainWindow):
         self.widthBoundingLineUHP = 5
         self.boundingLineUHP = pg.InfiniteLine(pos=0, angle=0, pen=pg.mkPen('g', width=self.widthBoundingLineUHP))
         self.PlotWidgetIn_pageUHP.addItem(self.boundingLineUHP)
-        self.UHPdraggableDots = dD.draggableDot()
-        self.PlotWidgetIn_pageUHP.addItem(self.UHPdraggableDots)
+        self.UHPdraggableDotsStaticGeodSegs = dD.draggableDot()
+        self.PlotWidgetIn_pageUHP.addItem(self.UHPdraggableDotsStaticGeodSegs)
         
 
         
@@ -249,7 +249,8 @@ class appMainWindow(QtWidgets.QDialog, appWindowDesign.Ui_MainWindow):
         self.pushButtonCPSGSteiner.clicked.connect(self.effectOf_pushButtonCPSGSteiner)
         self.horizontalSliderCPSGLoxodromesAngleTheta.sliderMoved.connect(self.effectOf_horizontalSliderCPSGLoxodromesAngleTheta)
         
-        self.pushButtonCPMTOrbitsSinglePoint.clicked.connect(self.effectOf_pushButtonCPMTOrbitsSinglePoint) ### PERSONAL NOTE: this effect has not been fully/satisfactorily programmed
+        self.pushButtonCPMTAnimOrbitSinglePoint.clicked.connect(self.effectOf_pushButtonCPMTAnimOrbitSinglePoint)
+        self.pushButtonCPMTStaticOrbitSinglePoint.clicked.connect(self.effectOf_pushButtonCPMTStaticOrbitSinglePoint)
         self.pushButtonCPMTOrbitsRandomCircle.clicked.connect(self.effectOf_pushButtonCPMTOrbitsRandomCircle)
         self.pushButtonCPMTOrbitsSteinerGrid.clicked.connect(self.effectOf_pushButtonCPMTOrbitsSteinerGrid)
 
@@ -257,7 +258,7 @@ class appMainWindow(QtWidgets.QDialog, appWindowDesign.Ui_MainWindow):
         self.radioButtonUHPBCGeodesicSegments.clicked.connect(self.deleteClicks)
         self.radioButtonUHPBCConvexHull.clicked.connect(self.deleteClicks)
         self.proxyUHP = pg.SignalProxy(self.PlotWidgetIn_pageUHP.scene().sigMouseMoved, rateLimit=60, slot=self.UHPmouseMoved)
-        self.UHPdraggableDots.Dot.moved.connect(self.UHPBCDragGeodesicSegment)
+        self.UHPdraggableDotsStaticGeodSegs.Dot.moved.connect(self.UHPBCDragGeodesicSegment)
         self.PlotWidgetIn_pageUHP.scene().sigMouseClicked.connect(self.UHPBCGeodesicSegmentStatic)
         self.PlotWidgetIn_pageUHP.scene().sigMouseClicked.connect(self.UHPBCConvexHull)
         self.proxyUHPGM = pg.SignalProxy(self.PlotWidgetIn_pageUHPGeodesicMotion.scene().sigMouseMoved, rateLimit=60, slot=self.UHPGMmouseMoved)
@@ -437,10 +438,7 @@ class appMainWindow(QtWidgets.QDialog, appWindowDesign.Ui_MainWindow):
     def effectOf_pushButtonCPSGSteiner(self):
         self.effectOf_pushButtonCPSGCommon()
         self.effectOf_pushButtonCPSGApollonius()
-        x = numpy.arange(0,10,1)
-        y = x**2
-        point = pg.ScatterPlotItem(x,y)
-        self.PlotWidgetIn_pageCP.addItem(point)
+        
         
 ##############
 ############## 
@@ -461,23 +459,28 @@ class appMainWindow(QtWidgets.QDialog, appWindowDesign.Ui_MainWindow):
         
 #############################################
 ##############
-############## Something strange happens when one twoClicks on "Clear Canvas" and then
-############## tries to plot the orbit of a new point   
+##############    
 
-    def effectOf_pushButtonCPMTOrbitsSinglePoint(self):
-        MobiusTrans = Mobius_CP.MobiusAssocToMatrix(
-                self.lineEditCPMTOrbitsComplexNumberalpha.text(),
-                self.lineEditCPMTOrbitsComplexNumberbeta.text(),
-                self.lineEditCPMTOrbitsComplexNumbergamma.text(),
-                self.lineEditCPMTOrbitsComplexNumberdelta.text())
+    def effectOf_pushButtonCPMTAnimOrbitSinglePoint(self):#1,100,1j,1 is a nice loxodromic Mobius transformation for examples
+        a = self.lineEditCPMTOrbitsComplexNumberalpha.text()
+        b = self.lineEditCPMTOrbitsComplexNumberbeta.text()
+        c = self.lineEditCPMTOrbitsComplexNumbergamma.text()
+        d = self.lineEditCPMTOrbitsComplexNumberdelta.text()
         z_0 = extendedValue(self.lineEditCPMTOrbitsComplexNumberz_0.text())
-        numberOfPointsInOrbit = int(self.spinBoxCPMTOrbits.cleanText())
-        Orbit = MobiusTrans.Mob_trans_iterable(z_0,numberOfPointsInOrbit)
+        numberOfIterations = int(self.spinBoxCPMTOrbits.cleanText())
+        OrbitAllPts = Mobius_CP.MobiusAssocToMatrix().MobTransOrbit(a,b,c,d,numberOfIterations,z_0)[0]
+        OrbitFinitePts = Mobius_CP.MobiusAssocToMatrix().MobTransOrbit(a,b,c,d,numberOfIterations,z_0)[1]
+        PartialOrbit = dD.draggableDot()
+        CurrentPoint = dD.draggableDot()
+        #Dots.Dot.moved.connect(CPMTMobiusOrbitDrag)
+        self.PlotWidgetIn_pageCP.addItem(PartialOrbit)
+        self.PlotWidgetIn_pageCP.addItem(CurrentPoint)
+        self.labelCPMTTypeOfMobius.setText(str(Mobius_CP.MobiusAssocToMatrix().isParEllHypLox(a,b,c,d)[0]))
 
         if z_0 != oo:
             self.radioButtonCPoo.setChecked(False)
-            initialDot = pg.ScatterPlotItem([z_0.real],[z_0.imag],pen='w',brush='b')
-            self.PlotWidgetIn_pageCP.addItem(initialDot)
+            points = numpy.array([[z_0.real,z_0.imag]],dtype=float)
+            PartialOrbit.setData(pos=points,  pxMode=True)
         else:
             self.radioButtonCPoo.setChecked(True)
             
@@ -485,30 +488,87 @@ class appMainWindow(QtWidgets.QDialog, appWindowDesign.Ui_MainWindow):
         def update():
             self.radioButtonCPoo.setChecked(False)
             nonlocal k
-            previous_z = Orbit[k]
-            if previous_z != oo:
-                previousDot = pg.ScatterPlotItem([previous_z.real],[previous_z.imag],pen='r')
-                self.PlotWidgetIn_pageCP.addItem(previousDot)
-            current_z = Orbit[(k+1)%numberOfPointsInOrbit]
+            points = numpy.array([[OrbitFinitePts[numpy.sign(numberOfIterations)*i].real,OrbitFinitePts[numpy.sign(numberOfIterations)*i].imag] for i in range(k+1) if numpy.sign(numberOfIterations)*i in OrbitFinitePts],dtype=float)
+            if len(points) > 0:
+                PartialOrbit.setData(pos=points, pxMode=True)
+            current_z = OrbitAllPts[numpy.sign(numberOfIterations)*(k)%numberOfIterations]
             if current_z !=oo:
-                currentDot = pg.ScatterPlotItem([current_z.real],[current_z.imag],pen='w',brush='b')
-                self.PlotWidgetIn_pageCP.addItem(currentDot)
+                current = numpy.array([[current_z.real,current_z.imag]],dtype=float)
+                CurrentPoint.setData(pos=current, symbolBrush=(217,83,25), symbolPen='w',  pxMode=True)
             else:
                 self.radioButtonCPoo.setChecked(True)
-            k = (k+1)%numberOfPointsInOrbit
-        #    QtCore.QTimer.singleShot(1000, update)
-        #update()
-        
-#        timer = QtCore.QTimer(self)
-#        timer.timeout.connect(update)
-#        timer.start(250)
+                CurrentPoint.setData(symbolBrush=(0,0,200))
+            k = (k+1)%abs(numberOfIterations)
+
         if self.timer:
             self.timer.stop()
             self.timer.deleteLater()
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(update)
-        self.timer.start(250)
+        self.timer.start(200)
         
+        
+        
+    def effectOf_pushButtonCPMTStaticOrbitSinglePoint(self): ## PERSONAL NOTE: Check the code for curves...
+        #1+100j, 200, 2j, 1+100j
+        try:
+            a = self.lineEditCPMTOrbitsComplexNumberalpha.text()
+            b = self.lineEditCPMTOrbitsComplexNumberbeta.text()
+            c = self.lineEditCPMTOrbitsComplexNumbergamma.text()
+            d = self.lineEditCPMTOrbitsComplexNumberdelta.text()
+            z_0 = extendedValue(self.lineEditCPMTOrbitsComplexNumberz_0.text())
+            numberOfIterations = int(self.spinBoxCPMTOrbits.cleanText())
+            OrbitAllPts = Mobius_CP.MobiusAssocToMatrix().MobTransOrbit(a,b,c,d,numberOfIterations,z_0)[0]
+            OrbitFinitePts = Mobius_CP.MobiusAssocToMatrix().MobTransOrbit(a,b,c,d,numberOfIterations,z_0)[1]
+            Dots = dD.draggableDot()
+            self.PlotWidgetIn_pageCP.addItem(Dots)
+            self.labelCPMTTypeOfMobius.setText(str(Mobius_CP.MobiusAssocToMatrix().isParEllHypLox(a,b,c,d)[0]))
+            
+            curves = Mobius_CP.MobiusAssocToMatrix().invariantCurveThroughPt(a,b,c,d,z_0)
+            drawings = []
+            if len(curves)>0:
+                for curve in curves:
+                    drawing = pg.PlotCurveItem(curve[0],curve[1],pen='w')
+                    drawings.append(drawing)
+                    self.PlotWidgetIn_pageCP.addItem(drawing)
+                    
+            points = numpy.array([[OrbitFinitePts[numpy.sign(numberOfIterations)*i].real,OrbitFinitePts[numpy.sign(numberOfIterations)*i].imag] for i in range(abs(numberOfIterations)+1) if numpy.sign(numberOfIterations)*i in OrbitFinitePts],dtype=float)
+            if len(points) > 0:
+                Dots.setData(pos=points,  pxMode=True)
+            if len(OrbitFinitePts) < len(OrbitAllPts):
+                self.radioButtonCPoo.setChecked(True)
+                
+            def CPMTMobiusOrbitDrag(pt,ind):
+                nonlocal drawings
+                try:
+                    P = pt[0]+pt[1]*(1j)
+                    k = numpy.sign(numberOfIterations)*ind
+                    z_0 = Mobius_CP.MobiusAssocToMatrix().MobTrans_nthPowerEvalAtConcretePoint(a,b,c,d,-k,P)
+                    OrbitAllPts = Mobius_CP.MobiusAssocToMatrix().MobTransOrbit(a,b,c,d,numberOfIterations,z_0)[0]
+                    OrbitFinitePts = Mobius_CP.MobiusAssocToMatrix().MobTransOrbit(a,b,c,d,numberOfIterations,z_0)[1]
+                    
+                    currentCurves = Mobius_CP.MobiusAssocToMatrix().invariantCurveThroughPt(a,b,c,d,z_0)
+                    
+                    if len(drawings)>0 and len(currentCurves)>0:
+                        for i in range(0,len(drawings),1):
+                            drawings[i].setData(currentCurves[i][0],currentCurves[i][1])
+                    
+                    
+                    points = numpy.array([[OrbitFinitePts[numpy.sign(numberOfIterations)*i].real,OrbitFinitePts[numpy.sign(numberOfIterations)*i].imag] for i in range(abs(numberOfIterations)+1) if numpy.sign(numberOfIterations)*i in OrbitFinitePts],dtype=float)
+                    if len(points) > 0:
+                        Dots.setData(pos=points,  pxMode=True)
+                    if len(OrbitFinitePts) < len(OrbitAllPts):
+                        self.radioButtonCPoo.setChecked(True)
+                    if len(OrbitFinitePts) == len(OrbitAllPts):
+                        self.radioButtonCPoo.setChecked(False)
+                        
+                    self.lineEditCPMTOrbitsComplexNumberz_0.setText(str(z_0))
+                except:
+                    pass
+            Dots.Dot.moved.connect(CPMTMobiusOrbitDrag)
+        
+        except:
+            pass
 ##############
 ############## 
 #############################################
@@ -742,8 +802,8 @@ class appMainWindow(QtWidgets.QDialog, appWindowDesign.Ui_MainWindow):
             self.timer.deleteLater()
             self.timer = None
         self.PlotWidgetIn_pageUHP.clear()
-        self.UHPdraggableDots.setData(pos=numpy.array([[0,-100]]))
-        self.PlotWidgetIn_pageUHP.addItem(self.UHPdraggableDots)
+        self.UHPdraggableDotsStaticGeodSegs.setData(pos=numpy.array([[0,-100]]))
+        self.PlotWidgetIn_pageUHP.addItem(self.UHPdraggableDotsStaticGeodSegs)
         self.PlotWidgetIn_pageUHP.addItem(self.boundingLineUHP)
         self.boundingLineUHP.setPen(pg.mkPen('g', width=self.widthBoundingLineUHP))
         for clicked in Clicks:
@@ -809,11 +869,11 @@ class appMainWindow(QtWidgets.QDialog, appWindowDesign.Ui_MainWindow):
                 if len(arbManyClicks)==1:
                     points = numpy.array([[arbManyClicks[0][0],arbManyClicks[0][1]]],dtype=float)
                     #initialPoint = pg.GraphItem(pos=[[twoClicks[0][0],twoClicks[0][1]]])
-                    self.UHPdraggableDots.setData(pos=points,  pxMode=True)
+                    self.UHPdraggableDotsStaticGeodSegs.setData(pos=points,  pxMode=True)
                 else:
                     #print(twoClicks)
                     points = numpy.array([[arbManyClicks[k][0],arbManyClicks[k][1]] for k in range(len(arbManyClicks))],dtype=float)
-                    self.UHPdraggableDots.setData(pos=points,  pxMode=True)
+                    self.UHPdraggableDotsStaticGeodSegs.setData(pos=points,  pxMode=True)
                     #self.PlotWidgetIn_pageUHP.addItem(finalPoint)
                     P = arbManyClicks[-2][0]+arbManyClicks[-2][1]*(1j)
                     Q = arbManyClicks[-1][0]+arbManyClicks[-1][1]*(1j)
@@ -892,7 +952,7 @@ class appMainWindow(QtWidgets.QDialog, appWindowDesign.Ui_MainWindow):
                 pass
             else:
                 points = numpy.array([[x,y]],dtype=float)
-                self.UHPdraggableDots.setData(pos=points,  pxMode=True)
+                self.UHPdraggableDotsStaticGeodSegs.setData(pos=points,  pxMode=True)
 #                currentPoint = pg.ScatterPlotItem([x],[y])
 #                self.PlotWidgetIn_pageUHP.addItem(currentPoint)
                 arbManyClicks.append(x+y*(1j))
