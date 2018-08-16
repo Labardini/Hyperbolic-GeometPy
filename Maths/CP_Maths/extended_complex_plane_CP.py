@@ -56,22 +56,27 @@ class numpyExtendedComplexPlane:
     
     def areAllDistinctArgs(self,*args): #### PERSONAL NOTE: Should this function be in my custom exceptions module???? It may look as the definition of an exception....
         length = len(args)
+        counter = 0
         for t in range(0,length-1): ### PERSONAL NOTE: is there a more efficient way of doing this???
             for s in range(t+1,length):
                 if args[t] == args[s]:
-                    raise myInputError("Positions "+str(t)+" and "+str(s)+": "+ str(args[t])+","+str(args[s]),
-                                     "Arguments are not all pairwise distinct")
-        return True
+                    counter = counter +1
+        if counter == 0:
+            return True
+        else:
+            return False
     
     def areAllDistinctList(self,List):
         length = len(List)
+        counter = 0
         for t in range(0,length-1): ### PERSONAL NOTE: is there a more efficient way of doing this???
             for s in range(t+1,length):
                 if List[t] == List[s]:
-                    raise myInputError("Positions "+str(t)+" and "+str(s)+": "+ str(List[t])+","+str(List[s]),
-                                     "Arguments are not all pairwise distinct")
-        return True
-        
+                    counter = counter +1
+        if counter == 0:
+            return True
+        else:
+            return False
     
                 
     def areCollinear(self,complexP,complexQ,complexR):

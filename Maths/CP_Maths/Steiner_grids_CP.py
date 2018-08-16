@@ -120,7 +120,7 @@ class Apollonius:
         P = numpy.complex(complexnumberP)
         Q = numpy.complex(complexnumberQ)
         distance = numpy.absolute(P-Q)
-        def theFunction(k): # k is supposed to be an integer greater than 0 and smaller than an n to be given as an input below
+        def theFunction(k): # k is supposed to be an integer greater than 0 and smaller than an n+1 to be given as an input below
             x = (k*distance) / (1+k)
             y = (k*distance) / (k-1)
             X = P + (x/distance)*(Q-P)
@@ -134,14 +134,14 @@ class Apollonius:
     
     def Apollonius_e_circles1(self,complexnumberP,complexnumberQ,n):#(beta1,beta2,number):
         theFunction = self.centerAndRadiusApolloniusCircle(complexnumberP,complexnumberQ)
-        numpyInterval = numpy.arange(1,n,1)
-        numpyFirstInterval = numpyInterval / n
+        numpyInterval = numpy.arange(1,n+1,1)
+        numpyFirstInterval = numpyInterval / (n+1)
         return theFunction(numpyFirstInterval)
     
     def Apollonius_e_circles2(self,complexnumberP,complexnumberQ,n):#(beta1,beta2,number):
         theFunction = self.centerAndRadiusApolloniusCircle(complexnumberP,complexnumberQ)
-        numpyInterval = numpy.arange(1,n,1)
-        numpySecondInterval = n / (n-numpyInterval)
+        numpyInterval = numpy.arange(1,n+1,1)
+        numpySecondInterval = (n+1) / (n+1-numpyInterval)
         return theFunction(numpySecondInterval)
         
         

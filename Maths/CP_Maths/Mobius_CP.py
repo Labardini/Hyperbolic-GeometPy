@@ -35,16 +35,8 @@ areCollinear = extended_complex_plane_CP.numpyExtendedComplexPlane().areCollinea
 
 class MobiusAssocToMatrix:
     
-    def __init__(self,complexa,complexb,complexc,complexd):
-        self.a = numpy.complex(complexa)
-        self.b = numpy.complex(complexb)
-        self.c = numpy.complex(complexc)
-        self.d = numpy.complex(complexd)
-        self.theMatrix = numpy.matrix([[self.a,self.b],[self.c,self.d]])
-        self.theDet = self.a*self.d - self.b*self.c
-        if self.theDet == 0: ##### PERSONAL NOTE: implement a good exception handling
-            raise myInputError(str(self.a)+','+str(self.b)+','+str(self.c)+','+str(self.d),"The matrix must be invertible")
-            
+    def __init__(self):
+                    
         self.oo = extended_complex_plane_CP.numpyExtendedComplexPlane().oo
         self.evaluation = numpy.vectorize(self.EvaluationAtConcretePoint)
     
@@ -52,135 +44,254 @@ class MobiusAssocToMatrix:
     
 
         
-    def EvaluationAtConcretePoint(self,z):
+    def EvaluationAtConcretePoint(self,complexa,complexb,complexc,complexd,z):
+        a, b, c, d = extendedValue(complexa), extendedValue(complexb), extendedValue(complexc), extendedValue(complexd)
         z = extended_complex_plane_CP.numpyExtendedComplexPlane().extendedValue(z)
-        if self.theDet == 0:# NECESSARY? PERSONAL NOTE: implement a good exception handling (somewhere, maybe here it wouldn't be necessary if it is well implemented)
-            result = "This is not an invertible matrix."# NECESSARY? PERSONAL NOTE: implement a good exception handling (somewhere, maybe here wouldn't be necessary)
-        elif z != self.oo and self.c*z + self.d != 0:
-            result = (self.a*z + self.b)/(self.c*z + self.d)
-        elif z != self.oo and self.c*z + self.d == 0:
-            result = self.oo
-        elif z == self.oo and self.c != 0:
-            result = self.a / self.c
-        elif z == self.oo and self.c == 0:
-            result = self.oo
+        if a*d-b*c == 0:# NECESSARY? PERSONAL NOTE: implement a good exception handling (somewhere, maybe here it wouldn't be necessary if it is well implemented)
+            pass#result = "This is not an invertible matrix."# NECESSARY? PERSONAL NOTE: implement a good exception handling (somewhere, maybe here wouldn't be necessary)
+        elif z != oo and c*z + d != 0:
+            result = (a*z + b)/(c*z + d)
+        elif z != oo and c*z + d == 0:
+            result = oo
+        elif z == oo and c != 0:
+            result = a / c
+        elif z == oo and c == 0:
+            result = oo
         return result
     
-    def Mob_trans_iterable(self,z,n): ### PERSONAL NOTE: treat with nth power of matrix instead?
-        SingleIteration = self.EvaluationAtConcretePoint
-        CurrentPoint = extendedValue(z)
-        Orbit = [z]
-        for i in range(1,n,1):
-            Orbit.append(SingleIteration(CurrentPoint))
-            CurrentPoint = SingleIteration(CurrentPoint)
-        return Orbit
+    def MobTrans_nthPowerEvalAtConcretePoint(self,complexa,complexb,complexc,complexd,n,complexz):
+        a, b, c, d, z = extendedValue(complexa), extendedValue(complexb), extendedValue(complexc), extendedValue(complexd), extendedValue(complexz)
+        if a*d-b*c == 0:
+            pass
+        else:
+            A = numpy.matrix([[a,b],[c,d]])**n
+            alpha, beta, gamma, delta = A[0,0], A[0,1], A[1,0], A[1,1]
+            if z != oo and gamma*z + delta != 0:
+                result = (alpha*z + beta)/(gamma*z + delta)
+            if z != oo and gamma*z + delta == 0:
+                result = oo
+            if z == oo and gamma != 0:
+                result = alpha / gamma
+            if z == oo and gamma == 0:
+                result = oo
+            return result
+            
+            
+            
     
+    def MobTransOrbit(self,complexa,complexb,complexc,complexd,m,complexz):
+        a, b, c, d = extendedValue(complexa), extendedValue(complexb), extendedValue(complexc), extendedValue(complexd)
+        if a*d-b*c == 0:
+            pass
+        else:
+            OrbitAllPts = {numpy.sign(m)*n:self.MobTrans_nthPowerEvalAtConcretePoint(complexa,complexb,complexc,complexd,numpy.sign(m)*n,complexz) for n in range(0,abs(m)+1,1)}
+            OrbitFinitePts = {numpy.sign(m)*n:self.MobTrans_nthPowerEvalAtConcretePoint(complexa,complexb,complexc,complexd,numpy.sign(m)*n,complexz) for n in range(0,abs(m)+1,1) if self.MobTrans_nthPowerEvalAtConcretePoint(complexa,complexb,complexc,complexd,numpy.sign(m)*n,complexz) != oo}
+            OrbitInfinitePts = {numpy.sign(m)*n:self.MobTrans_nthPowerEvalAtConcretePoint(complexa,complexb,complexc,complexd,numpy.sign(m)*n,complexz) for n in range(0,abs(m)+1,1) if self.MobTrans_nthPowerEvalAtConcretePoint(complexa,complexb,complexc,complexd,numpy.sign(m)*n,complexz) == oo}
+        return [OrbitAllPts, OrbitFinitePts, OrbitInfinitePts]
+
+
 #    def Mob_trans_iterable_oo_removed(self,z,n):
 #        Orbit = self.Mob_trans_iterable(z,n)
 #        reducedOrbit = [x for x in Orbit if x != 'oo']
 #        return reducedOrbit
     
-    def fixedPoints(self):
-       if self.theDet == 0:# NECESSARY? Perhaps it wouldn't be necessary if a good exception handling were implemented
-           fixed_point_set = "This is not an invertible matrix."# NECESSARY?
-       elif self.c == 0 and self.a == self.d and self.b == 0:
-           fixed_point_set = "This Mobius transformation is the identity. It fixes every point in the extended complex plane."
-       elif self.c == 0 and self.a == self.d and self.b != 0:
-           fixed_point_set = [self.oo]
-       elif self.c == 0 and self.a != self.d:
-           z1 =  self.b / (self.d-self.a) 
-           fixed_point_set = [z1, self.oo]
-       elif self.c != 0:
-           #coeffOfQuadraticPol = [self.c,self.d-self.a,-self.b]
-           #fixed_point_set = numpy.roots(coeffOfQuadraticPol)
-           fixed_point_set = [ (self.a-self.d + numpy.sqrt((self.d-self.a)**2 + 4 * self.b * self.c)) / (2 * self.c) , (self.a-self.d - numpy.sqrt((self.d-self.a)**2 + 4 * self.b * self.c)) / (2 * self.c) ]
-           #x = sympy.Symbol('x')
-           #quadratic_pol = (self.c*(x**2))+((self.d-self.a)*x)-self.b
-           #fixed_point_set = sympy.solve(quadratic_pol,x)
-       if len(fixed_point_set) == 1:
-           fixed_point_set = [fixed_point_set[0],fixed_point_set[0]]
-       return fixed_point_set
+    def fixedPoints(self,complexa,complexb,complexc,complexd):
+        a, b, c, d = extendedValue(complexa), extendedValue(complexb), extendedValue(complexc), extendedValue(complexd)
+        if a*d-b*c == 0:
+            pass
+        else:
+            if c == 0 and a == d and b == 0:
+                pass
+            else:
+                if c == 0 and a == d and b != 0:
+                    fixed_point_set = [oo]
+                if c == 0 and a != d:
+                    z1 =  b / (d-a) 
+                    fixed_point_set = [z1, oo]
+                if c != 0:
+               #coeffOfQuadraticPol = [self.c,self.d-self.a,-self.b]
+               #fixed_point_set = numpy.roots(coeffOfQuadraticPol)
+                   fixed_point_set = [ (a-d + numpy.sqrt((d-a)**2 + 4 * b * c)) / (2 * c) , (a-d - numpy.sqrt((d-a)**2 + 4 * b * c)) / (2 * c) ]
+               #x = sympy.Symbol('x')
+               #quadratic_pol = (self.c*(x**2))+((self.d-self.a)*x)-self.b
+               #fixed_point_set = sympy.solve(quadratic_pol,x)
+                if len(fixed_point_set) == 1:
+                   fixed_point_set = [fixed_point_set[0],fixed_point_set[0]]
+                return fixed_point_set
    
 #    def fixedPoints_oo_removed(self):
 #        fixed_point_set = self.fixedPoints()
 #        reduced_fixed_point_set = [x for x in fixed_point_set if x != 'oo']
 #        return reduced_fixed_point_set
-        
-    def MobiusTrace(self):
-        if self.theDet == 0: # NECESSARY? Perhaps it wouldn't be necessary if a good exception handling were implemented
-            traza = "This is not an invertible matrix."
+
+    def standardForm(self,complexa,complexb,complexc,complexd): #### PERSONAL NOTE: This needs a good exception handling
+        a, b, c, d = extendedValue(complexa), extendedValue(complexb), extendedValue(complexc), extendedValue(complexd)
+        if a*d-b*c == 0:
+            pass
         else:
-            traza0 = (self.a+self.d) / (numpy.sqrt(self.theDet)) 
+            if c == 0 and a == d and b == 0:
+                pass
+            else:
+                A = numpy.matrix([[a,b],[c,d]])
+                fixedPointSet = self.fixedPoints(a,b,c,d)
+                alpha1 = fixedPointSet[0]
+                alpha2 = fixedPointSet[1]
+                if alpha1 == alpha2 and alpha2 != oo:
+                    ConjugatingMatrix = numpy.matrix([[0,1],[1,-alpha2]])
+                if alpha1 == alpha2 and alpha2 == oo:
+                    ConjugatingMatrix = numpy.matrix([[1,0],[0,1]])
+                if alpha1 != alpha2 and alpha2 != oo:
+                    ConjugatingMatrix = numpy.matrix([[1,-alpha1],[1,-alpha2]])
+                if alpha1 != alpha2 and alpha2 == oo:
+                    ConjugatingMatrix = numpy.matrix([[1,-alpha1],[0,1]])
+                standard_form = ConjugatingMatrix*A*(ConjugatingMatrix**(-1))
+                return [standard_form, ConjugatingMatrix]
+        
+        
+    def MobiusTrace(self,complexa,complexb,complexc,complexd):
+        a, b, c, d = extendedValue(complexa), extendedValue(complexb), extendedValue(complexc), extendedValue(complexd)        
+        if a*d-b*c == 0:
+            pass
+        else:
+            traza0 = (a+d) / (numpy.sqrt(a*d-b*c)) 
             traza1 = -(traza0)
             traza = [ traza0 , traza1 ]
         return traza
     
-    def isParEllHypLox(self):
-        if self.theDet == 0:
-            TheTypeIs = "This is not an invertible matrix."
+#    def isParEllHypLox(self,complexa,complexb,complexc,complexd):
+#        a, b, c, d = extendedValue(complexa), extendedValue(complexb), extendedValue(complexc), extendedValue(complexd)        
+#        if a*d-b*c == 0:
+#            pass
+#        else:
+#            #S = self.fixedPoints(a,b,c,d)
+#            #T = self.MobiusTrace(a,b,c,d)
+#            if c == 0 and a == d and b == 0:
+#                TheTypeIs = "Idendity"
+##            elif S[0] == S[1]:
+#            elif (d - a)**2 + (4 * b * c) == 0:
+#                TheTypeIs = 'Parabolic'
+#            elif ((a+d)**2 / (a*d-b*c) ).imag == 0 and 0 <= ((a+d)**2 / (a*d-b*c)).real < 4:
+#                TheTypeIs = 'Elliptic'
+#            elif ((a+d)**2 / (a*d-b*c)).imag == 0 and ((a+d)**2 / (a*d-b*c)).real > 4:
+#                TheTypeIs = 'Hyperbolic'
+#            elif ((a+d)**2 / (a*d-b*c) ).imag != 0 or ((a+d)**2 / (a*d-b*c)).real < 0:
+#                TheTypeIs = 'Loxodromic'
+#        return TheTypeIs
+
+    def isParEllHypLox(self,complexa,complexb,complexc,complexd):
+        a, b, c, d = extendedValue(complexa), extendedValue(complexb), extendedValue(complexc), extendedValue(complexd)        
+        if a*d-b*c == 0:
+            pass
         else:
-            S = self.fixedPoints()
-            T = self.MobiusTrace()
-            if self.c == 0 and self.a == self.d and self.b == 0:
-                TheTypeIs = "Idendity"
+            #S = self.fixedPoints(a,b,c,d)
+            #T = self.MobiusTrace(a,b,c,d)
+            if c == 0 and a == d and b == 0:
+                TheTypeIs = ["Idendity",1]
 #            elif S[0] == S[1]:
-            elif (self.d - self.a)**2 + (4 * self.b * self.c) == 0:
-                TheTypeIs = 'PARABOLIC'
-            elif numpy.imag(T[0]) ==0 and numpy.absolute(numpy.real(T[0]))<2:
-                TheTypeIs = 'ELLIPTIC'
-            elif numpy.imag(T[0]) == 0 and numpy.absolute(numpy.real(T[0]))>2:
-                TheTypeIs = 'HYPERBOLIC'
-            elif numpy.imag(T[0]) !=0:
-                TheTypeIs = 'LOXODROMIC'
-        return TheTypeIs
-    
-    def frameOfParabolic(self):
-        if self.isParEllHypLox() == 'PARABOLIC':
-            fixedPoint = self.fixedPoints()[0]
-            if fixedPoint == oo:
-                direction = self.EvaluationAtConcretePoint(0)
-                angle = 180*numpy.angle(direction)/numpy.pi
-                normal = -direction.imag + direction.real*(1j)
-                specialPoint = 0
-                return [[specialPoint,normal,-normal],angle]
-            if fixedPoint != oo:
-                testPt1 = fixedPoint + 1
-                testPt2 = self.EvaluationAtConcretePoint(testPt1)
-                if areCollinear(fixedPoint,testPt1,testPt2) == False:
-                    center = e_circumcenter_and_radius(fixedPoint,testPt1,testPt2)[0]
-                    complexCenter = center[0] + center[1]*(1j)
-                    normal = fixedPoint - complexCenter
-                    direction = -normal.imag + normal.real*(1j)
+            else:
+                normalForm = self.standardForm(a,b,c,d)[0]
+                alpha,beta,gamma,delta = normalForm[0,0],normalForm[0,1],normalForm[1,0],normalForm[1,1]
+                mu = self.EvaluationAtConcretePoint(alpha,beta,gamma,delta,1)
+                if (d - a)**2 + (4 * b * c) == 0:
+                    TheTypeIs = ['Parabolic',self.EvaluationAtConcretePoint(alpha,beta,gamma,delta,0)]
+                elif numpy.absolute(mu) == 1:
+                    TheTypeIs = ['Elliptic', mu]
+                elif mu.imag == 0 and mu.real > 0:
+                    TheTypeIs = ['Hyperbolic',mu]
                 else:
-                    direction = fixedPoint + 1
-                    normal = -direction.imag + direction.real*(1j)
-                angle = 180*numpy.angle(direction)/numpy.pi
-                specialPoint = fixedPoint + direction
-                return [[specialPoint,fixedPoint+normal,fixedPoint-normal],angle]
+                    TheTypeIs = ['Loxodromic',mu]
+            return TheTypeIs
+        
+    def invariantCurveThroughPt(self,complexa,complexb,complexc,complexd,z):### PERSONAL NOTE: refine this so it handles the case when the orbit of z is contained in an euclidean line
+        a, b, c, d, z = extendedValue(complexa), extendedValue(complexb), extendedValue(complexc), extendedValue(complexd), extendedValue(z)
+        if a*d-b*c == 0:
+            pass
+        elif c == 0 and a == d and b == 0:
+            pass
         else:
-            raise myInputError(str(self.a)+','+str(self.b)+','+str(self.c)+','+str(self.d),"This function is defined only for parabolic transformations")
-                
-            
-                
+            z1 = self.EvaluationAtConcretePoint(a,b,c,d,z)
+            z2 = self.EvaluationAtConcretePoint(a,b,c,d,z1)
+            if areAllDistinctArgs(z,z1,z2) == False:
+                coordList = []
+            elif areCollinear(z,z1,z2) == True:
+                coordList = []
+            else:
+                Type = self.isParEllHypLox(a,b,c,d)
+                coordList = []
+                if Type[0] == 'Parabolic' or Type[0] == 'Elliptic' or Type[0] == 'Hyperbolic':
+                    center = e_circumcenter_and_radius(z,z1,z2)[0]
+                    radius = e_circumcenter_and_radius(z,z1,z2)[1]
+                    t = numpy.linspace(0,2*numpy.pi,1000)
+                    curve = (center[0]+radius*numpy.cos(t))+(center[1]+radius*numpy.sin(t))*(1j)
+                    x_coord = curve.real
+                    y_coord = curve.imag
+                    coordList.append([x_coord,y_coord])
+                if Type[0] == 'Loxodromic':
+                    P = self.fixedPoints(a,b,c,d)[0]
+                    Q = self.fixedPoints(a,b,c,d)[1]
+                    mu = Type[1]
+                    C = self.standardForm(a,b,c,d)[1]
+                    w = self.EvaluationAtConcretePoint(C[0,0],C[0,1],C[1,0],C[1,1],z)
+                    t = numpy.linspace(0,2*numpy.pi,10000)
+                    if isooInArgs(P,Q) == True:
+                        curve1 = P+(((mu)**(t**2))*w)
+                        curve2 = P+(((mu**(-1))**(t**2))*w)
+                        x_coord1 = curve1.real
+                        y_coord1 = curve1.imag
+                        x_coord2 = curve2.real
+                        y_coord2 = curve2.imag
+                        coordList.append([x_coord1,y_coord1])  
+                        coordList.append([x_coord2,y_coord2])  
+                    else:
+                        complexW = ((mu)**(t**2))*w
+                        complexZ = (((mu)**(-1))**(t**2))*w
+                        D = C**(-1)
+                        x_coord = ((D[0,0]*complexW + D[0,1])/(D[1,0]*complexW + D[1,1])).real
+                        y_coord = ((D[0,0]*complexW + D[0,1])/(D[1,0]*complexW + D[1,1])).imag
+    #                            x_coord = ((Q*complexW + P)/(complexW + 1)).real
+    #                            y_coord = ((Q*complexW + P)/(complexW + 1)).imag
+                        coordList.append([x_coord,y_coord])
+                        x_coord2 = ((D[0,0]*complexZ + D[0,1])/(D[1,0]*complexZ + D[1,1])).real
+                        y_coord2 = ((D[0,0]*complexZ + D[0,1])/(D[1,0]*complexZ + D[1,1])).imag
+    #                            x_coord2 = ((P*complexW + Q)/(complexW + 1)).real
+    #                            y_coord2 = ((P*complexW + Q)/(complexW + 1)).imag
+                        coordList.append([x_coord2,y_coord2])
+            return coordList
+
+    
+#    def frameOfParabolic(self):
+#        if self.isParEllHypLox() == 'PARABOLIC':
+#            fixedPoint = self.fixedPoints()[0]
+#            if fixedPoint == oo:
+#                direction = self.EvaluationAtConcretePoint(0)
+#                angle = 180*numpy.angle(direction)/numpy.pi
+#                normal = -direction.imag + direction.real*(1j)
+#                specialPoint = 0
+#                return [[specialPoint,normal,-normal],angle]
+#            if fixedPoint != oo:
+#                testPt1 = fixedPoint + 1
+#                testPt2 = self.EvaluationAtConcretePoint(testPt1)
+#                if areCollinear(fixedPoint,testPt1,testPt2) == False:
+#                    center = e_circumcenter_and_radius(fixedPoint,testPt1,testPt2)[0]
+#                    complexCenter = center[0] + center[1]*(1j)
+#                    normal = fixedPoint - complexCenter
+#                    direction = -normal.imag + normal.real*(1j)
+#                else:
+#                    direction = fixedPoint + 1
+#                    normal = -direction.imag + direction.real*(1j)
+#                angle = 180*numpy.angle(direction)/numpy.pi
+#                specialPoint = fixedPoint + direction
+#                return [[specialPoint,fixedPoint+normal,fixedPoint-normal],angle]
+#        else:
+#            raise myInputError(str(self.a)+','+str(self.b)+','+str(self.c)+','+str(self.d),"This function is defined only for parabolic transformations")
+#                
+#            
+#                
                 
                 
             
     
-    def standardForm(self): #### PERSONAL NOTE: This needs a good exception handling
-        fixedPointSet = self.fixedPoints()
-        alpha1 = fixedPointSet[0]
-        alpha2 = fixedPointSet[1]
-        if alpha1 == alpha2 and alpha2 != self.oo:
-            ConjugatingMatrix = numpy.matrix([[0,1],[1,-alpha2]])
-        if alpha1 == alpha2 and alpha2 == self.oo:
-            ConjugatingMatrix = numpy.matrix([[1,0],[0,1]])
-        if alpha1 != alpha2 and alpha2 != self.oo:
-            ConjugatingMatrix = numpy.matrix([[1,-alpha1],[1,-alpha2]])
-        if alpha1 != alpha2 and alpha2 == self.oo:
-            ConjugatingMatrix = numpy.matrix([[1,-alpha1],[0,1]])
-        standard_form = ConjugatingMatrix*self.theMatrix*(ConjugatingMatrix.getI())
-        return [standard_form, ConjugatingMatrix]
-        
+
     
 #    def SteinerConfiguration(self):
 #        if self.theDet == 0 or self.isParEllHypLox()=="Identity":
@@ -198,8 +309,134 @@ class MobiusAssocToMatrix:
             
             
             
-  
+class MobiusTransitivity:
+    
+    def __init__(self):
+        pass
+    
+    def MobiusTransz1z2z3To0oo1(self,Z1,Z2,Z3):
+        z1,z2,z3 = extendedValue(Z1), extendedValue(Z2), extendedValue(Z3)
+        if areAllDistinctArgs(z1,z2,z3) != True:
+            pass
+        else:
+            def MobiusTrans(z):
+                if z1 == oo:
+                    if z == oo:
+                        result = 0
+                    elif z == z2:
+                        result = 0
+                    else:
+                        result = (z3-z2)/(z-z2)
+                elif z2 == oo:
+                    if z == oo:
+                        result = oo
+                    else:
+                        result = (z - z1) / (z3 - z1)
+                elif z3 == oo:
+                    if z == oo:
+                        result = 1
+                    elif z == z2:
+                        result = oo
+                    else:
+                        result = (z - z1) / (z-z2)
+                else: 
+                   result = ((z3-z2)*(z - z1))/((z3-z1)*(z - z2))
+                return result
+            return MobiusTrans
+        
+    def MobiusMatrixz1z2z3To0oo1(self,Z1,Z2,Z3):
+        z1,z2,z3 = extendedValue(Z1), extendedValue(Z2), extendedValue(Z3)
+        if areAllDistinctArgs(z1,z2,z3) != True:
+            pass
+        else:
+            if z1 == oo:
+                A = numpy.matrix([[0,z3-z2],[1,-z2]])
+            elif z2 == oo:
+                A = numpy.matrix([[1,-z1],[0,z3-z1]])
+            elif z3 == oo:
+                A = numpy.matrix([[1,-z1],[1-z2]])
+            else:
+                A = numpy.matrix([[z3-z2,(z2-z3)*z1],[z3-z1,(z1-z3)*z2]])
+            return A
+        
+    def MobiusMatrix0oo1Toz1z2z3(self,Z1,Z2,Z3):
+        z1,z2,z3 = extendedValue(Z1), extendedValue(Z2), extendedValue(Z3)
+        if areAllDistinctArgs(z1,z2,z3) != True:
+            pass
+        else:
+            return self.MobiusMatrixz1z2z3To0oo1(z1,z2,z3)**(-1)
+        
+    def MobiusMatrixz1z2z3Tow1w2w3(self,Z1,Z2,Z3,W1,W2,W3):
+        z1,z2,z3,w1,w2,w3 = extendedValue(Z1), extendedValue(Z2), extendedValue(Z3), extendedValue(W1), extendedValue(W2), extendedValue(W3)
+        if areAllDistinctArgs(z1,z2,z3) != True or areAllDistinctArgs(w1,w2,w3) != True:
+            pass
+        else:
+            A = self.MobiusMatrixz1z2z3To0oo1(Z1,Z2,Z3)
+            B = self.MobiusMatrix0oo1Toz1z2z3(W1,W2,W3)
+            return B*A
+        
+    def MobiusTransz1z2z3Tow1w2w3(self,Z1,Z2,Z3,W1,W2,W3):
+        z1,z2,z3,w1,w2,w3 = extendedValue(Z1), extendedValue(Z2), extendedValue(Z3), extendedValue(W1), extendedValue(W2), extendedValue(W3)
+        if areAllDistinctArgs(z1,z2,z3) != True or areAllDistinctArgs(w1,w2,w3) != True:
+            pass
+        else:
+            theMatrix = self.MobiusMatrixz1z2z3Tow1w2w3(Z1,Z2,Z3,W1,W2,W3)
+            a,b,c,d = theMatrix[0,0], theMatrix[0,1], theMatrix[1,0], theMatrix[1,1]
+            def Transformation(z):
+                return MobiusAssocToMatrix().EvaluationAtConcretePoint(a,b,c,d,z)
+            return Transformation
+                
+    def crossRatio(self,Z1,Z2,Z3,Z4):
+        z1,z2,z3,z4 = extendedValue(Z1), extendedValue(Z2), extendedValue(Z3), extendedValue(Z4)
+        if areAllDistinctArgs(z1,z2,z3) != True:
+            pass
+        else:
+            MobTrans = self.MobiusTransz1z2z3To0oo1(z1,z3,z2)
+            return MobTrans(z4)
+        
+        
+class MobiusFromParameters:
+    
+    def __init__(self):
+        pass
 
+    
+    def MobMatrixFromParams(self,listOfFixedPoints,complexmu):
+        if len(listOfFixedPoints) == 0 or len(listOfFixedPoints)>2:
+            pass
+        else:
+            mu = extendedValue(complexmu)
+            if len(listOfFixedPoints) == 1 or listOfFixedPoints[0]==listOfFixedPoints[1]:
+                z1 = extendedValue(listOfFixedPoints[0])
+                A = numpy.matrix([[1,mu],[0,1]])
+                if z1 == oo:
+                    B = numpy.matrix([[1,0],[0,1]])
+                else:
+                    B = numpy.matrix([[0,1],[1,z1]])
+            if len(listOfFixedPoints) == 2 and listOfFixedPoints[0]!=listOfFixedPoints[1]:
+                z1 = extendedValue(listOfFixedPoints[0])
+                z2 = extendedValue(listOfFixedPoints[1])
+                A = numpy.matrix([[mu,0],[0,1]])
+                if z1 == oo:
+                    B = MobiusTransitivity().MobiusMatrixz1z2z3To0oo1(z2,z1,z2+1)
+                elif z2 == oo:
+                    B = MobiusTransitivity().MobiusMatrixz1z2z3To0oo1(z1,z2,z1+1)
+                else:
+                    B = MobiusTransitivity().MobiusMatrixz1z2z3To0oo1(z1,z2,(z1+z2)/2)
+            result =  (B**(-1))*A*B
+            return result
+                
+    def MobTransFromParams(self,listOfFixedPoints,complexmu):
+        if len(listOfFixedPoints) == 0 or len(listOfFixedPoints)>2:
+            pass
+        else:
+            A = self.MobMatrixFromParams(listOfFixedPoints,complexmu)
+            a,b,c,d = A[0,0], A[0,1], A[1,0], A[1,1]
+            def MobTrans(z):
+                return MobiusAssocToMatrix().EvaluationAtConcretePoint(a,b,c,d,z)
+            return MobTrans
+            
+                
 
           
             
