@@ -12,6 +12,7 @@ import numpy
 
 from exception_handling import myInputError
 from Maths.CP_Maths import extended_complex_plane_CP
+from Maths.CP_Maths import Mobius_CP
 
 
 #### SOME FUNCTIONS IMPORTED FROM Maths.CP_Maths.extended_complex_plane_CP
@@ -481,5 +482,50 @@ class UHPIsometries:
         pass
 
     
+    
+class UHPFuchsian: ##NOTE: SO FAR, THIS CLASS
+# CONSTRUCTS ONLY ONE FUCHSIAN GROUP FOR EACH GIVEN SIGNATURE
+    
+    def __init__(self):
+        pass
+    
+    def UHPSidesOfSpecificIdealPolygon(self,genus,numberOfPunctures):
+        g, p = genus, numberOfPunctures
+        if g == 0 and p < 3:
+            pass
+        elif g == 1 and p == 0:
+            pass
+        else:
+            NumOfSides = (4*g) + (2*(p-1))
+            theta = numpy.linspace(0,numpy.pi,500)
+            curves = {NumOfSides:((NumOfSides-1)/2) + ((NumOfSides-1)/2)*(numpy.cos(theta)+numpy.sin(theta)*(1j))}
+            for k in range(NumOfSides-1):
+                curves[k] = k + (1/2) + (1/2)*(numpy.cos(theta)+numpy.sin(theta)*(1j))
+            return curves
+    
+    def UHPSidePairingsOfSpecificIdealPolygon(self,genus,numberOfPunctures):
+        g, p = genus, numberOfPunctures
+        if g == 0 and p < 3:
+            pass
+        elif g == 1 and p == 0:
+            pass
+        else:
+            NumOfSides = (4*g) + (2*(p-1))
+            TranslationMatrix = numpy.matrix([[1,2],[0,1]])
+            GoingUpHyperbolic = numpy.matrix([[NumOfSides-1,-(NumOfSides-1)],[0,1]])
+            GoingDownHyperbolic = GoingUpHyperbolic**(-1)
+            SidePairings = {0:Mobius_CP.MobiusFromParameters().MobMatrixFromParams([2+(1/2)+1j,2+(1/2)-1j],-1)*TranslationMatrix,1:GoingUpHyperbolic,2:Mobius_CP.MobiusFromParameters().MobMatrixFromParams([(1/2)+1j,(1/2)-1j],-1)*(TranslationMatrix**(-1)),NumOfSides:GoingDownHyperbolic}
+            for k in range(3,NumOfSides):
+                if k % 4 == 3 or k % 4 == 0:
+                    SidePairings[k] = Mobius_CP.MobiusFromParameters().MobMatrixFromParams([k+2+(1/2)+1j,k+2+(1/2)-1j],-1)*TranslationMatrix
+                if k % 4 == 1 or k % 4 == 2:
+                    SidePairings[k] = Mobius_CP.MobiusFromParameters().MobMatrixFromParams([k-2+(1/2)+1j,k-2+(1/2)-1j],-1)*(TranslationMatrix**(-1))
+            return SidePairings
+                    
+                    
+            
+            
+            
+        
     
     
