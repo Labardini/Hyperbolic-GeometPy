@@ -81,18 +81,16 @@ class numpyExtendedComplexPlane:
                 
     def areCollinear(self,complexP,complexQ,complexR):
         P, Q, R = self.extendedValue(complexP), self.extendedValue(complexQ), self.extendedValue(complexR)
-        try:
-            self.areAllDistinctArgs(P,Q,R)
-        except myInputError:
-            raise myInputError(str(P)+","+str(Q)+","+str(R),
-                             "To decide collinearity/non-collinearity, the three points must be distinct")
-        if self.oo in [P,Q,R]:
-            answer = True
-        elif ((R-P)/(Q-P)).imag == 0:
-            answer = True
-        elif ((R-P)/(Q-P)).imag != 0:
-            answer = False
-        return answer
+        if P == Q  or P == R or Q == R:
+            pass
+        else:
+            if self.oo in [P,Q,R]:
+                answer = True
+            elif ((R-P)/(Q-P)).imag == 0:
+                answer = True
+            elif ((R-P)/(Q-P)).imag != 0:
+                answer = False
+            return answer
     
     def typeOfCircleInExtendedPlane(self,complexP,complexQ,complexR):
         #### If the points are not all distinct, an exception is raised
@@ -104,10 +102,9 @@ class numpyExtendedComplexPlane:
         return theType
     
     def e_circumcenter_and_radius(self,complexP,complexQ,complexR):
-        #### If the points are not all distinct, an exception is raised
-        #### by areCollinear and areAllDistinct
         #### PERSONAL NOTE: change xi, yi, in order to make reference to P, Q and R --tthe code more will be more readable
-        if self.typeOfCircleInExtendedPlane(complexP,complexQ,complexR) == "circle":
+        if self.areCollinear(complexP,complexQ,complexR) == False:
+#        if self.typeOfCircleInExtendedPlane(complexP,complexQ,complexR) == "circle":
             P = numpy.complex(complexP) 
             Q = numpy.complex(complexQ)
             R = numpy.complex(complexR) 
@@ -121,9 +118,11 @@ class numpyExtendedComplexPlane:
             center_x_coord = ((x1**2 + y1**2)*(y2 - y3) + (x2**2 + y2**2)*(y3 - y1) + (x3**2 + y3**2)*(y1 - y2)) / D
             center_y_coord = ((x1**2 + y1**2)*(x3 - x2) + (x2**2 + y2**2)*(x1 - x3) + (x3**2 + y3**2)*(x2 - x1)) / D
             radius = numpy.sqrt((x1-center_x_coord)**2+(y1-center_y_coord)**2)
+            return [[center_x_coord,center_y_coord],radius]
         else:
-            raise myInputError(str(complexP)+","+str(complexQ)+","+str(complexR),"These points are collinear")
-        return [[center_x_coord,center_y_coord],radius]
+            pass
+#            raise myInputError(str(complexP)+","+str(complexQ)+","+str(complexR),"These points are collinear")
+        
     
 #### THE FOLLOWING FUNCTION FINDS THE COORDINATES OF THE INTERSECTION POINTS
 #### OF TWO CIRCLES IF WE ARE GIVEN THE LATTERS' EUCLIDEAN CENTERS AND RADII

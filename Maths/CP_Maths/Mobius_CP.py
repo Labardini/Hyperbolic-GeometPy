@@ -44,50 +44,58 @@ class MobiusAssocToMatrix:
     
 
         
-    def EvaluationAtConcretePoint(self,complexa,complexb,complexc,complexd,z):
+    def EvaluationAtConcretePoint(self,complexa,complexb,complexc,complexd):
         a, b, c, d = extendedValue(complexa), extendedValue(complexb), extendedValue(complexc), extendedValue(complexd)
-        z = extended_complex_plane_CP.numpyExtendedComplexPlane().extendedValue(z)
         if a*d-b*c == 0:# NECESSARY? PERSONAL NOTE: implement a good exception handling (somewhere, maybe here it wouldn't be necessary if it is well implemented)
             pass#result = "This is not an invertible matrix."# NECESSARY? PERSONAL NOTE: implement a good exception handling (somewhere, maybe here wouldn't be necessary)
-        elif z != oo and c*z + d != 0:
-            result = (a*z + b)/(c*z + d)
-        elif z != oo and c*z + d == 0:
-            result = oo
-        elif z == oo and c != 0:
-            result = a / c
-        elif z == oo and c == 0:
-            result = oo
-        return result
+        else:
+            def MobTrans(complexz):
+                z = extended_complex_plane_CP.numpyExtendedComplexPlane().extendedValue(complexz)
+                if z != oo and c*z + d != 0:
+                    result = (a*z + b)/(c*z + d)
+                if z != oo and c*z + d == 0:
+                    result = oo
+                if z == oo and c != 0:
+                    result = a / c
+                if z == oo and c == 0:
+                    result = oo
+                return result
+            return MobTrans
     
-    def MobTrans_nthPowerEvalAtConcretePoint(self,complexa,complexb,complexc,complexd,n,complexz):
-        a, b, c, d, z = extendedValue(complexa), extendedValue(complexb), extendedValue(complexc), extendedValue(complexd), extendedValue(complexz)
+    def MobTrans_nthPowerEvalAtConcretePoint(self,complexa,complexb,complexc,complexd,n):
+        a, b, c, d= extendedValue(complexa), extendedValue(complexb), extendedValue(complexc), extendedValue(complexd)
         if a*d-b*c == 0:
             pass
         else:
             A = numpy.matrix([[a,b],[c,d]])**n
             alpha, beta, gamma, delta = A[0,0], A[0,1], A[1,0], A[1,1]
-            if z != oo and gamma*z + delta != 0:
-                result = (alpha*z + beta)/(gamma*z + delta)
-            if z != oo and gamma*z + delta == 0:
-                result = oo
-            if z == oo and gamma != 0:
-                result = alpha / gamma
-            if z == oo and gamma == 0:
-                result = oo
-            return result
+            def MobTrans(complexz):
+                z = extendedValue(complexz)
+                if z != oo and gamma*z + delta != 0:
+                    result = (alpha*z + beta)/(gamma*z + delta)
+                if z != oo and gamma*z + delta == 0:
+                    result = oo
+                if z == oo and gamma != 0:
+                    result = alpha / gamma
+                if z == oo and gamma == 0:
+                    result = oo
+                return result
+            return MobTrans
             
             
             
     
-    def MobTransOrbit(self,complexa,complexb,complexc,complexd,m,complexz):
+    def MobTransOrbit(self,complexa,complexb,complexc,complexd,m):
         a, b, c, d = extendedValue(complexa), extendedValue(complexb), extendedValue(complexc), extendedValue(complexd)
         if a*d-b*c == 0:
             pass
         else:
-            OrbitAllPts = {numpy.sign(m)*n:self.MobTrans_nthPowerEvalAtConcretePoint(complexa,complexb,complexc,complexd,numpy.sign(m)*n,complexz) for n in range(0,abs(m)+1,1)}
-            OrbitFinitePts = {numpy.sign(m)*n:self.MobTrans_nthPowerEvalAtConcretePoint(complexa,complexb,complexc,complexd,numpy.sign(m)*n,complexz) for n in range(0,abs(m)+1,1) if self.MobTrans_nthPowerEvalAtConcretePoint(complexa,complexb,complexc,complexd,numpy.sign(m)*n,complexz) != oo}
-            OrbitInfinitePts = {numpy.sign(m)*n:self.MobTrans_nthPowerEvalAtConcretePoint(complexa,complexb,complexc,complexd,numpy.sign(m)*n,complexz) for n in range(0,abs(m)+1,1) if self.MobTrans_nthPowerEvalAtConcretePoint(complexa,complexb,complexc,complexd,numpy.sign(m)*n,complexz) == oo}
-        return [OrbitAllPts, OrbitFinitePts, OrbitInfinitePts]
+            def theOrbit(complexz):
+                OrbitAllPts = {numpy.sign(m)*n:self.MobTrans_nthPowerEvalAtConcretePoint(complexa,complexb,complexc,complexd,numpy.sign(m)*n)(complexz) for n in range(0,abs(m)+1,1)}
+                OrbitFinitePts = {numpy.sign(m)*n:self.MobTrans_nthPowerEvalAtConcretePoint(complexa,complexb,complexc,complexd,numpy.sign(m)*n)(complexz) for n in range(0,abs(m)+1,1) if self.MobTrans_nthPowerEvalAtConcretePoint(complexa,complexb,complexc,complexd,numpy.sign(m)*n)(complexz) != oo}
+                OrbitInfinitePts = {numpy.sign(m)*n:self.MobTrans_nthPowerEvalAtConcretePoint(complexa,complexb,complexc,complexd,numpy.sign(m)*n)(complexz) for n in range(0,abs(m)+1,1) if self.MobTrans_nthPowerEvalAtConcretePoint(complexa,complexb,complexc,complexd,numpy.sign(m)*n)(complexz) == oo}
+                return [OrbitAllPts, OrbitFinitePts, OrbitInfinitePts]
+            return theOrbit
 
 
 #    def Mob_trans_iterable_oo_removed(self,z,n):
@@ -191,9 +199,9 @@ class MobiusAssocToMatrix:
             else:
                 normalForm = self.standardForm(a,b,c,d)[0]
                 alpha,beta,gamma,delta = normalForm[0,0],normalForm[0,1],normalForm[1,0],normalForm[1,1]
-                mu = self.EvaluationAtConcretePoint(alpha,beta,gamma,delta,1)
+                mu = self.EvaluationAtConcretePoint(alpha,beta,gamma,delta)(1)
                 if (d - a)**2 + (4 * b * c) == 0:
-                    TheTypeIs = ['Parabolic',self.EvaluationAtConcretePoint(alpha,beta,gamma,delta,0)]
+                    TheTypeIs = ['Parabolic',self.EvaluationAtConcretePoint(alpha,beta,gamma,delta)(0)]
                 elif numpy.absolute(mu) == 1:
                     TheTypeIs = ['Elliptic', mu]
                 elif mu.imag == 0 and mu.real > 0:
@@ -209,8 +217,8 @@ class MobiusAssocToMatrix:
         elif c == 0 and a == d and b == 0:
             pass
         else:
-            z1 = self.EvaluationAtConcretePoint(a,b,c,d,z)
-            z2 = self.EvaluationAtConcretePoint(a,b,c,d,z1)
+            z1 = self.EvaluationAtConcretePoint(a,b,c,d)(z)
+            z2 = self.EvaluationAtConcretePoint(a,b,c,d)(z1)
             if areAllDistinctArgs(z,z1,z2) == False:
                 coordList = []
             elif areCollinear(z,z1,z2) == True:
@@ -231,7 +239,7 @@ class MobiusAssocToMatrix:
                     Q = self.fixedPoints(a,b,c,d)[1]
                     mu = Type[1]
                     C = self.standardForm(a,b,c,d)[1]
-                    w = self.EvaluationAtConcretePoint(C[0,0],C[0,1],C[1,0],C[1,1],z)
+                    w = self.EvaluationAtConcretePoint(C[0,0],C[0,1],C[1,0],C[1,1])(z)
                     t = numpy.linspace(0,2*numpy.pi,10000)
                     if isooInArgs(P,Q) == True:
                         curve1 = P+(((mu)**(t**2))*w)
@@ -383,7 +391,7 @@ class MobiusTransitivity:
             theMatrix = self.MobiusMatrixz1z2z3Tow1w2w3(Z1,Z2,Z3,W1,W2,W3)
             a,b,c,d = theMatrix[0,0], theMatrix[0,1], theMatrix[1,0], theMatrix[1,1]
             def Transformation(z):
-                return MobiusAssocToMatrix().EvaluationAtConcretePoint(a,b,c,d,z)
+                return MobiusAssocToMatrix().EvaluationAtConcretePoint(a,b,c,d)(z)
             return Transformation
                 
     def crossRatio(self,Z1,Z2,Z3,Z4):
@@ -433,7 +441,7 @@ class MobiusFromParameters:
             A = self.MobMatrixFromParams(listOfFixedPoints,complexmu)
             a,b,c,d = A[0,0], A[0,1], A[1,0], A[1,1]
             def MobTrans(z):
-                return MobiusAssocToMatrix().EvaluationAtConcretePoint(a,b,c,d,z)
+                return MobiusAssocToMatrix().EvaluationAtConcretePoint(a,b,c,d)(z)
             return MobTrans
             
                 

@@ -159,6 +159,7 @@ class loxodromes:
             raise myInputError(str(P)+","+str(Q),"The points must be distinct")
         coordList = []
         complexZ = (1.1)*(numpy.cos(theta)+(numpy.sin(theta)*(1j)))
+        #complexZ = numpy.exp(numpy.sin(theta))*(numpy.cos(-numpy.cos(theta))+(numpy.sin(-numpy.cos(theta))*(1j)))
         t = numpy.linspace(0,25,10000)
         if isooInArgs(P,Q) == True:
             for k in range(0,n,1):
