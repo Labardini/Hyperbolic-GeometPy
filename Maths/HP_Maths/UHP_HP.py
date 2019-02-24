@@ -488,8 +488,33 @@ class UHPFuchsian: ##NOTE: SO FAR, THIS CLASS
     
     def __init__(self):
         pass
-    
+
+    def UHPSpecificCombinatorialSidePairing(self,genus,numberOfPunctures):
+        g, p = genus, numberOfPunctures
+        if g == 0 and p < 3:
+            pass
+        elif g == 1 and p == 0:
+            pass
+        else:
+            def f(k):
+                if k in range(4*(g-1)):
+                    if k % 4 == 0 or k % 4 == 1 :
+                        result = k + 2
+                    if k % 4 == 2 or k % 4 == 3 :
+                        result = k-2
+                if k == 4*(g-1):
+                    result = 4*(g-1) + 1 + p
+                if k == 4*(g-1) + 1 + p:
+                    result = 4*(g-1)
+                if k in range(4*(g-1)+1,4*(g-1)+1+p):
+                    result = 4*(g-1)+p+2 + 4*(g-1)+p-k
+                if k in range(4*(g-1)+p+2,4*g+2*(p-1)):
+                    result = 4*(g-1)+1 + 4*g+2*(p-1)-1-k
+                return result
+            return f
+
     def UHPSidesOfSpecificIdealPolygon(self,genus,numberOfPunctures):
+        # NOTE: TRY TO IMPROVE THE WAY THE SIDES ARE COLORED
         g, p = genus, numberOfPunctures
         if g == 0 and p < 3:
             pass
@@ -498,11 +523,26 @@ class UHPFuchsian: ##NOTE: SO FAR, THIS CLASS
         else:
             NumOfSides = (4*g) + (2*(p-1))
             theta = numpy.linspace(0,numpy.pi,500)
-            curves = {NumOfSides:((NumOfSides-1)/2) + ((NumOfSides-1)/2)*(numpy.cos(theta)+numpy.sin(theta)*(1j))}
+            curves = {NumOfSides-1:((NumOfSides-1)/2) + ((NumOfSides-1)/2)*(numpy.cos(theta)+numpy.sin(theta)*(1j))}
             for k in range(NumOfSides-1):
                 curves[k] = k + (1/2) + (1/2)*(numpy.cos(theta)+numpy.sin(theta)*(1j))
-            return curves
-    
+            basicColors = ["m", "b", "r", "c", "g", "y", "w", "k"]
+            curvesColors = {4*(g-1):basicColors[2*(g-1)%len(basicColors)],4*(g-1)+p+1:basicColors[2*(g-1)%len(basicColors)]}
+#            l = len(basicColors)
+#            for k in range(4*(g-1)-2):
+#                if k % l == 0 or k % l == 4  :
+#                    curvesColors[k] = basicColors[int(k/2)%len(basicColors)]
+#                    curvesColors[k+2] = basicColors[int(k/2)%len(basicColors)]  
+#                if  k % l == 3 or k % l == 7 :
+#                    curvesColors[k] = basicColors[int((k-1)/2)%len(basicColors)]
+#                    curvesColors[k+2] = basicColors[int((k-1)/2)%len(basicColors)]
+            f = UHPFuchsian().UHPSpecificCombinatorialSidePairing(g,p)
+            for k in range(4*(g-1)+1+p):#range(4*(g-1)+1,4*(g-1)+1+p):
+                curvesColors[k] = basicColors[k%len(basicColors)]
+                curvesColors[f(k)] = basicColors[k%len(basicColors)]
+            result = {"curves":curves,"curvesColors":curvesColors}
+            return result
+
     def UHPSidePairingsOfSpecificIdealPolygon(self,genus,numberOfPunctures):
         g, p = genus, numberOfPunctures
         if g == 0 and p < 3:
@@ -510,16 +550,18 @@ class UHPFuchsian: ##NOTE: SO FAR, THIS CLASS
         elif g == 1 and p == 0:
             pass
         else:
+            f = UHPFuchsian().UHPSpecificCombinatorialSidePairing(g,p)
             NumOfSides = (4*g) + (2*(p-1))
-            TranslationMatrix = numpy.matrix([[1,2],[0,1]])
-            GoingUpHyperbolic = numpy.matrix([[NumOfSides-1,-(NumOfSides-1)],[0,1]])
-            GoingDownHyperbolic = GoingUpHyperbolic**(-1)
-            SidePairings = {0:Mobius_CP.MobiusFromParameters().MobMatrixFromParams([2+(1/2)+1j,2+(1/2)-1j],-1)*TranslationMatrix,1:GoingUpHyperbolic,2:Mobius_CP.MobiusFromParameters().MobMatrixFromParams([(1/2)+1j,(1/2)-1j],-1)*(TranslationMatrix**(-1)),NumOfSides:GoingDownHyperbolic}
-            for k in range(3,NumOfSides):
-                if k % 4 == 3 or k % 4 == 0:
-                    SidePairings[k] = Mobius_CP.MobiusFromParameters().MobMatrixFromParams([k+2+(1/2)+1j,k+2+(1/2)-1j],-1)*TranslationMatrix
-                if k % 4 == 1 or k % 4 == 2:
-                    SidePairings[k] = Mobius_CP.MobiusFromParameters().MobMatrixFromParams([k-2+(1/2)+1j,k-2+(1/2)-1j],-1)*(TranslationMatrix**(-1))
+            SidePairings = {}
+            for k in range(NumOfSides):
+                if k == f(NumOfSides-1):
+                    SidePairings[k] = numpy.matrix([[NumOfSides-1,(NumOfSides-1)*(-k)],[0,1]])#numpy.matrix([[NumOfSides-1,0],[0,1]])*numpy.matrix([[1,-k],[0,1]])
+                elif k == NumOfSides-1:
+                    SidePairings[k] = (SidePairings[f(k)])**(-1)
+                else:
+                    TranslationMatrix = numpy.matrix([[1,f(k)-k],[0,1]])
+                    Elliptic180 = Mobius_CP.MobiusFromParameters().MobMatrixFromParams([f(k)+(1/2)+1j,f(k)+(1/2)-1j],-1)
+                    SidePairings[k] = Elliptic180*TranslationMatrix
             return SidePairings
                     
                     
