@@ -1461,16 +1461,14 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         if self.stackedWidgetIn_pageUHP.currentIndex() == 3:
             g = int(self.spinBox.cleanText())
             p = int(self.spinBox_2.cleanText())
-            print(g)
-            print(p)
-            curves = UHP_HP.UHPFuchsian().UHPSidesOfSpecificIdealPolygon(g,p)
+            curvesAndColors = UHP_HP.UHPFuchsian().UHPSidesOfSpecificIdealPolygon(g,p)
             NumOfSides = (4*g) + (2*(p-1))
-            x_coord, y_coord = curves[NumOfSides].real, curves[NumOfSides].imag
-            for k in range(NumOfSides-1):
-                x_coord = numpy.concatenate((x_coord,curves[k].real))
-                y_coord = numpy.concatenate((y_coord,curves[k].imag))
-            theDrawing = pg.PlotCurveItem(x_coord,y_coord,pen=self.blackPenWidth2)
-            self.PlotWidgetIn_pageUHP.addItem(theDrawing)
+            for k in range(NumOfSides):
+                x_coord = (curvesAndColors["curves"])[k].real
+                y_coord = (curvesAndColors["curves"])[k].imag
+                color = (curvesAndColors["curvesColors"])[k]
+                theDrawing = pg.PlotCurveItem(x_coord,y_coord,pen=pg.mkPen(str(color), width=2))
+                self.PlotWidgetIn_pageUHP.addItem(theDrawing)
         
 
 
