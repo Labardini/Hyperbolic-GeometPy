@@ -483,8 +483,9 @@ class UHPIsometries:
 
     
     
-class UHPFuchsian: ##NOTE: SO FAR, THIS CLASS
-# CONSTRUCTS ONLY ONE FUCHSIAN GROUP FOR EACH GIVEN SIGNATURE
+class UHPFuchsianRepresentative: ##NOTE: SO FAR, THIS CLASS CONSTRUCTS
+# A VERY SPECIFIC FUCHSIAN GROUP IN A VERY SPECIFIC SETTING:
+# POSITIVE NUMBER OF PUNCTURES, NO ORBIFOLD POINTS, VERY SPECIFIC SET OF SIDE PAIRING TRANSFORMATIONS
     
     def __init__(self):
         pass
@@ -512,7 +513,7 @@ class UHPFuchsian: ##NOTE: SO FAR, THIS CLASS
                     result = 4*(g-1)+1 + 4*g+2*(p-1)-1-k
                 return result
             return f
-
+    
     def UHPSidesOfSpecificIdealPolygon(self,genus,numberOfPunctures):
         # NOTE: TRY TO IMPROVE THE WAY THE SIDES ARE COLORED
         g, p = genus, numberOfPunctures
@@ -536,7 +537,7 @@ class UHPFuchsian: ##NOTE: SO FAR, THIS CLASS
 #                if  k % l == 3 or k % l == 7 :
 #                    curvesColors[k] = basicColors[int((k-1)/2)%len(basicColors)]
 #                    curvesColors[k+2] = basicColors[int((k-1)/2)%len(basicColors)]
-            f = UHPFuchsian().UHPSpecificCombinatorialSidePairing(g,p)
+            f = self.UHPSpecificCombinatorialSidePairing(g,p)
             for k in range(4*(g-1)+1+p):#range(4*(g-1)+1,4*(g-1)+1+p):
                 curvesColors[k] = basicColors[k%len(basicColors)]
                 curvesColors[f(k)] = basicColors[k%len(basicColors)]
@@ -550,7 +551,7 @@ class UHPFuchsian: ##NOTE: SO FAR, THIS CLASS
         elif g == 1 and p == 0:
             pass
         else:
-            f = UHPFuchsian().UHPSpecificCombinatorialSidePairing(g,p)
+            f = self.UHPSpecificCombinatorialSidePairing(g,p)
             NumOfSides = (4*g) + (2*(p-1))
             SidePairings = {}
             for k in range(NumOfSides):
@@ -559,12 +560,70 @@ class UHPFuchsian: ##NOTE: SO FAR, THIS CLASS
                 elif k == NumOfSides-1:
                     SidePairings[k] = (SidePairings[f(k)])**(-1)
                 else:
-                    TranslationMatrix = numpy.matrix([[1,f(k)-k],[0,1]])
-                    Elliptic180 = Mobius_CP.MobiusFromParameters().MobMatrixFromParams([f(k)+(1/2)+1j,f(k)+(1/2)-1j],-1)
-                    SidePairings[k] = Elliptic180*TranslationMatrix
+                    #TranslationMatrix = numpy.matrix([[1,f(k)-k],[0,1]])
+                    #Elliptic180 = Mobius_CP.MobiusTransitivity().MobiusMatrixz1z2z3Tow1w2w3(f(k)+(1/2)+1j,f(k),f(k)+1,f(k)+(1/2)+1j,f(k)+1,f(k))#Mobius_CP.MobiusFromParameters().MobMatrixFromParams([f(k)+(1/2)+1j,f(k)+(1/2)-1j],-1)
+                    SidePairings[k] = Mobius_CP.MobiusTransitivity().MobiusMatrixz1z2z3Tow1w2w3(k+(1/2)+1j,k,k+1,f(k)+(1/2)+1j,f(k)+1,f(k))#Elliptic180*TranslationMatrix
             return SidePairings
                     
-                    
+    def UHPOrbitOfVertexUnderSpecificCombinatorialSidePairing(self,genus,numberOfPunctures):
+        g, p = genus, numberOfPunctures
+        if g == 0 and p < 3:
+            pass
+        elif g == 1 and p == 0:
+            pass
+        else:
+            NumOfSides = (4*g) + (2*(p-1))
+            f = self.UHPSpecificCombinatorialSidePairing(g,p)
+            def orbitOfVertex(k):
+                orbit = [k]
+                j = (f(k) + 1) % NumOfSides
+                while j != k:
+                    orbit.append(j)
+                    j = (f(j) + 1) % NumOfSides
+                return orbit
+            return orbitOfVertex
+        
+    def UHPVertexOrbitsUnderSpecificCombinatorialSidePairing(self,genus,numberOfPunctures):
+        g, p = genus, numberOfPunctures
+        if g == 0 and p < 3:
+            pass
+        elif g == 1 and p == 0:
+            pass
+        else:
+            OrbitFunction = self.UHPOrbitOfVertexUnderSpecificCombinatorialSidePairing(g,p)
+            NumOfSides = (4*g) + (2*(p-1))
+            vertices = [k for k in range(NumOfSides)]
+            orbits = []
+            while len(vertices) > 0:
+                vertex = vertices[0]
+                orbit = OrbitFunction(vertex)
+                orbits.append(orbit)
+                for l in orbit:
+                    vertices.remove(l)
+            return orbits
+    
+    def UHPCheckIfTheGroupIsFuchsianForSpecificSidePairing(self,genus,numberOfPunctures):
+        g, p = genus, numberOfPunctures
+        if g == 0 and p < 3:
+            pass
+        elif g == 1 and p == 0:
+            pass
+        else:
+            sidePairings = self.UHPSidePairingsOfSpecificIdealPolygon(g,p)
+            orbits = self.UHPVertexOrbitsUnderSpecificCombinatorialSidePairing(g,p)
+            for orbit in orbits:
+                transformation = sidePairings[orbit[0]]
+                j = 1
+                while j < len(orbit):
+                    transformation = sidePairings[orbit[j]] * transformation
+                    j = j+1
+                print(Mobius_CP.MobiusAssocToMatrix().isParEllHypLox(transformation[0,0],transformation[0,1],transformation[1,0],transformation[1,1]))
+                
+        
+                
+            
+            
+           
             
             
             

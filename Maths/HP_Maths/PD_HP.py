@@ -12,8 +12,10 @@ import numpy
 
 from exception_handling import myInputError
 from Maths.CP_Maths import extended_complex_plane_CP
+from Maths.CP_Maths import Mobius_CP
 from Maths.HP_Maths import UHP_PD_Hyper_Isometries_HP
 from Maths.HP_Maths.UHP_HP import UHPGeodesicMotion
+
 
 
 #### SOME FUNCTIONS IMPORTED FROM Maths.CP_Maths.extended_complex_plane_CP
@@ -134,11 +136,9 @@ class PDBasics:
     def PDGeodesicSegment_rcostrsint(self,startpoint,endpoint): # THIS IS THE STATIC SEGMENT, NOT THE ANIMATED SEGMENT PARAMETERIZED BY ARC LENGTH
         w = extendedValue(startpoint)
         z = extendedValue(endpoint)
-        if PDBasics().areEuclidCollinearWithCenterInPD(w,z) == True:
-            interval = numpy.linspace(0,1)
-        else:
-            Invz = z / (z.real**2 + z.imag**2)
-            Invw = w / (w.real**2 + w.imag**2)
+        Invz = z / (z.real**2 + z.imag**2)
+        Invw = w / (w.real**2 + w.imag**2)
+        if PDBasics().areEuclidCollinearWithCenterInPD(w,z) == False:
             if Invz != z:#numpy.absolute(z) < 1:
                 eCenterAndRadius = e_circumcenter_and_radius(w,z,Invz)
                 eCenter = eCenterAndRadius[0][0]+eCenterAndRadius[0][1]*(1j)
@@ -146,27 +146,28 @@ class PDBasics:
                 eCenterAndRadius = e_circumcenter_and_radius(w,z,Invw)
                 eCenter = eCenterAndRadius[0][0]+eCenterAndRadius[0][1]*(1j)
             else:
-                matrix = numpy.matrix([[((1j)*w).real,-(1j)*z.real],[((1j)*w).imag,-(1j)*z.imag]])
-                vector = numpy.matrix([[z.real-w.real],[z.imag-w.imag]])
-                scalar = ((matrix**(-1))*vector)[0,0]
-                eCenter = w + scalar*(1j)*w ## EUCLIDEAN CENTER OF GEODESIC
-            #eRadius = eCenterAndRadius[1]
-            thetaw = numpy.angle(-(w-eCenter))+numpy.pi
-            thetaz = numpy.angle(-(z-eCenter))+numpy.pi
-            interval = numpy.linspace(0,min(numpy.abs(thetaz-thetaw),2*numpy.pi-numpy.abs(thetaz-thetaw)))
-        def parametrized_curve(t):
-            if PDBasics().areEuclidCollinearWithCenterInPD(w,z) == True:
+                eCenter = w*( 1 +  (z-w)/(z+w))
+            thetaw = myarg0To2Pi(w-eCenter)
+            thetaz = myarg0To2Pi(z-eCenter)
+            if numpy.abs(thetaz-thetaw) <= numpy.pi:
+                interval = numpy.linspace(0,thetaz-thetaw)
+            elif thetaz-thetaw > numpy.pi:
+                interval = numpy.linspace(0,-((2*numpy.pi)-(thetaz-thetaw)))
+            elif thetaz-thetaw < numpy.pi:
+                interval = numpy.linspace(0,((2*numpy.pi)-numpy.abs(thetaz-thetaw)))
+            def parametrized_curve(t):
+                parametrization = eCenter + (w-eCenter)*(numpy.cos(t)+numpy.sin(t)*(1j))
+                return parametrization
+#                matrix = numpy.matrix([[((1j)*w).real,-(1j)*z.real],[((1j)*w).imag,-(1j)*z.imag]])
+#                vector = numpy.matrix([[z.real-w.real],[z.imag-w.imag]])
+#                scalar = ((matrix**(-1))*vector)[0,0]
+#                eCenter = w + scalar*(1j)*w ## EUCLIDEAN CENTER OF GEODESIC
+#            #eRadius = eCenterAndRadius[1]
+        else:
+            interval = numpy.linspace(0,1)
+            def parametrized_curve(t):
                 parametrization = (1-t)*w + t*z
-            else:
-                if 0 <= thetaz-thetaw and thetaz-thetaw <= numpy.pi:
-                    parametrization = eCenter + (numpy.absolute(w-eCenter)*(numpy.cos(t+thetaw)+numpy.sin(t+thetaw)*(1j)))
-                if thetaz-thetaw > numpy.pi:
-                    parametrization = eCenter + (numpy.absolute(w-eCenter)*(numpy.cos(t+thetaz)+numpy.sin(t+thetaz)*(1j)))
-                if -numpy.pi <= thetaz - thetaw and thetaz -thetaw <0:
-                    parametrization = eCenter + (numpy.absolute(w-eCenter)*(numpy.cos(t+thetaz)+numpy.sin(t+thetaz)*(1j)))
-                if thetaz-thetaw < -numpy.pi:
-                    parametrization = eCenter + (numpy.absolute(w-eCenter)*(numpy.cos(t+thetaw)+numpy.sin(t+thetaw)*(1j)))
-            return parametrization
+                return parametrization
         return parametrized_curve(interval)
             
             
@@ -461,29 +462,176 @@ class PDGeodesicMotion:
         
 
     
-class UHPCircularMotion:
+class PDCircularMotion:
     
     def __init__(self):
         pass
     
     
-    def UHPCircSegmentParamByArcLength(self,center,radius,theta1,theta2):
-        x0, y0, r = center.real, center.imag, radius
-        if y0 <= 0 or y0 <= r:
-            raise myInputError(str(y0)+','+str(r),"Center must have positive imaginary part and euclidean radius must be smaller than imaginary part of center")
-        else:
-            totalarclength = ( 4*r / numpy.sqrt(y0**2-r**2) ) * numpy.arctan( (y0*numpy.tan( theta2/2 ) + r) / numpy.sqrt(y0**2-r**2) ) - ( 4*r / numpy.sqrt(y0**2-r**2) ) * numpy.arctan( (y0*numpy.tan( theta1/2 ) + r) / numpy.sqrt(y0**2-r**2) )
-            def parametrization(s):    
-                theta = 2*numpy.arctan(((numpy.sqrt(y0**2-r**2)*numpy.tan(( s + ( 4*r / numpy.sqrt(y0**2-r**2) ) * numpy.arctan( (y0*numpy.tan( theta1/2 ) + r) / numpy.sqrt(y0**2-r**2) ) ) * numpy.sqrt(y0**2-r**2) / (4*r) )) - r) / y0)
-                return x0+r*numpy.cos(theta) + (y0+r*numpy.sin(theta))*(1j)
-            return [parametrization, totalarclength]
-        
+  
     
-class UHPIsometries:
+class PDIsometries:
     
     def __init__(self):
         pass
 
     
+class PDFuchsianRepresentative: ##NOTE: SO FAR, THIS CLASS CONSTRUCTS
+# A VERY SPECIFIC FUCHSIAN GROUP IN A VERY SPECIFIC SETTING:
+# POSITIVE NUMBER OF PUNCTURES, NO ORBIFOLD POINTS, VERY SPECIFIC SET OF SIDE PAIRING TRANSFORMATIONS
     
+    def __init__(self):
+        pass
+
+    def PDSpecificCombinatorialSidePairing(self,genus,numberOfPunctures):
+        g, p = genus, numberOfPunctures
+        if g == 0 and p < 3:
+            pass
+        elif g == 1 and p == 0:
+            pass
+        else:
+            def f(k):
+                if k in range(4*(g-1)):
+                    if k % 4 == 0 or k % 4 == 1 :
+                        result = k + 2
+                    if k % 4 == 2 or k % 4 == 3 :
+                        result = k-2
+                if k == 4*(g-1):
+                    result = 4*(g-1) + 1 + p
+                if k == 4*(g-1) + 1 + p:
+                    result = 4*(g-1)
+                if k in range(4*(g-1)+1,4*(g-1)+1+p):
+                    result = 4*(g-1)+p+2 + 4*(g-1)+p-k
+                if k in range(4*(g-1)+p+2,4*g+2*(p-1)):
+                    result = 4*(g-1)+1 + 4*g+2*(p-1)-1-k
+                return result
+            return f
+    
+    def PDSidesOfSpecificIdealPolygon(self,genus,numberOfPunctures):
+        # NOTE: TRY TO IMPROVE THE WAY THE SIDES ARE COLORED
+        g, p = genus, numberOfPunctures
+        if g == 0 and p < 3:
+            pass
+        elif g == 1 and p == 0:
+            pass
+        else:
+            NumOfSides = (4*g) + (2*(p-1))
+            curves = {}
+            midpoints = {}
+            for k in range(NumOfSides):
+                w = numpy.cos(2*k*numpy.pi/NumOfSides)+numpy.sin(2*k*numpy.pi/NumOfSides)*(1j)
+                z = numpy.cos(2*(k+1)*numpy.pi/NumOfSides)+numpy.sin(2*(k+1)*numpy.pi/NumOfSides)*(1j)
+                eCenter = w*( 1 +  (z-w)/(z+w))
+                thetaw = myarg0To2Pi(w-eCenter)#numpy.angle(-(w-eCenter))+numpy.pi
+                thetaz = myarg0To2Pi(z-eCenter)#numpy.angle(-(z-eCenter))+numpy.pi
+                interval = numpy.linspace(0,min(numpy.abs(thetaz-thetaw),(2*numpy.pi)-numpy.abs(thetaz-thetaw)))
+                def parametrized_curve(t):
+                    parametrization = eCenter + (z-eCenter)*(numpy.cos(t)+numpy.sin(t)*(1j))
+                    return parametrization
+                curves[k] = parametrized_curve(interval)
+                midpoints[k] = parametrized_curve((min(numpy.abs(thetaz-thetaw),(2*numpy.pi)-numpy.abs(thetaz-thetaw)))/2)
+            basicColors = ["m", "b", "r", "c", "g", "y", "w", "k"]
+            curvesColors = {4*(g-1):basicColors[2*(g-1)%len(basicColors)],4*(g-1)+p+1:basicColors[2*(g-1)%len(basicColors)]}
+#            l = len(basicColors)
+#            for k in range(4*(g-1)-2):
+#                if k % l == 0 or k % l == 4  :
+#                    curvesColors[k] = basicColors[int(k/2)%len(basicColors)]
+#                    curvesColors[k+2] = basicColors[int(k/2)%len(basicColors)]  
+#                if  k % l == 3 or k % l == 7 :
+#                    curvesColors[k] = basicColors[int((k-1)/2)%len(basicColors)]
+#                    curvesColors[k+2] = basicColors[int((k-1)/2)%len(basicColors)]
+            f = self.PDSpecificCombinatorialSidePairing(g,p)
+            for k in range(4*(g-1)+1+p):#range(4*(g-1)+1,4*(g-1)+1+p):
+                curvesColors[k] = basicColors[k%len(basicColors)]
+                curvesColors[f(k)] = basicColors[k%len(basicColors)]
+            result = {"curves":curves,"midpoints":midpoints,"curvesColors":curvesColors}
+            #print(curves)
+            return result
+
+    def PDSidePairingsOfSpecificIdealPolygon(self,genus,numberOfPunctures):
+        g, p = genus, numberOfPunctures
+        if g == 0 and p < 3:
+            pass
+        elif g == 1 and p == 0:
+            pass
+        else:
+            f = self.PDSpecificCombinatorialSidePairing(g,p)
+            midpoints = self.PDSidesOfSpecificIdealPolygon(g,p)["midpoints"]
+            NumOfSides = (4*g) + (2*(p-1))
+            SidePairings = {}
+            for k in range(NumOfSides):
+                    SidePairings[k] = Mobius_CP.MobiusTransitivity().MobiusMatrixz1z2z3Tow1w2w3(numpy.cos(2*k*numpy.pi/NumOfSides)+numpy.sin(2*k*numpy.pi/NumOfSides)*(1j),
+                                numpy.cos(2*(k+1)*numpy.pi/NumOfSides)+numpy.sin(2*(k+1)*numpy.pi/NumOfSides)*(1j),
+                                midpoints[k],
+                                numpy.cos(2*((f(k)+1)%NumOfSides)*numpy.pi/NumOfSides)+numpy.sin(2*((f(k)+1)%NumOfSides)*numpy.pi/NumOfSides)*(1j),
+                                numpy.cos(2*((f(k))%NumOfSides)*numpy.pi/NumOfSides)+numpy.sin(2*((f(k))%NumOfSides)*numpy.pi/NumOfSides)*(1j),
+                                midpoints[f(k)])**(-1)
+                    #print(Mobius_CP.MobiusAssocToMatrix().isParEllHypLox(SidePairings[k][0,0],SidePairings[k][0,1],SidePairings[k][1,0],SidePairings[k][1,1]))
+            return SidePairings
+                    
+    def PDOrbitOfVertexUnderSpecificCombinatorialSidePairing(self,genus,numberOfPunctures):
+        g, p = genus, numberOfPunctures
+        if g == 0 and p < 3:
+            pass
+        elif g == 1 and p == 0:
+            pass
+        else:
+            NumOfSides = (4*g) + (2*(p-1))
+            f = self.PDSpecificCombinatorialSidePairing(g,p)
+            def orbitOfVertex(k):
+                orbit = [k]
+                j = (f(k) + 1) % NumOfSides
+                while j != k:
+                    orbit.append(j)
+                    j = (f(j) + 1) % NumOfSides
+                return orbit
+            return orbitOfVertex
+        
+    def PDVertexOrbitsUnderSpecificCombinatorialSidePairing(self,genus,numberOfPunctures):
+        g, p = genus, numberOfPunctures
+        if g == 0 and p < 3:
+            pass
+        elif g == 1 and p == 0:
+            pass
+        else:
+            OrbitFunction = self.PDOrbitOfVertexUnderSpecificCombinatorialSidePairing(g,p)
+            NumOfSides = (4*g) + (2*(p-1))
+            vertices = [k for k in range(NumOfSides)]
+            orbits = []
+            while len(vertices) > 0:
+                vertex = vertices[0]
+                orbit = OrbitFunction(vertex)
+                orbits.append(orbit)
+                for l in orbit:
+                    vertices.remove(l)
+            return orbits
+    
+    def PDCheckIfTheGroupIsFuchsianForSpecificSidePairing(self,genus,numberOfPunctures):
+        g, p = genus, numberOfPunctures
+        if g == 0 and p < 3:
+            pass
+        elif g == 1 and p == 0:
+            pass
+        else:
+            sidePairings = self.PDSidePairingsOfSpecificIdealPolygon(g,p)
+            orbits = self.PDVertexOrbitsUnderSpecificCombinatorialSidePairing(g,p)
+            for orbit in orbits:
+                transformation = sidePairings[orbit[0]]
+                j = 1
+                while j < len(orbit):
+                    transformation = sidePairings[orbit[j]] * transformation
+                    j = j+1
+                print(Mobius_CP.MobiusAssocToMatrix().isParEllHypLox(transformation[0,0],transformation[0,1],transformation[1,0],transformation[1,1]))
+                
+        
+                
+            
+            
+           
+            
+            
+            
+        
+    
+        
     
