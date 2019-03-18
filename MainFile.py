@@ -315,7 +315,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         self.PlotWidgetIn_pageUHP.scene().sigMouseClicked.connect(self.UHPGMGeodesicRayConstantRapidityAnimated)
         self.PlotWidgetIn_pageUHP.scene().sigMouseClicked.connect(self.UHPCMCircMotionAntiClockwise)
 #        self.pushButtonUHPCMCircMotionAntiClockwise.clicked.connect(self.effectOf_pushButtonUHPCMCircMotionAntiClockwise)
-        self.pushButton.clicked.connect(self.UHPIsomsSpecificIdealPolygon)
+        self.pushButtonUHPIsomsComputePolygonAndFuchsianGroup.clicked.connect(self.UHPIsomsSpecificIdealPolygon)
 
 
         self.pushButtonPDClearCanvas.clicked.connect(self.effectOf_pushButtonPDClearCanvas)
@@ -330,7 +330,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         self.proxyPDGM = pg.SignalProxy(self.PlotWidgetIn_pagePDGeodesicMotion.scene().sigMouseMoved, rateLimit=60, slot=self.PDGMmouseMoved)
         self.PlotWidgetIn_pagePD.scene().sigMouseClicked.connect(self.PDGMGeodesicSegmentAnimated)
         self.PlotWidgetIn_pagePD.scene().sigMouseClicked.connect(self.PDGMGeodesicRayConstantRapidityAnimated)
-        
+        self.pushButtonPDIsomsComputePolygonAndFuchsianGroup.clicked.connect(self.PDIsomsSpecificIdealPolygon)
 
 
 
@@ -1459,9 +1459,9 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 
     def UHPIsomsSpecificIdealPolygon(self):
         if self.stackedWidgetIn_pageUHP.currentIndex() == 3:
-            g = int(self.spinBox.cleanText())
-            p = int(self.spinBox_2.cleanText())
-            curvesAndColors = UHP_HP.UHPFuchsian().UHPSidesOfSpecificIdealPolygon(g,p)
+            g = int(self.spinBoxUHPIsomsGenus.cleanText())
+            p = int(self.spinBoxUHPIsomsNumOfPuncts.cleanText())
+            curvesAndColors = UHP_HP.UHPFuchsianRepresentative().UHPSidesOfSpecificIdealPolygon(g,p)
             NumOfSides = (4*g) + (2*(p-1))
             for k in range(NumOfSides):
                 x_coord = (curvesAndColors["curves"])[k].real
@@ -1927,6 +1927,50 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                     
                     
                     
+    def PDIsomsSpecificIdealPolygon(self):
+        if self.stackedWidgetIn_pagePD.currentIndex() == 3:
+            g = int(self.spinBoxPDIsomsGenus.cleanText())
+            p = int(self.spinBoxPDIsomsNumOfPuncts.cleanText())
+            curvesAndColors = PD_HP.PDFuchsianRepresentative().PDSidesOfSpecificIdealPolygon(g,p)
+            NumOfSides = (4*g) + (2*(p-1))
+            curveList = {}
+            for k in range(NumOfSides):
+                x_coord = (curvesAndColors["curves"])[k].real
+                y_coord = (curvesAndColors["curves"])[k].imag
+                color = (curvesAndColors["curvesColors"])[k]
+                theDrawing = pg.PlotCurveItem(x_coord,y_coord,pen=pg.mkPen(str(color), width=2),clickable=True)
+                self.PlotWidgetIn_pagePD.addItem(theDrawing)
+                curveList[k]=theDrawing
+            #points = numpy.array([[(curvesAndColors["midpoints"])[k].real,(curvesAndColors["midpoints"])[k].imag] for k in range(NumOfSides)],dtype=float)
+            #self.PDdraggableDotsConvexHull.setData(pos=points, brush = 'k',  pxMode=True)
+            
+            sidePairings = PD_HP.PDFuchsianRepresentative().PDSidePairingsOfSpecificIdealPolygon(g,p)
+            
+            def plotClicked(curve):
+                #nonlocal curveList
+                for k in range(len(curveList)):
+                    color = (curvesAndColors["curvesColors"])[k]
+                    if curveList[k] is curve:
+                        curveList[k].setPen(pg.mkPen(str(color), width=4))
+                        Mobius = Mobius_CP.MobiusAssocToMatrix().EvaluationAtConcretePoint(sidePairings[k][0,0],sidePairings[k][0,1],sidePairings[k][1,0],sidePairings[k][1,1])
+                        vectorizedMobius = numpy.vectorize(Mobius)
+                        for j in range(len(curveList)):
+                            jthColor = (curvesAndColors["curvesColors"])[j]
+                            newCurve = vectorizedMobius((curvesAndColors["curves"])[j])
+                            x_coord = newCurve.real
+                            y_coord = newCurve.imag
+                            newDrawing = pg.PlotCurveItem(x_coord,y_coord,pen=pg.mkPen(str(jthColor), width=2),clickable=True)
+                            self.PlotWidgetIn_pagePD.addItem(newDrawing)
+                    else:
+                        curveList[k].setPen(pg.mkPen(str(color), width=2))
+                    
+                
+                    
+                        
+                
+            for k in range(len(curveList)):
+                curveList[k].sigClicked.connect(plotClicked)
+        
                     
                     
                     

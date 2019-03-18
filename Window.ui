@@ -1090,7 +1090,7 @@ p, li { white-space: pre-wrap; }
        <string/>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tabUHP">
        <attribute name="title">
@@ -1982,7 +1982,7 @@ p, li { white-space: pre-wrap; }
            <string>h Radius:</string>
           </property>
          </widget>
-         <widget class="QLabel" name="labelUHPCMalgularSpeed">
+         <widget class="QLabel" name="labelUHPCMangularSpeed">
           <property name="geometry">
            <rect>
             <x>10</x>
@@ -1997,7 +1997,7 @@ p, li { white-space: pre-wrap; }
          </widget>
         </widget>
         <widget class="QWidget" name="pageUHPIsometries">
-         <widget class="QSpinBox" name="spinBox">
+         <widget class="QSpinBox" name="spinBoxUHPIsomsGenus">
           <property name="geometry">
            <rect>
             <x>35</x>
@@ -2010,7 +2010,7 @@ p, li { white-space: pre-wrap; }
            <number>1</number>
           </property>
          </widget>
-         <widget class="QSpinBox" name="spinBox_2">
+         <widget class="QSpinBox" name="spinBoxUHPIsomsNumOfPuncts">
           <property name="geometry">
            <rect>
             <x>35</x>
@@ -2023,7 +2023,7 @@ p, li { white-space: pre-wrap; }
            <number>1</number>
           </property>
          </widget>
-         <widget class="QLabel" name="label">
+         <widget class="QLabel" name="labelUHPIsomsGenus">
           <property name="geometry">
            <rect>
             <x>10</x>
@@ -2036,7 +2036,7 @@ p, li { white-space: pre-wrap; }
            <string>g = </string>
           </property>
          </widget>
-         <widget class="QLabel" name="label_2">
+         <widget class="QLabel" name="labelUHPIsomsNumOfPuncts">
           <property name="geometry">
            <rect>
             <x>10</x>
@@ -2049,7 +2049,7 @@ p, li { white-space: pre-wrap; }
            <string>p = </string>
           </property>
          </widget>
-         <widget class="QPushButton" name="pushButton">
+         <widget class="QPushButton" name="pushButtonUHPIsomsComputePolygonAndFuchsianGroup">
           <property name="geometry">
            <rect>
             <x>90</x>
@@ -2105,7 +2105,7 @@ p, li { white-space: pre-wrap; }
          </rect>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>3</number>
         </property>
         <widget class="QWidget" name="tabPDBasicConstructions">
          <attribute name="title">
@@ -2163,7 +2163,7 @@ p, li { white-space: pre-wrap; }
          </rect>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>3</number>
         </property>
         <widget class="QWidget" name="pageUHPBasicConstructions_2">
          <widget class="QLabel" name="labelPDBChdistance">
@@ -2475,7 +2475,73 @@ p, li { white-space: pre-wrap; }
           </property>
          </widget>
         </widget>
-        <widget class="QWidget" name="pageUHPIsometries_2"/>
+        <widget class="QWidget" name="pageUHPIsometries_2">
+         <widget class="QSpinBox" name="spinBoxPDIsomsGenus">
+          <property name="geometry">
+           <rect>
+            <x>40</x>
+            <y>20</y>
+            <width>48</width>
+            <height>24</height>
+           </rect>
+          </property>
+          <property name="minimum">
+           <number>1</number>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelPDIsomsGenus">
+          <property name="geometry">
+           <rect>
+            <x>15</x>
+            <y>25</y>
+            <width>21</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>g = </string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButtonPDIsomsComputePolygonAndFuchsianGroup">
+          <property name="geometry">
+           <rect>
+            <x>95</x>
+            <y>30</y>
+            <width>113</width>
+            <height>32</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>PushButton</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelPDIsomsNumOfPuncts">
+          <property name="geometry">
+           <rect>
+            <x>15</x>
+            <y>55</y>
+            <width>21</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>p = </string>
+          </property>
+         </widget>
+         <widget class="QSpinBox" name="spinBoxPDIsomsNumOfPuncts">
+          <property name="geometry">
+           <rect>
+            <x>40</x>
+            <y>50</y>
+            <width>48</width>
+            <height>24</height>
+           </rect>
+          </property>
+          <property name="minimum">
+           <number>1</number>
+          </property>
+         </widget>
+        </widget>
        </widget>
        <widget class="QLabel" name="labelPDyNumber">
         <property name="geometry">
