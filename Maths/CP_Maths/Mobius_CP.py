@@ -50,7 +50,7 @@ class MobiusAssocToMatrix:
             pass#result = "This is not an invertible matrix."# NECESSARY? PERSONAL NOTE: implement a good exception handling (somewhere, maybe here wouldn't be necessary)
         else:
             def MobTrans(complexz):
-                z = extended_complex_plane_CP.numpyExtendedComplexPlane().extendedValue(complexz)
+                z = extendedValue(complexz)#extended_complex_plane_CP.numpyExtendedComplexPlane().extendedValue(complexz)
                 if z != oo and c*z + d != 0:
                     result = (a*z + b)/(c*z + d)
                 if z != oo and c*z + d == 0:
