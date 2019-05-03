@@ -560,12 +560,12 @@ class PDFuchsianRepresentative: ##NOTE: SO FAR, THIS CLASS CONSTRUCTS
             NumOfSides = (4*g) + (2*(p-1))
             SidePairings = {}
             for k in range(NumOfSides):
-                    SidePairings[k] = Mobius_CP.MobiusTransitivity().MobiusMatrixz1z2z3Tow1w2w3(numpy.cos(2*k*numpy.pi/NumOfSides)+numpy.sin(2*k*numpy.pi/NumOfSides)*(1j),
-                                numpy.cos(2*(k+1)*numpy.pi/NumOfSides)+numpy.sin(2*(k+1)*numpy.pi/NumOfSides)*(1j),
-                                midpoints[k],
-                                numpy.cos(2*((f(k)+1)%NumOfSides)*numpy.pi/NumOfSides)+numpy.sin(2*((f(k)+1)%NumOfSides)*numpy.pi/NumOfSides)*(1j),
+                    SidePairings[k] = Mobius_CP.MobiusTransitivity().MobiusMatrixz1z2z3Tow1w2w3(numpy.cos(2*((f(k)+1)%NumOfSides)*numpy.pi/NumOfSides)+numpy.sin(2*((f(k)+1)%NumOfSides)*numpy.pi/NumOfSides)*(1j),
                                 numpy.cos(2*((f(k))%NumOfSides)*numpy.pi/NumOfSides)+numpy.sin(2*((f(k))%NumOfSides)*numpy.pi/NumOfSides)*(1j),
-                                midpoints[f(k)])**(-1)
+                                midpoints[f(k)],
+                                numpy.cos(2*k*numpy.pi/NumOfSides)+numpy.sin(2*k*numpy.pi/NumOfSides)*(1j),
+                                numpy.cos(2*(k+1)*numpy.pi/NumOfSides)+numpy.sin(2*(k+1)*numpy.pi/NumOfSides)*(1j),
+                                midpoints[k])
                     #print(Mobius_CP.MobiusAssocToMatrix().isParEllHypLox(SidePairings[k][0,0],SidePairings[k][0,1],SidePairings[k][1,0],SidePairings[k][1,1]))
             return SidePairings
                     
