@@ -834,14 +834,14 @@ class Ui_MainWindow(object):
   #      MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
-        self.stackedWidgetAllPages.setCurrentIndex(2)
+        self.stackedWidgetAllPages.setCurrentIndex(0)
         self.tabsIn_pageCP.setCurrentIndex(0)
         self.stackedWidgetIn_pageCP.setCurrentIndex(0)
-        self.tabsIn_pageHP.setCurrentIndex(1)
-        self.tabsIn_tabUHP.setCurrentIndex(3)
-        self.stackedWidgetIn_pageUHP.setCurrentIndex(3)
-        self.tabsIn_tabPD.setCurrentIndex(3)
-        self.stackedWidgetIn_pagePD.setCurrentIndex(3)
+        self.tabsIn_pageHP.setCurrentIndex(0)
+        self.tabsIn_tabUHP.setCurrentIndex(0)
+        self.stackedWidgetIn_pageUHP.setCurrentIndex(0)
+        self.tabsIn_tabPD.setCurrentIndex(0)
+        self.stackedWidgetIn_pagePD.setCurrentIndex(0)
         self.tabsIn_pageCP.currentChanged['int'].connect(self.stackedWidgetIn_pageCP.setCurrentIndex)
         self.tabsIn_tabPD.currentChanged['int'].connect(self.stackedWidgetIn_pagePD.setCurrentIndex)
         self.tabsIn_tabUHP.currentChanged['int'].connect(self.stackedWidgetIn_pageUHP.setCurrentIndex)
@@ -877,9 +877,9 @@ class Ui_MainWindow(object):
 "<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:18pt;\"><br /></p>\n"
 "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">(Trabajo en proceso)</span></p>\n"
 "<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;\"><br /></p>\n"
-"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt;\">Coloquio Oaxaqueño de Matemáticas</span></p>\n"
-"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt;\">IMUNAM-Oaxaca</span></p>\n"
-"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt;\">Agosto 30, 2018</span></p></body></html>"))
+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt;\">Coloquio Queretano de Matemáticas</span></p>\n"
+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt;\">IMUNAM-Juriquilla</span></p>\n"
+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt;\">Marzo 29, 2018</span></p></body></html>"))
         self.tabsIn_pageCP.setTabText(self.tabsIn_pageCP.indexOf(self.tabCPSteinerGrids), _translate("MainWindow", "Steiner grids"))
         self.tabsIn_pageCP.setTabText(self.tabsIn_pageCP.indexOf(self.tabCPMobiusTransformations), _translate("MainWindow", "Möbius transformations"))
         self.pushButtonCPSGCommon.setText(_translate("MainWindow", "Show Common Circles"))

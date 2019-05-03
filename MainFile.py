@@ -182,6 +182,8 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         self.PlotWidgetIn_pagePD.addItem(self.PDdraggableDotsStaticGeodSegs)
         self.PDdraggableDotsConvexHull = dD.PDdraggableDot()
         self.PlotWidgetIn_pagePD.addItem(self.PDdraggableDotsConvexHull)
+        self.PDdraggableDotsMidPtForSidePairing = dD.PDdraggableDot()
+        self.PlotWidgetIn_pagePD.addItem(self.PDdraggableDotsMidPtForSidePairing)
         
         
 #        self.PlotWidgetIn_pagePD.plot(numpy.cos(numpy.linspace(0,2*numpy.pi,1000)),numpy.sin(numpy.linspace(0,2*numpy.pi,1000)),pen='k')
@@ -1511,8 +1513,10 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         self.PlotWidgetIn_pagePD.clear()
         self.PDdraggableDotsStaticGeodSegs.setData(pos=numpy.array([[0,-100]]))
         self.PDdraggableDotsConvexHull.setData(pos=numpy.array([[0,-100]]))
+        self.PDdraggableDotsMidPtForSidePairing.setData(pos=numpy.array([[0,-100]]))
         self.PlotWidgetIn_pagePD.addItem(self.PDdraggableDotsStaticGeodSegs)
         self.PlotWidgetIn_pagePD.addItem(self.PDdraggableDotsConvexHull)
+        self.PlotWidgetIn_pagePD.addItem(self.PDdraggableDotsMidPtForSidePairing)
         self.PlotWidgetIn_pagePD.addItem(self.boundingCirclePD)
         self.boundingCirclePD.setPen(pg.mkPen('k',width=2))
         for clicked in Clicks:
@@ -1932,44 +1936,72 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
             g = int(self.spinBoxPDIsomsGenus.cleanText())
             p = int(self.spinBoxPDIsomsNumOfPuncts.cleanText())
             curvesAndColors = PD_HP.PDFuchsianRepresentative().PDSidesOfSpecificIdealPolygon(g,p)
-            NumOfSides = (4*g) + (2*(p-1))
-            curveList = {}
+            NumOfSides = (4*g) + (2*(p-1))#2g-1+4g+2(p-1)=6g+2p-3
+            drawnCurvesList = {}
+            sidePairings = PD_HP.PDFuchsianRepresentative().PDSidePairingsOfSpecificIdealPolygon(g,p)
+            combinatorialSidePairings = PD_HP.PDFuchsianRepresentative().PDSpecificCombinatorialSidePairing(g,p)
+            points = numpy.array([[(curvesAndColors["midpoints"])[k].real,(curvesAndColors["midpoints"])[k].imag] for k in range(NumOfSides)],dtype=float)
+            self.PDdraggableDotsMidPtForSidePairing.setData(pos=points, brush = 'k',  pxMode=True)
+
             for k in range(NumOfSides):
                 x_coord = (curvesAndColors["curves"])[k].real
                 y_coord = (curvesAndColors["curves"])[k].imag
                 color = (curvesAndColors["curvesColors"])[k]
                 theDrawing = pg.PlotCurveItem(x_coord,y_coord,pen=pg.mkPen(str(color), width=2),clickable=True)
                 self.PlotWidgetIn_pagePD.addItem(theDrawing)
-                curveList[k]=theDrawing
+                drawnCurvesList[k] = [theDrawing]
+                (curvesAndColors["curves"])[k] = [(curvesAndColors["curves"])[k]]
+                (curvesAndColors["midpoints"])[k] = [(curvesAndColors["midpoints"])[k]]
+                sidePairings[k] =[sidePairings[k]]
+                
             #points = numpy.array([[(curvesAndColors["midpoints"])[k].real,(curvesAndColors["midpoints"])[k].imag] for k in range(NumOfSides)],dtype=float)
             #self.PDdraggableDotsConvexHull.setData(pos=points, brush = 'k',  pxMode=True)
             
-            sidePairings = PD_HP.PDFuchsianRepresentative().PDSidePairingsOfSpecificIdealPolygon(g,p)
+
             
-            def plotClicked(curve):
-                #nonlocal curveList
-                for k in range(len(curveList)):
-                    color = (curvesAndColors["curvesColors"])[k]
-                    if curveList[k] is curve:
-                        curveList[k].setPen(pg.mkPen(str(color), width=4))
-                        Mobius = Mobius_CP.MobiusAssocToMatrix().EvaluationAtConcretePoint(sidePairings[k][0,0],sidePairings[k][0,1],sidePairings[k][1,0],sidePairings[k][1,1])
-                        vectorizedMobius = numpy.vectorize(Mobius)
-                        for j in range(len(curveList)):
-                            jthColor = (curvesAndColors["curvesColors"])[j]
-                            newCurve = vectorizedMobius((curvesAndColors["curves"])[j])
-                            x_coord = newCurve.real
-                            y_coord = newCurve.imag
-                            newDrawing = pg.PlotCurveItem(x_coord,y_coord,pen=pg.mkPen(str(jthColor), width=2),clickable=True)
-                            self.PlotWidgetIn_pagePD.addItem(newDrawing)
-                    else:
-                        curveList[k].setPen(pg.mkPen(str(color), width=2))
-                    
-                
-                    
+            
+            def plotClicked(curve):####
+                #nonlocal drawnCurvesList
+                self.PlotWidgetIn_pagePD.clear()
+                self.PlotWidgetIn_pagePD.addItem(self.PDdraggableDotsStaticGeodSegs)
+                self.PlotWidgetIn_pagePD.addItem(self.PDdraggableDotsConvexHull)
+                self.PlotWidgetIn_pagePD.addItem(self.boundingCirclePD)
+                self.boundingCirclePD.setPen(pg.mkPen('k',width=2))
+                for k in range(NumOfSides):
+                    kthColor = (curvesAndColors["curvesColors"])[k]
+                    for m in range(len(drawnCurvesList[k])):
+                        c = (drawnCurvesList[k])[m]
+                        if c is curve:
+                            c.setPen(pg.mkPen(str(kthColor), width=4))
+                            self.PlotWidgetIn_pagePD.addItem(c)
+                            Mobius = Mobius_CP.MobiusAssocToMatrix().EvaluationAtConcretePoint(sidePairings[k][m][0,0],sidePairings[k][m][0,1],sidePairings[k][m][1,0],sidePairings[k][m][1,1])
+                            vectorizedMobius = numpy.vectorize(Mobius)
+                            for l in range(NumOfSides):
+                                lthColor = (curvesAndColors["curvesColors"])[l]
+                                for d in range(len((curvesAndColors["curves"])[l])):
+                                    #newMidPoint = Mobius((curvesAndColors["midpoints"])[l][d])
+                                    newCurve = vectorizedMobius((curvesAndColors["curves"])[l][d])
+                                    (curvesAndColors["curves"])[l].append(newCurve)
+                                    A = numpy.matrix([[sidePairings[k][m][0,0],sidePairings[k][m][0,1]],[sidePairings[k][m][1,0],sidePairings[k][m][1,1]]])
+                                    B = numpy.matrix([[sidePairings[l][d][0,0],sidePairings[l][d][0,1]],[sidePairings[l][d][1,0],sidePairings[l][d][1,1]]])
+                                    newSidePairing = A*B*(A**(-1))
+                                    sidePairings[l].append(newSidePairing)
+                                    x_coord = newCurve.real
+                                    y_coord = newCurve.imag                                
+                                    newDrawing = pg.PlotCurveItem(x_coord,y_coord,pen=pg.mkPen(str(lthColor), width=2),clickable=True)
+                                    self.PlotWidgetIn_pagePD.addItem(newDrawing)
+                                    drawnCurvesList[l].append(newDrawing)
+                                    newDrawing.sigClicked.connect(plotClicked)
+                        else:
+                            c.setPen(pg.mkPen(str(kthColor), width=2))
+                            self.PlotWidgetIn_pagePD.addItem(c)
+                            
                         
-                
-            for k in range(len(curveList)):
-                curveList[k].sigClicked.connect(plotClicked)
+                        
+                    
+            for k in range(NumOfSides):
+                for curve in drawnCurvesList[k]:
+                    curve.sigClicked.connect(plotClicked)
         
                     
                     
