@@ -119,8 +119,11 @@ class numpyExtendedComplexPlane:
             center_y_coord = ((x1**2 + y1**2)*(x3 - x2) + (x2**2 + y2**2)*(x1 - x3) + (x3**2 + y3**2)*(x2 - x1)) / D
             radius = numpy.sqrt((x1-center_x_coord)**2+(y1-center_y_coord)**2)
             return [[center_x_coord,center_y_coord],radius]
-        else:
-            pass
+        else:#PERSONAL NOTE: watch out! THIS IS NOT GOOD PROGRAMMING PRACTICE
+            center_x_coord = 0
+            center_y_coord = -100
+            radius = 1
+            return [[center_x_coord,center_y_coord],radius]
 #            raise myInputError(str(complexP)+","+str(complexQ)+","+str(complexR),"These points are collinear")
         
     
