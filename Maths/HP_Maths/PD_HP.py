@@ -94,19 +94,21 @@ class PDBasics:
             
     def eCenterAndRadiusNonStraightGeodesicThroughPAndQ(self,hpointP,hpointQ):
         P, Q = extendedValue(hpointP), extendedValue(hpointQ)
-        if self.areEuclidCollinearWithCenterInPD(P,Q) == True:
-            pass
+        if self.areEuclidCollinearWithCenterInPD(P,Q) == True: # PERSONAL NOTE: watch out! THIS IS NOT GOOD PROGRAMMING PRACTICE
+            eCenter = 0
+            eRadius = 1
         else:
-            if numpy.absolute(P) < 1:
+            if P.real**2+P.imag**2 < 1:
                 R = P/(P.real**2+P.imag**2)
                 eCenter = e_circumcenter_and_radius(P,Q,R)[0][0]+e_circumcenter_and_radius(P,Q,R)[0][1]*(1j)
-            if numpy.absolute(P) == 1 and numpy.absolute(Q) < 1 :
+            if P.real**2+P.imag**2 == 1 and Q.real**2+Q.imag**2 < 1 :
                 R = Q/(Q.real**2+Q.imag**2)
                 eCenter = e_circumcenter_and_radius(P,Q,R)[0][0]+e_circumcenter_and_radius(P,Q,R)[0][1]*(1j)
-            if numpy.absolute(P) == 1 and numpy.absolute(Q) == 1 :
+            if P.real**2+P.imag**2 == 1 and Q.real**2+Q.imag**2 == 1 :
                 eCenter = Q+ ((P-Q)/(P+Q))*Q
-            eRadius = numpy.absolute(P-eCenter)
+            eRadius = numpy.absolute(Q-eCenter)
             return [eCenter,eRadius]
+        
          
             
 
@@ -136,24 +138,38 @@ class PDBasics:
     def PDGeodesicSegment_rcostrsint(self,startpoint,endpoint): # THIS IS THE STATIC SEGMENT, NOT THE ANIMATED SEGMENT PARAMETERIZED BY ARC LENGTH
         w = extendedValue(startpoint)
         z = extendedValue(endpoint)
-        Invz = z / (z.real**2 + z.imag**2)
-        Invw = w / (w.real**2 + w.imag**2)
-        if PDBasics().areEuclidCollinearWithCenterInPD(w,z) == False:
-            if Invz != z:#numpy.absolute(z) < 1:
-                eCenterAndRadius = e_circumcenter_and_radius(w,z,Invz)
-                eCenter = eCenterAndRadius[0][0]+eCenterAndRadius[0][1]*(1j)
-            elif Invw != w:#numpy.absolute(w) < 1:
-                eCenterAndRadius = e_circumcenter_and_radius(w,z,Invw)
-                eCenter = eCenterAndRadius[0][0]+eCenterAndRadius[0][1]*(1j)
-            else:
-                eCenter = w*( 1 +  (z-w)/(z+w))
+#        Invz = z / (z.real**2 + z.imag**2)
+#        Invw = w / (w.real**2 + w.imag**2)
+        if self.areEuclidCollinearWithCenterInPD(w,z) == False:
+            eCenter = self.eCenterAndRadiusNonStraightGeodesicThroughPAndQ(w,z)[0]
+#            if w.real**2 + w.imag**2 == 1 and z.real**2 + z.imag**2 == 1:
+#                x = ((1j)*(z-w)) / (numpy.absolute(z-w)) # clockwise: w->x->z
+#                #PDtoUHPtrans = Mobius_CP.MobiusTransitivity().MobiusTransz1z2z3To0oo1(w,x,z)
+#                UHPtoPDtrans = Mobius_CP.MobiusTransitivity().MobiusTransz1z2z3Tow1w2w3(0,oo,1,w,x,z)
+#                y = UHPtoPDtrans((1/2)+((1/2)*(1j)))
+#                #eCenter = w*( 1 +  (z-w)/(z+w))
+#                eCenterAndRadius = e_circumcenter_and_radius(w,z,y)
+#                eCenter = eCenterAndRadius[0][0]+eCenterAndRadius[0][1]*(1j)
+#            if w.real**2 + w.imag**2 == 1 and z.real**2 + z.imag**2 < 1:#numpy.absolute(z) < 1:
+#                eCenterAndRadius = e_circumcenter_and_radius(w,z,Invz)
+#                eCenter = eCenterAndRadius[0][0]+eCenterAndRadius[0][1]*(1j)
+#            if w.real**2 + w.imag**2 < 1 and z.real**2 + z.imag**2 == 1:#numpy.absolute(w) < 1:
+#                eCenterAndRadius = e_circumcenter_and_radius(w,z,Invw)
+#                eCenter = eCenterAndRadius[0][0]+eCenterAndRadius[0][1]*(1j)
+#            if w.real**2 + w.imag**2 < 1 and z.real**2 + z.imag**2 < 1 :
+#                dist = self.PDDist(w,z)
+#                wUHP = 1j
+#                zUHP = numpy.exp(dist)*(1j)
+#                X = self.eCenterAndRadiusNonStraightGeodesicThroughPAndQ(A,B)
+#                t = numpy.angle((B - (X[0]))/(A - (X[0]))) / 2
+#                point = X[0] + (A - (X[0]))*( numpy.cos(t) + numpy.sin(t)*(1j) )
             thetaw = myarg0To2Pi(w-eCenter)
             thetaz = myarg0To2Pi(z-eCenter)
             if numpy.abs(thetaz-thetaw) <= numpy.pi:
                 interval = numpy.linspace(0,thetaz-thetaw)
             elif thetaz-thetaw > numpy.pi:
                 interval = numpy.linspace(0,-((2*numpy.pi)-(thetaz-thetaw)))
-            elif thetaz-thetaw < numpy.pi:
+            else:#elif thetaz-thetaw < -numpy.pi:
                 interval = numpy.linspace(0,((2*numpy.pi)-numpy.abs(thetaz-thetaw)))
             def parametrized_curve(t):
                 parametrization = eCenter + (w-eCenter)*(numpy.cos(t)+numpy.sin(t)*(1j))
