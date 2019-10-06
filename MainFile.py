@@ -132,6 +132,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         self.UHPdraggableDotsConvexHull = dD.UHPdraggableDot()
         self.PlotWidgetIn_pageUHP.addItem(self.UHPdraggableDotsConvexHull)
 
+
         
         
 
@@ -1037,7 +1038,10 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
             arbManyClicks.remove(arbManyClicks[ind])
             arbManyClicks.insert(ind,[pt[0],pt[1]])
                 
-                
+
+
+
+
                 
                 
             
@@ -1652,7 +1656,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 #                    self.labelPDBChdistancenumber.setNum(UHP_HP.UHPBasics().UHPDist(P,Q))
                     
 #    @QtCore.pyqtSlot(object,int)
-    def PDBCDragGeodesicSegment(self,pt,ind):
+    def PDBCDragGeodesicSegment(self,pt,ind): # PERSONAL NOTE: there is a bad math/programming practice in draggableDots.PDdraggableDot().mouseDragEvent
         global arbManyClicks
         global auxStorage
         if len(arbManyClicks) < 2 or ind == -1 or pt[0]**2+pt[1]**2>1:
@@ -1672,10 +1676,10 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                 neighbour = arbManyClicks[ind-1]
                 Q = neighbour[0]+neighbour[1]*(1j)
                 curve = auxStorage[ind-1]
-                geodesicSegment = PD_HP.PDBasics().PDGeodesicSegment_rcostrsint(P,Q)
+                geodesicSegment = PD_HP.PDBasics().PDGeodesicSegment_rcostrsint(Q,P)
                 x_coord, y_coord = geodesicSegment.real, geodesicSegment.imag
                 curve.setData(x_coord,y_coord)
-                self.labelPDBChdistancenumber.setNum(PD_HP.PDBasics().PDDist(P,Q))
+                self.labelPDBChdistancenumber.setNum(PD_HP.PDBasics().PDDist(Q,P))
             if 0 < ind and ind < len(arbManyClicks)-1:
                 neighbour1 = arbManyClicks[ind-1]
                 neighbour2 = arbManyClicks[ind+1]
@@ -1690,8 +1694,9 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                 curve1.setData(x_coord1,y_coord1)
                 curve2.setData(x_coord2,y_coord2)
                 #self.labelUHPBChdistancenumber.setNum(UHP_HP.UHPBasics().UHPDist(P,Q1))
-            arbManyClicks.remove(arbManyClicks[ind])
-            arbManyClicks.insert(ind,[pt[0],pt[1]])
+            arbManyClicks[ind] = [pt[0],pt[1]]
+#            arbManyClicks.remove(arbManyClicks[ind])
+#            arbManyClicks.insert(ind,[pt[0],pt[1]])
                 
 
 
@@ -1941,7 +1946,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
             sidePairings = PD_HP.PDFuchsianRepresentative().PDSidePairingsOfSpecificIdealPolygon(g,p)
             combinatorialSidePairings = PD_HP.PDFuchsianRepresentative().PDSpecificCombinatorialSidePairing(g,p)
             points = numpy.array([[(curvesAndColors["midpoints"])[k].real,(curvesAndColors["midpoints"])[k].imag] for k in range(NumOfSides)],dtype=float)
-            self.PDdraggableDotsMidPtForSidePairing.setData(pos=points, brush = 'k',  pxMode=True)
+            #self.PDdraggableDotsMidPtForSidePairing.setData(pos=points, brush = 'k',  pxMode=True)
 
             for k in range(NumOfSides):
                 x_coord = (curvesAndColors["curves"])[k].real

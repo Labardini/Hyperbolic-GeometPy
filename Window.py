@@ -213,7 +213,7 @@ class Ui_MainWindow(object):
         self.radioButtonCPoo.setEnabled(True)
         self.radioButtonCPoo.setGeometry(QtCore.QRect(579, 22, 38, 20))
         palette = QtGui.QPalette()
-        brush = QtGui.QBrush(QtGui.QColor(255, 255, 255))
+        brush = QtGui.QBrush(QtGui.QColor(102, 0, 153))
         brush.setStyle(QtCore.Qt.SolidPattern)
         palette.setBrush(QtGui.QPalette.Active, QtGui.QPalette.WindowText, brush)
         brush = QtGui.QBrush(QtGui.QColor(0, 0, 0))
@@ -258,7 +258,7 @@ class Ui_MainWindow(object):
         brush = QtGui.QBrush(QtGui.QColor(0, 0, 0))
         brush.setStyle(QtCore.Qt.SolidPattern)
         palette.setBrush(QtGui.QPalette.Active, QtGui.QPalette.ToolTipText, brush)
-        brush = QtGui.QBrush(QtGui.QColor(255, 255, 255))
+        brush = QtGui.QBrush(QtGui.QColor(102, 0, 153))
         brush.setStyle(QtCore.Qt.SolidPattern)
         palette.setBrush(QtGui.QPalette.Inactive, QtGui.QPalette.WindowText, brush)
         brush = QtGui.QBrush(QtGui.QColor(0, 0, 0))
@@ -389,7 +389,7 @@ class Ui_MainWindow(object):
         self.radioButtonCPoo_2.setEnabled(True)
         self.radioButtonCPoo_2.setGeometry(QtCore.QRect(576, 22, 38, 20))
         palette = QtGui.QPalette()
-        brush = QtGui.QBrush(QtGui.QColor(255, 255, 255))
+        brush = QtGui.QBrush(QtGui.QColor(102, 0, 102))
         brush.setStyle(QtCore.Qt.SolidPattern)
         palette.setBrush(QtGui.QPalette.Active, QtGui.QPalette.WindowText, brush)
         brush = QtGui.QBrush(QtGui.QColor(0, 0, 0))
@@ -434,7 +434,7 @@ class Ui_MainWindow(object):
         brush = QtGui.QBrush(QtGui.QColor(0, 0, 0))
         brush.setStyle(QtCore.Qt.SolidPattern)
         palette.setBrush(QtGui.QPalette.Active, QtGui.QPalette.ToolTipText, brush)
-        brush = QtGui.QBrush(QtGui.QColor(255, 255, 255))
+        brush = QtGui.QBrush(QtGui.QColor(102, 0, 102))
         brush.setStyle(QtCore.Qt.SolidPattern)
         palette.setBrush(QtGui.QPalette.Inactive, QtGui.QPalette.WindowText, brush)
         brush = QtGui.QBrush(QtGui.QColor(0, 0, 0))
@@ -645,21 +645,21 @@ class Ui_MainWindow(object):
         self.pageUHPIsometries = QtWidgets.QWidget()
         self.pageUHPIsometries.setObjectName("pageUHPIsometries")
         self.spinBoxUHPIsomsGenus = QtWidgets.QSpinBox(self.pageUHPIsometries)
-        self.spinBoxUHPIsomsGenus.setGeometry(QtCore.QRect(35, 130, 48, 24))
+        self.spinBoxUHPIsomsGenus.setGeometry(QtCore.QRect(40, 20, 48, 24))
         self.spinBoxUHPIsomsGenus.setMinimum(1)
         self.spinBoxUHPIsomsGenus.setObjectName("spinBoxUHPIsomsGenus")
         self.spinBoxUHPIsomsNumOfPuncts = QtWidgets.QSpinBox(self.pageUHPIsometries)
-        self.spinBoxUHPIsomsNumOfPuncts.setGeometry(QtCore.QRect(35, 160, 48, 24))
+        self.spinBoxUHPIsomsNumOfPuncts.setGeometry(QtCore.QRect(40, 50, 48, 24))
         self.spinBoxUHPIsomsNumOfPuncts.setMinimum(1)
         self.spinBoxUHPIsomsNumOfPuncts.setObjectName("spinBoxUHPIsomsNumOfPuncts")
         self.labelUHPIsomsGenus = QtWidgets.QLabel(self.pageUHPIsometries)
-        self.labelUHPIsomsGenus.setGeometry(QtCore.QRect(10, 135, 21, 16))
+        self.labelUHPIsomsGenus.setGeometry(QtCore.QRect(15, 25, 21, 16))
         self.labelUHPIsomsGenus.setObjectName("labelUHPIsomsGenus")
         self.labelUHPIsomsNumOfPuncts = QtWidgets.QLabel(self.pageUHPIsometries)
-        self.labelUHPIsomsNumOfPuncts.setGeometry(QtCore.QRect(10, 165, 21, 16))
+        self.labelUHPIsomsNumOfPuncts.setGeometry(QtCore.QRect(15, 55, 21, 16))
         self.labelUHPIsomsNumOfPuncts.setObjectName("labelUHPIsomsNumOfPuncts")
         self.pushButtonUHPIsomsComputePolygonAndFuchsianGroup = QtWidgets.QPushButton(self.pageUHPIsometries)
-        self.pushButtonUHPIsomsComputePolygonAndFuchsianGroup.setGeometry(QtCore.QRect(90, 140, 113, 32))
+        self.pushButtonUHPIsomsComputePolygonAndFuchsianGroup.setGeometry(QtCore.QRect(95, 30, 113, 32))
         self.pushButtonUHPIsomsComputePolygonAndFuchsianGroup.setObjectName("pushButtonUHPIsomsComputePolygonAndFuchsianGroup")
         self.stackedWidgetIn_pageUHP.addWidget(self.pageUHPIsometries)
         self.labelUHPyNumber = QtWidgets.QLabel(self.tabUHP)
@@ -828,10 +828,10 @@ class Ui_MainWindow(object):
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 900, 22))
         self.menubar.setObjectName("menubar")
- #       MainWindow.setMenuBar(self.menubar)
+#        MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
-  #      MainWindow.setStatusBar(self.statusbar)
+#        MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
         self.stackedWidgetAllPages.setCurrentIndex(0)
@@ -870,16 +870,16 @@ class Ui_MainWindow(object):
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'.SF NS Text\'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
-"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:24pt;\">Hyperbolic GeometPy, </span><span style=\" font-family:\'arial,sans-serif\'; font-size:24pt; color:#222222; background-color:#ffffff;\">una aplicación para interactuar con el plano hiperbólico</span></p>\n"
+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:24pt;\">Hyperbolic GeometPy, </span><span style=\" font-family:\'arial,sans-serif\'; font-size:24pt; color:#222222; background-color:#ffffff;\">an app to interact with the hyperbolic plane</span></p>\n"
 "<p align=\"justify\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:24pt;\"><br /></p>\n"
 "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt;\">Daniel Labardini Fragoso</span></p>\n"
-"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt;\">IMUNAM-CDMX</span></p>\n"
+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt;\">IM-UNAM</span></p>\n"
 "<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:18pt;\"><br /></p>\n"
-"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">(Trabajo en proceso)</span></p>\n"
+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">(Work in progress)</span></p>\n"
 "<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;\"><br /></p>\n"
-"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt;\">Coloquio Queretano de Matemáticas</span></p>\n"
-"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt;\">IMUNAM-Juriquilla</span></p>\n"
-"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt;\">Marzo 29, 2018</span></p></body></html>"))
+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt;\">Seminario di Algebra e Geometria</span></p>\n"
+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt;\">SBAI, Sapienza Università di Roma</span></p>\n"
+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt;\">23 luglio 2019</span></p></body></html>"))
         self.tabsIn_pageCP.setTabText(self.tabsIn_pageCP.indexOf(self.tabCPSteinerGrids), _translate("MainWindow", "Steiner grids"))
         self.tabsIn_pageCP.setTabText(self.tabsIn_pageCP.indexOf(self.tabCPMobiusTransformations), _translate("MainWindow", "Möbius transformations"))
         self.pushButtonCPSGCommon.setText(_translate("MainWindow", "Show Common Circles"))

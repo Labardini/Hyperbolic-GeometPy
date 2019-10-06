@@ -285,10 +285,11 @@ class PDdraggableDot(pg.GraphItem):
         
         ind = self.dragPoint.data()[0]
         a, b = (ev.pos() + self.dragOffset)[0], (ev.pos() + self.dragOffset)[1]
-        if a**2+b**2 <= 1:
+        if a**2+b**2 < 1:
             self.data['pos'][ind] = ev.pos() + self.dragOffset
-        if a**2+b**2 > 1:
-            self.data['pos'][ind] = (ev.pos() + self.dragOffset)/numpy.sqrt(a**2+b**2)
+        if a**2+b**2 >= 1:#PERSONAL NOTE: notice the factor alpha IT IS NOT GOOD PROGRAMMING OR MATHEMATICAL PRACTICE, BUT WITHOUT THE FACTOR alpha THERE WAS AN UGLY PROBLEM THAT I BELIEVE CAME FROM A FLOATING POINT ISSUE
+            alpha = 1.0000000001
+            self.data['pos'][ind] = (ev.pos() + self.dragOffset)/ ((numpy.sqrt(a**2+b**2))*alpha)
         self.Dot.pt = self.data['pos'][ind]
         self.updateGraph()
         ev.accept()
