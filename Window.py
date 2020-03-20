@@ -198,6 +198,15 @@ class Ui_MainWindow(object):
         self.pushButtonCPMTFixedPoints.setGeometry(QtCore.QRect(160, 70, 120, 32))
         self.pushButtonCPMTFixedPoints.setFlat(False)
         self.pushButtonCPMTFixedPoints.setObjectName("pushButtonCPMTFixedPoints")
+        self.checkBoxCPMTMobFromParam = QtWidgets.QCheckBox(self.pageCPMobiusTransformations)
+        self.checkBoxCPMTMobFromParam.setGeometry(QtCore.QRect(5, 10, 271, 20))
+        self.checkBoxCPMTMobFromParam.setObjectName("checkBoxCPMTMobFromParam")
+        self.lineEditCPMTMobFromParam = QtWidgets.QLineEdit(self.pageCPMobiusTransformations)
+        self.lineEditCPMTMobFromParam.setGeometry(QtCore.QRect(20, 30, 113, 21))
+        self.lineEditCPMTMobFromParam.setObjectName("lineEditCPMTMobFromParam")
+        self.pushButtonCPMTMobFromParam = QtWidgets.QPushButton(self.pageCPMobiusTransformations)
+        self.pushButtonCPMTMobFromParam.setGeometry(QtCore.QRect(20, 60, 121, 32))
+        self.pushButtonCPMTMobFromParam.setObjectName("pushButtonCPMTMobFromParam")
         self.stackedWidgetIn_pageCP.addWidget(self.pageCPMobiusTransformations)
         self.pushButtonCPClearCanvas = QtWidgets.QPushButton(self.pageCP)
         self.pushButtonCPClearCanvas.setGeometry(QtCore.QRect(250, 510, 113, 32))
@@ -785,7 +794,8 @@ class Ui_MainWindow(object):
         self.pageUHPIsometries_2.setObjectName("pageUHPIsometries_2")
         self.spinBoxPDIsomsGenus = QtWidgets.QSpinBox(self.pageUHPIsometries_2)
         self.spinBoxPDIsomsGenus.setGeometry(QtCore.QRect(40, 20, 48, 24))
-        self.spinBoxPDIsomsGenus.setMinimum(1)
+        self.spinBoxPDIsomsGenus.setMinimum(0)
+        self.spinBoxPDIsomsGenus.setProperty("value", 1)
         self.spinBoxPDIsomsGenus.setObjectName("spinBoxPDIsomsGenus")
         self.labelPDIsomsGenus = QtWidgets.QLabel(self.pageUHPIsometries_2)
         self.labelPDIsomsGenus.setGeometry(QtCore.QRect(15, 25, 21, 16))
@@ -800,6 +810,15 @@ class Ui_MainWindow(object):
         self.spinBoxPDIsomsNumOfPuncts.setGeometry(QtCore.QRect(40, 50, 48, 24))
         self.spinBoxPDIsomsNumOfPuncts.setMinimum(1)
         self.spinBoxPDIsomsNumOfPuncts.setObjectName("spinBoxPDIsomsNumOfPuncts")
+        self.lineEditPDIsomsOrdersOfOrbPts = QtWidgets.QLineEdit(self.pageUHPIsometries_2)
+        self.lineEditPDIsomsOrdersOfOrbPts.setGeometry(QtCore.QRect(15, 150, 250, 21))
+        self.lineEditPDIsomsOrdersOfOrbPts.setObjectName("lineEditPDIsomsOrdersOfOrbPts")
+        self.textBrowserPDIsomsOrdersOfOrbPts = QtWidgets.QTextBrowser(self.pageUHPIsometries_2)
+        self.textBrowserPDIsomsOrdersOfOrbPts.setGeometry(QtCore.QRect(15, 80, 250, 71))
+        self.textBrowserPDIsomsOrdersOfOrbPts.setObjectName("textBrowserPDIsomsOrdersOfOrbPts")
+        self.checkBox = QtWidgets.QCheckBox(self.pageUHPIsometries_2)
+        self.checkBox.setGeometry(QtCore.QRect(100, 58, 87, 20))
+        self.checkBox.setObjectName("checkBox")
         self.stackedWidgetIn_pagePD.addWidget(self.pageUHPIsometries_2)
         self.labelPDyNumber = QtWidgets.QLabel(self.tabPD)
         self.labelPDyNumber.setGeometry(QtCore.QRect(10, 498, 150, 16))
@@ -828,20 +847,20 @@ class Ui_MainWindow(object):
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 900, 22))
         self.menubar.setObjectName("menubar")
-#        MainWindow.setMenuBar(self.menubar)
+ #       MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
-#        MainWindow.setStatusBar(self.statusbar)
+  #      MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
-        self.stackedWidgetAllPages.setCurrentIndex(0)
-        self.tabsIn_pageCP.setCurrentIndex(0)
-        self.stackedWidgetIn_pageCP.setCurrentIndex(0)
-        self.tabsIn_pageHP.setCurrentIndex(0)
+        self.stackedWidgetAllPages.setCurrentIndex(1)
+        self.tabsIn_pageCP.setCurrentIndex(1)
+        self.stackedWidgetIn_pageCP.setCurrentIndex(1)
+        self.tabsIn_pageHP.setCurrentIndex(1)
         self.tabsIn_tabUHP.setCurrentIndex(0)
         self.stackedWidgetIn_pageUHP.setCurrentIndex(0)
-        self.tabsIn_tabPD.setCurrentIndex(0)
-        self.stackedWidgetIn_pagePD.setCurrentIndex(0)
+        self.tabsIn_tabPD.setCurrentIndex(3)
+        self.stackedWidgetIn_pagePD.setCurrentIndex(2)
         self.tabsIn_pageCP.currentChanged['int'].connect(self.stackedWidgetIn_pageCP.setCurrentIndex)
         self.tabsIn_tabPD.currentChanged['int'].connect(self.stackedWidgetIn_pagePD.setCurrentIndex)
         self.tabsIn_tabUHP.currentChanged['int'].connect(self.stackedWidgetIn_pageUHP.setCurrentIndex)
@@ -870,16 +889,13 @@ class Ui_MainWindow(object):
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'.SF NS Text\'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
-"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:24pt;\">Hyperbolic GeometPy, </span><span style=\" font-family:\'arial,sans-serif\'; font-size:24pt; color:#222222; background-color:#ffffff;\">an app to interact with the hyperbolic plane</span></p>\n"
+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:24pt;\">Hyperbolic GeometPy</span></p>\n"
+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt;\">Una app para interactuar con el plano hyperbólico</span></p>\n"
 "<p align=\"justify\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:24pt;\"><br /></p>\n"
 "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt;\">Daniel Labardini Fragoso</span></p>\n"
 "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt;\">IM-UNAM</span></p>\n"
 "<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:18pt;\"><br /></p>\n"
-"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">(Work in progress)</span></p>\n"
-"<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;\"><br /></p>\n"
-"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt;\">Seminario di Algebra e Geometria</span></p>\n"
-"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt;\">SBAI, Sapienza Università di Roma</span></p>\n"
-"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt;\">23 luglio 2019</span></p></body></html>"))
+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">(Trabajo por siempre en proceso desde hace 6 años)</span></p></body></html>"))
         self.tabsIn_pageCP.setTabText(self.tabsIn_pageCP.indexOf(self.tabCPSteinerGrids), _translate("MainWindow", "Steiner grids"))
         self.tabsIn_pageCP.setTabText(self.tabsIn_pageCP.indexOf(self.tabCPMobiusTransformations), _translate("MainWindow", "Möbius transformations"))
         self.pushButtonCPSGCommon.setText(_translate("MainWindow", "Show Common Circles"))
@@ -898,6 +914,8 @@ class Ui_MainWindow(object):
         self.pushButtonCPMTAnimOrbitSinglePoint.setText(_translate("MainWindow", "Animated orbit"))
         self.checkBoxCPMTInvariantCurve.setText(_translate("MainWindow", "Invariant curve"))
         self.pushButtonCPMTFixedPoints.setText(_translate("MainWindow", "Fixed points"))
+        self.checkBoxCPMTMobFromParam.setText(_translate("MainWindow", "Möbius transformations from parameters"))
+        self.pushButtonCPMTMobFromParam.setText(_translate("MainWindow", "Compute Matrix"))
         self.pushButtonCPClearCanvas.setText(_translate("MainWindow", "Clear Canvas"))
         self.radioButtonCPoo.setText(_translate("MainWindow", "oo"))
         self.tabsIn_tabUHP.setTabText(self.tabsIn_tabUHP.indexOf(self.tabUHPBasicConstructions), _translate("MainWindow", "Basic Constructions"))
@@ -961,8 +979,14 @@ class Ui_MainWindow(object):
         self.checkBoxPDGMwave.setText(_translate("MainWindow", "Wave"))
         self.pushButtonPDCMCircMotionAntiClockwise.setText(_translate("MainWindow", "PushButton"))
         self.labelPDIsomsGenus.setText(_translate("MainWindow", "g = "))
-        self.pushButtonPDIsomsComputePolygonAndFuchsianGroup.setText(_translate("MainWindow", "PushButton"))
+        self.pushButtonPDIsomsComputePolygonAndFuchsianGroup.setText(_translate("MainWindow", "Show!"))
         self.labelPDIsomsNumOfPuncts.setText(_translate("MainWindow", "p = "))
+        self.textBrowserPDIsomsOrdersOfOrbPts.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'.SF NS Text\'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
+"<p align=\"justify\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">If you want orbifold points, please write their orders (integers greater than 1) separated by commas, or leave blank if you don\'t want orbifold points.</p></body></html>"))
+        self.checkBox.setText(_translate("MainWindow", "Make GIF"))
         self.labelPDyNumber.setText(_translate("MainWindow", "--"))
         self.labelPDxNumber.setText(_translate("MainWindow", "--"))
         self.labelPDNormNumber.setText(_translate("MainWindow", "--"))

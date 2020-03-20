@@ -106,6 +106,9 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         self.PlotWidgetIn_pageCP.disableAutoRange()
 #        self.graphicsView_2.setYRange(self.CP_ylim_down,self.CP_ylim_up)
         self.PlotWidgetIn_pageCP.setAspectLocked(1.0)
+        self.CPdraggableDotsMobTransFromParameters = dD.draggableDot() 
+        self.PlotWidgetIn_pageCP.addItem(self.CPdraggableDotsMobTransFromParameters)
+
 
 
 
@@ -305,6 +308,14 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 #        self.pushButtonCPMTOrbitsRandomCircle.clicked.connect(self.effectOf_pushButtonCPMTOrbitsRandomCircle)
 #        self.pushButtonCPMTOrbitsSteinerGrid.clicked.connect(self.effectOf_pushButtonCPMTOrbitsSteinerGrid)
 
+
+        self.PlotWidgetIn_pageCP.scene().sigMouseClicked.connect(self.CPMTMobFromParamFixedPoints)
+
+
+
+
+
+
         self.pushButtonUHPClearCanvas.clicked.connect(self.effectOf_pushButtonUHPClearCanvas)
         self.radioButtonUHPBCGeodesicSegments.clicked.connect(self.deleteClicks)
         self.radioButtonUHPBCConvexHull.clicked.connect(self.deleteClicks)
@@ -434,11 +445,14 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
             self.timer = None
         self.PlotWidgetIn_pageCP.clear()
         self.radioButtonCPoo.setChecked(False)
-        self.PlotWidgetIn_pageCP.setAspectLocked(1.0)
         self.PlotWidgetIn_pageCP.setXRange(self.CP_xlim_left,self.CP_xlim_right)
+        self.PlotWidgetIn_pageCP.setAspectLocked(1.0)
+        self.CPdraggableDotsMobTransFromParameters.setData(pos=numpy.array([[1000000000,1000000000]])) ###Note: THIS IS NOT GOOD PRACTICE
+        self.PlotWidgetIn_pageCP.addItem(self.CPdraggableDotsMobTransFromParameters)
         for clicked in Clicks:
             clicked.clear()
         
+      
 
 ##############
 ############## 
@@ -530,8 +544,68 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         
 #############################################
 ##############
-##############
+############## MOBIUS TRANSFORMATIONS FROM PARAMETERS
 
+    def CPMTMobFromParamFixedPoints(self,ev):
+        if self.checkBoxCPMTMobFromParam.isChecked() == True and self.stackedWidgetIn_pageCP.currentIndex() == 1:
+            global arbManyClicks
+            global oneClick
+            global twoClicks
+            global auxStorage
+            x = self.PlotWidgetIn_pageCP.plotItem.vb.mapSceneToView(ev.scenePos()).x()
+            y = self.PlotWidgetIn_pageCP.plotItem.vb.mapSceneToView(ev.scenePos()).y()
+            arbManyClicks.append([x,y])
+            if len(arbManyClicks)==1:
+                points = numpy.array([[arbManyClicks[0][0],arbManyClicks[0][1]]],dtype=float)
+                #initialPoint = pg.GraphItem(pos=[[twoClicks[0][0],twoClicks[0][1]]])
+                self.CPdraggableDotsMobTransFromParameters.setData(pos=points,  pxMode=True)
+            else:
+                twoClicks.clear()
+                twoClicks.append(arbManyClicks[-2])
+                twoClicks.append(arbManyClicks[-1])
+                #print(twoClicks)
+                points = numpy.array([[twoClicks[k][0],twoClicks[k][1]] for k in range(len(twoClicks))],dtype=float)
+                self.CPdraggableDotsMobTransFromParameters.setData(pos=points,  pxMode=True)
+                #self.PlotWidgetIn_pageUHP.addItem(finalPoint)
+                z0 = twoClicks[-2][0]+twoClicks[-2][1]*(1j)
+                z1 = twoClicks[-1][0]+twoClicks[-1][1]*(1j)
+#                self.lineEditUHPGMComplexNumber1.setText(str(z0))
+#                self.lineEditUHPGMComplexNumber2.setText(str(z0))
+                auxStorage.clear()
+                auxStorage.append(z0)
+                auxStorage.append(z1)
+
+
+            def effectOf_pushButtonCPMTMobFromParam():
+                if self.checkBoxCPMTMobFromParam.isChecked() == True and self.stackedWidgetIn_pageCP.currentIndex() == 1:
+                    global auxStorage
+                    complexalpha = numpy.complex(str(self.lineEditCPMTMobFromParam.text()))
+                    if len(auxStorage) !=2:
+                        pass
+                    else:
+                        listOfFixedPoints = auxStorage
+                        A = Mobius_CP.MobiusFromParameters().MobMatrixFromParams(listOfFixedPoints,complexalpha)
+                        a = A[0,0]
+                        b = A[0,1]
+                        c = A[1,0]
+                        d = A[1,1]
+                        self.lineEditCPMTOrbitsComplexNumberalpha.setText(str(a))
+                        self.lineEditCPMTOrbitsComplexNumberbeta.setText(str(b))
+                        self.lineEditCPMTOrbitsComplexNumbergamma.setText(str(c))
+                        self.lineEditCPMTOrbitsComplexNumberdelta.setText(str(d))
+                        
+    
+            self.pushButtonCPMTMobFromParam.clicked.connect(effectOf_pushButtonCPMTMobFromParam)                    
+                
+            
+        
+
+
+
+
+
+
+########################
 
 
 
@@ -565,6 +639,16 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         self.PlotWidgetIn_pageCP.addItem(PartialOrbit)
         self.PlotWidgetIn_pageCP.addItem(CurrentPoint)
         self.labelCPMTTypeOfMobius.setText(str(Mobius_CP.MobiusAssocToMatrix().isParEllHypLox(a,b,c,d)[0]))
+
+        FixedPts = [auxStorage[0],auxStorage[1]]
+        conjMatrix = Mobius_CP.MobiusTransitivity().MobiusMatrix0oo1Toz1z2z3(FixedPts[0],FixedPts[1],z0)
+        conjTrans = Mobius_CP.MobiusAssocToMatrix().EvaluationAtConcretePoint(conjMatrix[0,0],conjMatrix[0,1],conjMatrix[1,0],conjMatrix[1,1])
+        auxPt1, auxPt2, auxPt3 = z0, conjTrans(1j), conjTrans(-1)
+        eCenterAndRadius = extended_complex_plane_CP.NumpyExtendedComplexPlane().e_circumcenter_and_radius(auxPt1, auxPt2, auxPt3)
+        
+        
+        
+
 
         if z_0 != oo:
             self.radioButtonCPoo.setChecked(False)
@@ -1940,74 +2024,131 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         if self.stackedWidgetIn_pagePD.currentIndex() == 3:
             g = int(self.spinBoxPDIsomsGenus.cleanText())
             p = int(self.spinBoxPDIsomsNumOfPuncts.cleanText())
-            curvesAndColors = PD_HP.PDFuchsianRepresentative().PDSidesOfSpecificIdealPolygon(g,p)
-            NumOfSides = (4*g) + (2*(p-1))#2g-1+4g+2(p-1)=6g+2p-3
-            drawnCurvesList = {}
-            sidePairings = PD_HP.PDFuchsianRepresentative().PDSidePairingsOfSpecificIdealPolygon(g,p)
-            combinatorialSidePairings = PD_HP.PDFuchsianRepresentative().PDSpecificCombinatorialSidePairing(g,p)
-            points = numpy.array([[(curvesAndColors["midpoints"])[k].real,(curvesAndColors["midpoints"])[k].imag] for k in range(NumOfSides)],dtype=float)
+            ordersText = self.lineEditPDIsomsOrdersOfOrbPts.text()
+            orders = []
+            commaPositions = []
+            for t in range(len(ordersText)):
+                if str(ordersText[t]) == ",":
+                    commaPositions.append(t)
+            if len(commaPositions) == 0 and len(ordersText)!=0:
+                string = ""
+                for l in range(len(ordersText)):
+                    string = string + str(ordersText[l])
+                orders.append(int(string))
+            for s in range(len(commaPositions)):
+                if s == 0 and commaPositions[s] != 0:
+                    string = ""                    
+                    for l in range(commaPositions[s]):
+                        string = string + str(ordersText[l])
+                    orders.append(int(string))
+                if s > 0 and commaPositions[s] != commaPositions[s-1]+1:
+                    string = ""
+                    for l in range(commaPositions[s-1]+1,commaPositions[s]):
+                        string = string + str(ordersText[l])
+                    orders.append(int(string))
+                if s == len(commaPositions)-1 and commaPositions[s] != len(ordersText)-1:
+                    string = ""
+                    for l in range(commaPositions[s]+1,len(ordersText)):
+                        string = string + str(ordersText[l])
+                    orders.append(int(string))         
+            orders = [j for j in orders if j > 1]        
+            #print(orders)
+            triplesOfPtsAndColors = PD_HP.PDFuchsianRepresentative().PDSidesOfSpecificIdealPolygon(g,p,orders)
+            NumOfSides = (4*g) + (2*(p-1)) + (2*len(orders))#2g-1+4g+2(p-1)=6g+2p-3
+            #print(NumOfSides)
+            drawnCurvesList = []
+            sidePairings = PD_HP.PDFuchsianRepresentative().PDSidePairingsOfSpecificIdealPolygon(g,p,orders)
             #self.PDdraggableDotsMidPtForSidePairing.setData(pos=points, brush = 'k',  pxMode=True)
 
+            curvesToSidePairingDict = {}
+            firstFace = []
+
             for k in range(NumOfSides):
-                x_coord = (curvesAndColors["curves"])[k].real
-                y_coord = (curvesAndColors["curves"])[k].imag
-                color = (curvesAndColors["curvesColors"])[k]
-                theDrawing = pg.PlotCurveItem(x_coord,y_coord,pen=pg.mkPen(str(color), width=2),clickable=True)
+                kthTriple = (triplesOfPtsAndColors["triplesOfPtsOnCurves"][k])[0]
+                kthGeodesicSegment = PD_HP.PDBasics().PDGeodesicSegment_rcostrsint(kthTriple[0],kthTriple[2])
+                x_coord = kthGeodesicSegment.real
+                y_coord = kthGeodesicSegment.imag
+                colour = (triplesOfPtsAndColors["curvesColors"])[k]
+                theDrawing = pg.PlotCurveItem(x_coord,y_coord,pen=pg.mkPen(color=colour, width=2),clickable=True)
                 self.PlotWidgetIn_pagePD.addItem(theDrawing)
-                drawnCurvesList[k] = [theDrawing]
-                (curvesAndColors["curves"])[k] = [(curvesAndColors["curves"])[k]]
-                (curvesAndColors["midpoints"])[k] = [(curvesAndColors["midpoints"])[k]]
-                sidePairings[k] =[sidePairings[k]]
+                drawnCurvesList.append(theDrawing)
                 
-            #points = numpy.array([[(curvesAndColors["midpoints"])[k].real,(curvesAndColors["midpoints"])[k].imag] for k in range(NumOfSides)],dtype=float)
-            #self.PDdraggableDotsConvexHull.setData(pos=points, brush = 'k',  pxMode=True)
+                
+                # THE NEXT FEW LINES ADD GEODESIC SEGMENTS THAT INDICATE THE SIDE PAIRINGS
+                kthMidPt = kthTriple[1]
+                a, b, c, d = (sidePairings[k][0]**(-1))[0,0], (sidePairings[k][0]**(-1))[0,1], (sidePairings[k][0]**(-1))[1,0], (sidePairings[k][0]**(-1))[1,1]
+                imageOfkthMidPt = Mobius_CP.MobiusAssocToMatrix().EvaluationAtConcretePoint(a,b,c,d)(kthMidPt)
+                geodesicSegment = PD_HP.PDBasics().PDGeodesicSegment_rcostrsint(kthMidPt,imageOfkthMidPt)
+                x_coord, y_coord = geodesicSegment.real, geodesicSegment.imag
+                drawing = pg.PlotCurveItem(x_coord,y_coord,pen=pg.mkPen(color=colour, width=1))
+                self.PlotWidgetIn_pagePD.addItem(drawing)
+                
+                matrix = numpy.matrix([[a,b],[c,d]])**(-1)
+                alpha, beta, gamma, delta = matrix[0,0], matrix[0,1], matrix[1,0], matrix[1,1]
+                curvesToSidePairingDict[theDrawing]=[matrix,colour,[kthTriple[0],kthTriple[2]],Mobius_CP.MobiusAssocToMatrix().EvaluationAtConcretePoint(alpha,beta,gamma,delta)(0)]
+                firstFace.append(theDrawing)
+
+                
+            Faces = [firstFace]
+                
+
+                
+#            points = numpy.array([[(curvesAndColors["midpoints"])[k][0].real,(curvesAndColors["midpoints"])[k][0].imag] for k in range(NumOfSides)],dtype=float)
+#            self.PDdraggableDotsConvexHull.setData(pos=points, brush = 'k',  pxMode=True)
             
+#            brushes = ["r", (100, 100, 255), "b"]
+#            fills = [pg.FillBetweenItem(drawnCurvesList[k][0], drawnCurvesList[k+1][0], brushes[k%3]) for k in range(NumOfSides-1)]
+#            for f in fills:
+#                self.PlotWidgetIn_pagePD.addItem(f)
+            # randomChoiceOfColors = numpy.random.choice(5, 3, replace=False)
+            x, y = numpy.array([[0,0],[0,0]])
+            fills = [pg.FillBetweenItem(pg.PlotCurveItem(x,y,pen=pg.mkPen(color="c", width=1)), theCurve, "c") for theCurve in drawnCurvesList]
+            for f in fills:
+                self.PlotWidgetIn_pagePD.addItem(f)
 
             
             
             def plotClicked(curve):####
                 #nonlocal drawnCurvesList
-                self.PlotWidgetIn_pagePD.clear()
-                self.PlotWidgetIn_pagePD.addItem(self.PDdraggableDotsStaticGeodSegs)
-                self.PlotWidgetIn_pagePD.addItem(self.PDdraggableDotsConvexHull)
-                self.PlotWidgetIn_pagePD.addItem(self.boundingCirclePD)
-                self.boundingCirclePD.setPen(pg.mkPen('k',width=2))
-                for k in range(NumOfSides):
-                    kthColor = (curvesAndColors["curvesColors"])[k]
-                    for m in range(len(drawnCurvesList[k])):
-                        c = (drawnCurvesList[k])[m]
-                        if c is curve:
-                            c.setPen(pg.mkPen(str(kthColor), width=4))
-                            self.PlotWidgetIn_pagePD.addItem(c)
-                            Mobius = Mobius_CP.MobiusAssocToMatrix().EvaluationAtConcretePoint(sidePairings[k][m][0,0],sidePairings[k][m][0,1],sidePairings[k][m][1,0],sidePairings[k][m][1,1])
-                            vectorizedMobius = numpy.vectorize(Mobius)
-                            for l in range(NumOfSides):
-                                lthColor = (curvesAndColors["curvesColors"])[l]
-                                for d in range(len((curvesAndColors["curves"])[l])):
-                                    #newMidPoint = Mobius((curvesAndColors["midpoints"])[l][d])
-                                    newCurve = vectorizedMobius((curvesAndColors["curves"])[l][d])
-                                    (curvesAndColors["curves"])[l].append(newCurve)
-                                    A = numpy.matrix([[sidePairings[k][m][0,0],sidePairings[k][m][0,1]],[sidePairings[k][m][1,0],sidePairings[k][m][1,1]]])
-                                    B = numpy.matrix([[sidePairings[l][d][0,0],sidePairings[l][d][0,1]],[sidePairings[l][d][1,0],sidePairings[l][d][1,1]]])
-                                    newSidePairing = A*B*(A**(-1))
-                                    sidePairings[l].append(newSidePairing)
-                                    x_coord = newCurve.real
-                                    y_coord = newCurve.imag                                
-                                    newDrawing = pg.PlotCurveItem(x_coord,y_coord,pen=pg.mkPen(str(lthColor), width=2),clickable=True)
-                                    self.PlotWidgetIn_pagePD.addItem(newDrawing)
-                                    drawnCurvesList[l].append(newDrawing)
-                                    newDrawing.sigClicked.connect(plotClicked)
-                        else:
-                            c.setPen(pg.mkPen(str(kthColor), width=2))
-                            self.PlotWidgetIn_pagePD.addItem(c)
-                            
+                for c in drawnCurvesList:
+                    if c is curve:
+                        c.setPen(pg.mkPen(color=(curvesToSidePairingDict[c])[1], width=4))
+                        cFaces = []
+                        for face in Faces:
+                            if c in face:
+                                cFaces.append(face)
+                        if len(cFaces) == 1:
+                            matrix = (curvesToSidePairingDict[c])[0]
+                            Mobius = Mobius_CP.MobiusAssocToMatrix().EvaluationAtConcretePoint(matrix[0,0],matrix[0,1],matrix[1,0],matrix[1,1])
+                            newcFace = []
+                            for side in cFaces[0]:
+                                point1 = Mobius(curvesToSidePairingDict[side][2][0])
+                                point2 = Mobius(curvesToSidePairingDict[side][2][1])
+                                newCurve = PD_HP.PDBasics().PDGeodesicSegment_rcostrsint(point1,point2)
+                                xCoord, yCoord = newCurve.real, newCurve.imag
+                                newDrawing = pg.PlotCurveItem(xCoord,yCoord,pen=pg.mkPen(color=(curvesToSidePairingDict[side])[1], width=2),clickable=True)
+                                self.PlotWidgetIn_pagePD.addItem(newDrawing)
+                                drawnCurvesList.append(newDrawing)
+                                newcFace.append(newDrawing)
+                                B = (curvesToSidePairingDict[side])[0]
+                                newMatrix = matrix*B*(matrix**(-1))
+                                newAlpha,newBeta,newGamma,newDelta = newMatrix[0,0], newMatrix[0,1], newMatrix[1,0], newMatrix[1,1]
+                                curvesToSidePairingDict[newDrawing]=[newMatrix,(curvesToSidePairingDict[side])[1],[point1,point2],Mobius_CP.MobiusAssocToMatrix().EvaluationAtConcretePoint(newAlpha,newBeta,newGamma,newDelta)((curvesToSidePairingDict[c])[3])]
+                                newDrawing.sigClicked.connect(plotClicked)
+                                
+                                #x, y = numpy.array([[curvesToSidePairingDict[c][3].real,curvesToSidePairingDict[c][3].imag],[curvesToSidePairingDict[c][3].real,curvesToSidePairingDict[c][3].imag]])
+                                #fills = [pg.FillBetweenItem(pg.PlotCurveItem(x,y,pen=pg.mkPen(color="r", width=1)), c, "r")]
+                                #for f in fills:
+                                #    self.PlotWidgetIn_pagePD.addItem(f)
+
+                                
+                            Faces.append(newcFace)
+                    else:
+                        c.setPen(pg.mkPen(color=(curvesToSidePairingDict[c])[1], width=2))
                         
-                        
-                    
-            for k in range(NumOfSides):
-                for curve in drawnCurvesList[k]:
-                    curve.sigClicked.connect(plotClicked)
-        
+            for curve in drawnCurvesList:
+                curve.sigClicked.connect(plotClicked)
+    
                     
                     
                     
