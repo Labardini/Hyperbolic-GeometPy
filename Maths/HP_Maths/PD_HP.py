@@ -28,6 +28,7 @@ areAllDistinctList = extended_complex_plane_CP.numpyExtendedComplexPlane().areAl
 removeooFromArgs = extended_complex_plane_CP.numpyExtendedComplexPlane().removeooFromArgs
 removeooFromList = extended_complex_plane_CP.numpyExtendedComplexPlane().removeooFromList
 e_circumcenter_and_radius = extended_complex_plane_CP.numpyExtendedComplexPlane().e_circumcenter_and_radius
+eCenterAndRadiusGivenCircleEquation = extended_complex_plane_CP.numpyExtendedComplexPlane().eCenterAndRadiusGivenCircleEquation
 intersection_of_e_circles = extended_complex_plane_CP.numpyExtendedComplexPlane().intersection_of_e_circles
 areCollinear = extended_complex_plane_CP.numpyExtendedComplexPlane().areCollinear
 myNumpyCosecant = extended_complex_plane_CP.numpyExtendedComplexPlane().myNumpyCosecant
@@ -69,14 +70,19 @@ class PDBasics:
     def areEuclidCollinearWithCenterInPD(self,hPointP,hPointQ): # NOTE: if one of the points is the center, the answer will be "True"
         P, Q = extendedValue(hPointP), extendedValue(hPointQ)
 #        if self.isInPD(P) == True and self.isInPD(Q) == True and P != Q:
-        if P != Q:
-            if (P/(P-Q)).imag == 0:
-                answer = True
-            else:
-                answer = False
-            return answer
+        if P.real*Q.imag - P.imag*Q.real == 0:
+            answer = True
         else:
-            pass
+            answer = False
+        return answer
+#        if P != Q:
+#            if (P/(P-Q)).imag == 0:
+#                answer = True
+#            else:
+#                answer = False
+#            return answer
+#        else:
+#            pass
 
     def PDNorm(self,point,vector): # PERSONAL NOTE: check if PDNorm yields PDDist indeed (ie, check that no re-scaling is necessary)
         P = numpy.complex(point)
@@ -94,21 +100,18 @@ class PDBasics:
             
     def eCenterAndRadiusNonStraightGeodesicThroughPAndQ(self,hpointP,hpointQ):
         P, Q = extendedValue(hpointP), extendedValue(hpointQ)
-        if self.areEuclidCollinearWithCenterInPD(P,Q) == True: # PERSONAL NOTE: watch out! THIS IS NOT GOOD PROGRAMMING PRACTICE
-            eCenter = 0
+        if self.areEuclidCollinearWithCenterInPD(P,Q) == False:
+            PNormSquare, QNormSquare = P.real**2+P.imag**2, Q.real**2+Q.imag**2
+            xcoeff = (P.imag*QNormSquare - Q.imag*PNormSquare + P.imag -Q.imag)/(P.real*Q.imag -P.imag*Q.real)
+            ycoeff = (Q.real*PNormSquare - P.real*QNormSquare + Q.real -P.real)/(P.real*Q.imag -P.imag*Q.real)
+            constantTerm = 1
+            eCenter = eCenterAndRadiusGivenCircleEquation(xcoeff,ycoeff,constantTerm)[0][0]+eCenterAndRadiusGivenCircleEquation(xcoeff,ycoeff,constantTerm)[0][1]*(1j)
+            eRadius = eCenterAndRadiusGivenCircleEquation(xcoeff,ycoeff,constantTerm)[1]
+        else: # WATCH OUT!!! THIS IS NOT A GOOD PROGRAMMING PRACTICE
+            eCenter = -100
             eRadius = 1
-        else:
-            if P.real**2+P.imag**2 < 1:
-                R = P/(P.real**2+P.imag**2)
-                eCenter = e_circumcenter_and_radius(P,Q,R)[0][0]+e_circumcenter_and_radius(P,Q,R)[0][1]*(1j)
-            if P.real**2+P.imag**2 == 1 and Q.real**2+Q.imag**2 < 1 :
-                R = Q/(Q.real**2+Q.imag**2)
-                eCenter = e_circumcenter_and_radius(P,Q,R)[0][0]+e_circumcenter_and_radius(P,Q,R)[0][1]*(1j)
-            if P.real**2+P.imag**2 == 1 and Q.real**2+Q.imag**2 == 1 :
-                eCenter = Q+ ((P-Q)/(P+Q))*Q
-            eRadius = numpy.absolute(Q-eCenter)
-            return [eCenter,eRadius]
-        
+        return [eCenter,eRadius]
+    
          
             
 
@@ -140,8 +143,9 @@ class PDBasics:
         z = extendedValue(endpoint)
 #        Invz = z / (z.real**2 + z.imag**2)
 #        Invw = w / (w.real**2 + w.imag**2)
+        numberOfPtsPlotted = 100
         if self.areEuclidCollinearWithCenterInPD(w,z) == False:
-            eCenter = self.eCenterAndRadiusNonStraightGeodesicThroughPAndQ(w,z)[0]
+            eCenter = self.eCenterAndRadiusNonStraightGeodesicThroughPAndQ(z,w)[0]
 #            if w.real**2 + w.imag**2 == 1 and z.real**2 + z.imag**2 == 1:
 #                x = ((1j)*(z-w)) / (numpy.absolute(z-w)) # clockwise: w->x->z
 #                #PDtoUHPtrans = Mobius_CP.MobiusTransitivity().MobiusTransz1z2z3To0oo1(w,x,z)
@@ -165,22 +169,48 @@ class PDBasics:
 #                point = X[0] + (A - (X[0]))*( numpy.cos(t) + numpy.sin(t)*(1j) )
             thetaw = myarg0To2Pi(w-eCenter)
             thetaz = myarg0To2Pi(z-eCenter)
-            if numpy.abs(thetaz-thetaw) <= numpy.pi:
-                interval = numpy.linspace(0,thetaz-thetaw)
+#            if 0 <= thetaz-thetaw and thetaz-thetaw <= numpy.pi:
+#                interval = numpy.linspace(0,thetaz-thetaw)
+#                def parametrized_curve(t):
+#                    parametrization = eCenter + (w-eCenter)*(numpy.cos(t)+(numpy.sin(t)*(1j)))
+#                    return parametrization
+#            elif 0 > thetaz-thetaw and thetaz-thetaw >= -numpy.pi:
+#                interval = numpy.linspace(0,thetaw-thetaz)
+#                def parametrized_curve(t):
+#                    parametrization = eCenter + (z-eCenter)*(numpy.cos(t)+(numpy.sin(t)*(1j)))
+#                    return parametrization
+#            elif thetaz-thetaw > numpy.pi:
+#                interval = numpy.linspace(0,thetaw+2*numpy.pi-thetaz)
+#                def parametrized_curve(t):
+#                    parametrization = eCenter + (z-eCenter)*(numpy.cos(t)+(numpy.sin(t)*(1j)))
+#                    return parametrization
+#            else:#elif thetaz-thetaw < -numpy.pi:
+#                interval = numpy.linspace(0,thetaz+(2*numpy.pi-thetaw))
+#                def parametrized_curve(t):
+#                    parametrization = eCenter + (w-eCenter)*(numpy.cos(t)+(numpy.sin(t)*(1j)))
+#                    return parametrization
+            if -numpy.pi <= thetaz-thetaw and thetaz-thetaw <= numpy.pi:
+                interval = numpy.linspace(0,thetaz-thetaw,numberOfPtsPlotted)
+                def parametrized_curve(t):
+                    parametrization = eCenter + (w-eCenter)*(numpy.cos(t)+(numpy.sin(t)*(1j)))
+                    return parametrization
             elif thetaz-thetaw > numpy.pi:
-                interval = numpy.linspace(0,-((2*numpy.pi)-(thetaz-thetaw)))
+                interval = numpy.linspace(0,thetaw+2*numpy.pi-thetaz,numberOfPtsPlotted)
+                def parametrized_curve(t):
+                    parametrization = eCenter + (z-eCenter)*(numpy.cos(t)+(numpy.sin(t)*(1j)))
+                    return parametrization
             else:#elif thetaz-thetaw < -numpy.pi:
-                interval = numpy.linspace(0,((2*numpy.pi)-numpy.abs(thetaz-thetaw)))
-            def parametrized_curve(t):
-                parametrization = eCenter + (w-eCenter)*(numpy.cos(t)+numpy.sin(t)*(1j))
-                return parametrization
+                interval = numpy.linspace(0,thetaz+(2*numpy.pi-thetaw),numberOfPtsPlotted)
+                def parametrized_curve(t):
+                    parametrization = eCenter + (w-eCenter)*(numpy.cos(t)+(numpy.sin(t)*(1j)))
+                    return parametrization
 #                matrix = numpy.matrix([[((1j)*w).real,-(1j)*z.real],[((1j)*w).imag,-(1j)*z.imag]])
 #                vector = numpy.matrix([[z.real-w.real],[z.imag-w.imag]])
 #                scalar = ((matrix**(-1))*vector)[0,0]
 #                eCenter = w + scalar*(1j)*w ## EUCLIDEAN CENTER OF GEODESIC
 #            #eRadius = eCenterAndRadius[1]
         else:
-            interval = numpy.linspace(0,1)
+            interval = numpy.linspace(0,1,numberOfPtsPlotted)
             def parametrized_curve(t):
                 parametrization = (1-t)*w + t*z
                 return parametrization
@@ -499,55 +529,107 @@ class PDFuchsianRepresentative: ##NOTE: SO FAR, THIS CLASS CONSTRUCTS
     def __init__(self):
         pass
 
-    def PDSpecificCombinatorialSidePairing(self,genus,numberOfPunctures):
+#    def PDSpecificCombinatorialSidePairing(self,genus,numberOfPunctures):#PERSONAL NOTE: FOR IMPLEMENTATION OF ORBIFOLD POINTS THIS HAS TO BE CHANGED
+#        g, p = genus, numberOfPunctures
+#        
+#        if g == 0 and p < 3:
+#            pass
+#        elif g == 1 and p == 0:
+#            pass
+#        else:
+#            def f(k):
+#                if k in range(4*(g-1)):
+#                    if k % 4 == 0 or k % 4 == 1 :
+#                        result = k + 2
+#                    if k % 4 == 2 or k % 4 == 3 :
+#                        result = k-2
+#                if k == 4*(g-1):
+#                    result = 4*(g-1) + 1 + p
+#                if k == 4*(g-1) + 1 + p:
+#                    result = 4*(g-1)
+#                if k in range(4*(g-1)+1,4*(g-1)+1+p):
+#                    result = 4*(g-1)+p+2 + 4*(g-1)+p-k
+#                if k in range(4*(g-1)+p+2,4*g+2*(p-1)):
+#                    result = 4*(g-1)+1 + 4*g+2*(p-1)-1-k
+#                return result
+#            return f
+
+    def PDSpecificCombinatorialSidePairing(self,genus,numberOfPunctures,numberOfOrbPts):
         g, p = genus, numberOfPunctures
+        o = numberOfOrbPts
         if g == 0 and p < 3:
             pass
         elif g == 1 and p == 0:
             pass
         else:
             def f(k):
-                if k in range(4*(g-1)):
+                if k in range(4*g):
                     if k % 4 == 0 or k % 4 == 1 :
                         result = k + 2
                     if k % 4 == 2 or k % 4 == 3 :
                         result = k-2
-                if k == 4*(g-1):
-                    result = 4*(g-1) + 1 + p
-                if k == 4*(g-1) + 1 + p:
-                    result = 4*(g-1)
-                if k in range(4*(g-1)+1,4*(g-1)+1+p):
-                    result = 4*(g-1)+p+2 + 4*(g-1)+p-k
-                if k in range(4*(g-1)+p+2,4*g+2*(p-1)):
-                    result = 4*(g-1)+1 + 4*g+2*(p-1)-1-k
+                if k in range(4*g,4*g+2*(p+o-1)):
+                    if k %2 == 0:
+                        result = k+1
+                    if k % 2 ==1:
+                        result = k-1
                 return result
             return f
     
-    def PDSidesOfSpecificIdealPolygon(self,genus,numberOfPunctures):
+    def PDSidesOfSpecificIdealPolygon(self,genus,numberOfPunctures,orders): #orders is supposed to be the list of orders of orb pts
         # NOTE: TRY TO IMPROVE THE WAY THE SIDES ARE COLORED
         g, p = genus, numberOfPunctures
+        o = len(orders)
+        #print(orders)
         if g == 0 and p < 3:
             pass
         elif g == 1 and p == 0:
             pass
         else:
-            NumOfSides = (4*g) + (2*(p-1))
-            curves = {}
+            NumOfSides = (4*g) + (2*(p-1)) + (2*o)
             midpoints = {}
-            for k in range(NumOfSides):
+            triplesOfPtsOnCurves = {}
+            for k in range((4*g) + (2*(p-1))):
                 w = numpy.cos(2*k*numpy.pi/NumOfSides)+numpy.sin(2*k*numpy.pi/NumOfSides)*(1j)
                 z = numpy.cos(2*(k+1)*numpy.pi/NumOfSides)+numpy.sin(2*(k+1)*numpy.pi/NumOfSides)*(1j)
                 eCenter = w*( 1 +  (z-w)/(z+w))
                 thetaw = myarg0To2Pi(w-eCenter)#numpy.angle(-(w-eCenter))+numpy.pi
                 thetaz = myarg0To2Pi(z-eCenter)#numpy.angle(-(z-eCenter))+numpy.pi
-                interval = numpy.linspace(0,min(numpy.abs(thetaz-thetaw),(2*numpy.pi)-numpy.abs(thetaz-thetaw)))
                 def parametrized_curve(t):
                     parametrization = eCenter + (z-eCenter)*(numpy.cos(t)+numpy.sin(t)*(1j))
                     return parametrization
-                curves[k] = parametrized_curve(interval)
                 midpoints[k] = parametrized_curve((min(numpy.abs(thetaz-thetaw),(2*numpy.pi)-numpy.abs(thetaz-thetaw)))/2)
-            basicColors = ["m", "b", "r", "c", "g", "y", "w", "k"]
-            curvesColors = {4*(g-1):basicColors[2*(g-1)%len(basicColors)],4*(g-1)+p+1:basicColors[2*(g-1)%len(basicColors)]}
+                triplesOfPtsOnCurves[k] = [[z,parametrized_curve((min(numpy.abs(thetaz-thetaw),(2*numpy.pi)-numpy.abs(thetaz-thetaw)))/2),w]]
+            MobTransUHPtoPD = {}
+            for l in range((4*g) + (2*(p-1)), NumOfSides,2):
+                a = numpy.cos(2*l*numpy.pi/NumOfSides)+numpy.sin(2*l*numpy.pi/NumOfSides)*(1j)
+                b = numpy.cos(2*(l+1)*numpy.pi/NumOfSides)+numpy.sin(2*(l+1)*numpy.pi/NumOfSides)*(1j)
+                c = numpy.cos(2*(l+2)*numpy.pi/NumOfSides)+numpy.sin(2*(l+2)*numpy.pi/NumOfSides)*(1j)
+                MobTransUHPtoPD[l] = Mobius_CP.MobiusTransitivity().MobiusTransz1z2z3Tow1w2w3(-1,0,1,a,b,c)
+            for k in range((4*g) + (2*(p-1)),NumOfSides):
+                if k % 2 == 0:
+                    order = orders[int((k - ((4*g) + (2*(p-1))))/2)]
+                    theta = (2*numpy.pi)/order
+                    w = numpy.cos(2*k*numpy.pi/NumOfSides)+numpy.sin(2*k*numpy.pi/NumOfSides)*(1j)
+                    z = MobTransUHPtoPD[k](-numpy.tan(numpy.pi-(theta/4))*(1j))
+                    inv = z/(z.real**2+z.imag**2)
+                if k % 2 == 1:
+                    order = orders[int((k - 1 - ((4*g) + (2*(p-1))))/2)]
+                    theta = (2*numpy.pi)/order
+                    w = MobTransUHPtoPD[k-1](-numpy.tan(numpy.pi-(theta/4))*(1j))
+                    z = numpy.cos(2*(k+1)*numpy.pi/NumOfSides)+numpy.sin(2*(k+1)*numpy.pi/NumOfSides)*(1j)
+                    inv = w/(w.real**2+w.imag**2)
+                eCenter = e_circumcenter_and_radius(w,z,inv)[0][0]+e_circumcenter_and_radius(w,z,inv)[0][1]*(1j)
+                thetaw = myarg0To2Pi(w-eCenter)#numpy.angle(-(w-eCenter))+numpy.pi
+                thetaz = myarg0To2Pi(z-eCenter)#numpy.angle(-(z-eCenter))+numpy.pi
+                def parametrized_curve(t):
+                    parametrization = eCenter + (z-eCenter)*(numpy.cos(t)+numpy.sin(t)*(1j))
+                    return parametrization
+                midpoints[k] = parametrized_curve((min(numpy.abs(thetaz-thetaw),(2*numpy.pi)-numpy.abs(thetaz-thetaw)))/2)
+                triplesOfPtsOnCurves[k] = [[z,parametrized_curve((min(numpy.abs(thetaz-thetaw),(2*numpy.pi)-numpy.abs(thetaz-thetaw)))/2),w]]
+            #basicColors = [(200, 200, 255)]#["m", "c", "r", "k", "g", "y", "b"]#["m", "c", "r", "k", "g", "y", "b", "w"]
+            basicColors = [(255, 0, 0),(0, 230, 0),(0, 0, 255),(255, 153, 0),(204, 0, 204),"m", "b", "k", "g", "r"]
+            curvesColors = {}
 #            l = len(basicColors)
 #            for k in range(4*(g-1)-2):
 #                if k % l == 0 or k % l == 4  :
@@ -556,35 +638,79 @@ class PDFuchsianRepresentative: ##NOTE: SO FAR, THIS CLASS CONSTRUCTS
 #                if  k % l == 3 or k % l == 7 :
 #                    curvesColors[k] = basicColors[int((k-1)/2)%len(basicColors)]
 #                    curvesColors[k+2] = basicColors[int((k-1)/2)%len(basicColors)]
-            f = self.PDSpecificCombinatorialSidePairing(g,p)
-            for k in range(4*(g-1)+1+p):#range(4*(g-1)+1,4*(g-1)+1+p):
+            f = self.PDSpecificCombinatorialSidePairing(g,p,o)
+            for k in range(NumOfSides):#range(4*(g-1)+1,4*(g-1)+1+p):
                 curvesColors[k] = basicColors[k%len(basicColors)]
                 curvesColors[f(k)] = basicColors[k%len(basicColors)]
-            result = {"curves":curves,"midpoints":midpoints,"curvesColors":curvesColors}
+            result = {"triplesOfPtsOnCurves":triplesOfPtsOnCurves,"midpoints":midpoints,"curvesColors":curvesColors}
             #print(curves)
             return result
 
-    def PDSidePairingsOfSpecificIdealPolygon(self,genus,numberOfPunctures):
+    def PDSidePairingsOfSpecificIdealPolygon(self,genus,numberOfPunctures,orders): #orders is supposed to be the list of orders of orb pts
         g, p = genus, numberOfPunctures
+        o = len(orders)
         if g == 0 and p < 3:
             pass
         elif g == 1 and p == 0:
             pass
         else:
-            f = self.PDSpecificCombinatorialSidePairing(g,p)
-            midpoints = self.PDSidesOfSpecificIdealPolygon(g,p)["midpoints"]
-            NumOfSides = (4*g) + (2*(p-1))
+            f = self.PDSpecificCombinatorialSidePairing(g,p,o)
+            midpoints = self.PDSidesOfSpecificIdealPolygon(g,p,orders)["midpoints"]
+            NumOfSides = (4*g) + (2*(p-1)) + (2*o)
             SidePairings = {}
-            for k in range(NumOfSides):
-                    SidePairings[k] = Mobius_CP.MobiusTransitivity().MobiusMatrixz1z2z3Tow1w2w3(numpy.cos(2*((f(k)+1)%NumOfSides)*numpy.pi/NumOfSides)+numpy.sin(2*((f(k)+1)%NumOfSides)*numpy.pi/NumOfSides)*(1j),
-                                numpy.cos(2*((f(k))%NumOfSides)*numpy.pi/NumOfSides)+numpy.sin(2*((f(k))%NumOfSides)*numpy.pi/NumOfSides)*(1j),
-                                midpoints[f(k)],
-                                numpy.cos(2*k*numpy.pi/NumOfSides)+numpy.sin(2*k*numpy.pi/NumOfSides)*(1j),
-                                numpy.cos(2*(k+1)*numpy.pi/NumOfSides)+numpy.sin(2*(k+1)*numpy.pi/NumOfSides)*(1j),
-                                midpoints[k])
+            for k in range((4*g) + (2*(p-1))):
+                SidePairings[k] = [Mobius_CP.MobiusTransitivity().MobiusMatrixz1z2z3Tow1w2w3(numpy.cos(2*((f(k)+1)%NumOfSides)*numpy.pi/NumOfSides)+numpy.sin(2*((f(k)+1)%NumOfSides)*numpy.pi/NumOfSides)*(1j),
+                            numpy.cos(2*((f(k))%NumOfSides)*numpy.pi/NumOfSides)+numpy.sin(2*((f(k))%NumOfSides)*numpy.pi/NumOfSides)*(1j),
+                            midpoints[f(k)],
+                            numpy.cos(2*k*numpy.pi/NumOfSides)+numpy.sin(2*k*numpy.pi/NumOfSides)*(1j),
+                            numpy.cos(2*(k+1)*numpy.pi/NumOfSides)+numpy.sin(2*(k+1)*numpy.pi/NumOfSides)*(1j),
+                            midpoints[k])]
                     #print(Mobius_CP.MobiusAssocToMatrix().isParEllHypLox(SidePairings[k][0,0],SidePairings[k][0,1],SidePairings[k][1,0],SidePairings[k][1,1]))
+            MobTransUHPtoPD = {}
+            for l in range((4*g) + (2*(p-1)), NumOfSides,2):
+                a = numpy.cos(2*l*numpy.pi/NumOfSides)+numpy.sin(2*l*numpy.pi/NumOfSides)*(1j)
+                b = numpy.cos(2*(l+1)*numpy.pi/NumOfSides)+numpy.sin(2*(l+1)*numpy.pi/NumOfSides)*(1j)
+                c = numpy.cos(2*(l+2)*numpy.pi/NumOfSides)+numpy.sin(2*(l+2)*numpy.pi/NumOfSides)*(1j)
+                MobTransUHPtoPD[l] = Mobius_CP.MobiusTransitivity().MobiusTransz1z2z3Tow1w2w3(-1,0,1,a,b,c)
+            for k in range((4*g) + (2*(p-1)),NumOfSides):
+                if k % 2 == 0:
+                    order = orders[int((k - ((4*g) + (2*(p-1))))/2)]
+                    theta = (2*numpy.pi)/order
+                    w = numpy.cos(2*k*numpy.pi/NumOfSides)+numpy.sin(2*k*numpy.pi/NumOfSides)*(1j)
+                    z = MobTransUHPtoPD[k](-numpy.tan(numpy.pi-(theta/4))*(1j))
+                    x = numpy.cos(2*(k+2)*numpy.pi/NumOfSides)+numpy.sin(2*(k+2)*numpy.pi/NumOfSides)*(1j)
+                    SidePairings[k] = [Mobius_CP.MobiusTransitivity().MobiusMatrixz1z2z3Tow1w2w3(x,
+                                midpoints[f(k)],z,
+                                w,midpoints[k],z)]
+                if k % 2 == 1:
+                    order = orders[int((k - 1 - ((4*g) + (2*(p-1))))/2)]
+                    theta = (2*numpy.pi)/order
+                    x = numpy.cos(2*(k-1)*numpy.pi/NumOfSides)+numpy.sin(2*(k-1)*numpy.pi/NumOfSides)*(1j)
+                    w = MobTransUHPtoPD[k-1](-numpy.tan(numpy.pi-(theta/4))*(1j))
+                    z = numpy.cos(2*(k+1)*numpy.pi/NumOfSides)+numpy.sin(2*(k+1)*numpy.pi/NumOfSides)*(1j)
+                    SidePairings[k] = [Mobius_CP.MobiusTransitivity().MobiusMatrixz1z2z3Tow1w2w3(w,
+                                midpoints[f(k)],x,
+                                w,midpoints[k],z)]
             return SidePairings
                     
+        
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+### GO OVER THE FOLLOWING CODE, I HAVE NOT REALLY WORKED ON IT MUCH. IF I AM NOT MISTAKEN,
+### THE OBJECTIVE WAS TO WRITE A CODE THAT COULD VERIFY THE PARABOLIC CYCLE CONDITION FOR THE
+### POLYGON AND SIDE PAIRINGS CONSTRUCTED ABOVE        
+        
     def PDOrbitOfVertexUnderSpecificCombinatorialSidePairing(self,genus,numberOfPunctures):
         g, p = genus, numberOfPunctures
         if g == 0 and p < 3:
