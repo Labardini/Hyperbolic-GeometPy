@@ -103,18 +103,19 @@ class numpyExtendedComplexPlane:
     
     def e_circumcenter_and_radius(self,complexP,complexQ,complexR):
         #### PERSONAL NOTE: change xi, yi, in order to make reference to P, Q and R --tthe code more will be more readable
-        if self.areCollinear(complexP,complexQ,complexR) == False:
+        #if self.areCollinear(complexP,complexQ,complexR) == False:
 #        if self.typeOfCircleInExtendedPlane(complexP,complexQ,complexR) == "circle":
-            P = numpy.complex(complexP) 
-            Q = numpy.complex(complexQ)
-            R = numpy.complex(complexR) 
-            x1 = numpy.real(P)
-            y1 = numpy.imag(P)
-            x2 = numpy.real(Q)
-            y2 = numpy.imag(Q)
-            x3 = numpy.real(R)
-            y3 = numpy.imag(R)
-            D = 2*( x1*(y2 - y3) + x2*(y3 - y1) + x3*(y1 - y2))
+        P = numpy.complex(complexP) 
+        Q = numpy.complex(complexQ)
+        R = numpy.complex(complexR) 
+        x1 = numpy.real(P)
+        y1 = numpy.imag(P)
+        x2 = numpy.real(Q)
+        y2 = numpy.imag(Q)
+        x3 = numpy.real(R)
+        y3 = numpy.imag(R)
+        D = 2*( x1*(y2 - y3) + x2*(y3 - y1) + x3*(y1 - y2))
+        if D != 0 :
             center_x_coord = ((x1**2 + y1**2)*(y2 - y3) + (x2**2 + y2**2)*(y3 - y1) + (x3**2 + y3**2)*(y1 - y2)) / D
             center_y_coord = ((x1**2 + y1**2)*(x3 - x2) + (x2**2 + y2**2)*(x1 - x3) + (x3**2 + y3**2)*(x2 - x1)) / D
             radius = numpy.sqrt((x1-center_x_coord)**2+(y1-center_y_coord)**2)
@@ -127,6 +128,16 @@ class numpyExtendedComplexPlane:
 #            raise myInputError(str(complexP)+","+str(complexQ)+","+str(complexR),"These points are collinear")
         
     
+
+    def eCenterAndRadiusGivenCircleEquation(self,xcoeff,ycoeff,constantTerm):#ASSUMES THAT BOTH X^2 AND Y^2 HAVE COEFFICIENT 1, AND THAT ALL THE NON-TRIVIAL TERMS ARE ON THE SAME SIDE OF THE EQUATION --THE OTHER SIDE BEING ZERO
+        center_x_coord = -xcoeff/2
+        center_y_coord = -ycoeff/2
+        radius = numpy.absolute(-constantTerm + (xcoeff/2)**2 + (ycoeff/2)**2) # THIS IS TO PREVENT THE EXCEPTION RAISED WHEN radius IS NOT A NON-NEGATIVE REAL
+        return [[center_x_coord,center_y_coord],numpy.sqrt(radius)]
+        
+        
+        
+        
 #### THE FOLLOWING FUNCTION FINDS THE COORDINATES OF THE INTERSECTION POINTS
 #### OF TWO CIRCLES IF WE ARE GIVEN THE LATTERS' EUCLIDEAN CENTERS AND RADII
     

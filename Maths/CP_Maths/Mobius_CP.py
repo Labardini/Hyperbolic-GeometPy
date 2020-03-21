@@ -409,40 +409,39 @@ class MobiusFromParameters:
         pass
 
     
-    def MobMatrixFromParams(self,listOfFixedPoints,complexmu):
-        if len(listOfFixedPoints) == 0 or len(listOfFixedPoints)>2:
+    def MobMatrixFromParams(self,listOfFixedPoints,complexalpha):
+        if len(listOfFixedPoints) == 0 or len(listOfFixedPoints)>2 or complexalpha == 0 or complexalpha==1:
             pass
         else:
-            mu = extendedValue(complexmu)
-            if len(listOfFixedPoints) == 1 or listOfFixedPoints[0]==listOfFixedPoints[1]:
-                z1 = extendedValue(listOfFixedPoints[0])
-                A = numpy.matrix([[1,mu],[0,1]])
-                if z1 == oo:
-                    B = numpy.matrix([[1,0],[0,1]])
-                else:
-                    B = numpy.matrix([[0,1],[1,z1]])
-            if len(listOfFixedPoints) == 2 and listOfFixedPoints[0]!=listOfFixedPoints[1]:
-                z1 = extendedValue(listOfFixedPoints[0])
-                z2 = extendedValue(listOfFixedPoints[1])
-                A = numpy.matrix([[mu,0],[0,1]])
-                if z1 == oo:
-                    B = MobiusTransitivity().MobiusMatrixz1z2z3To0oo1(z2,z1,z2+1)
-                elif z2 == oo:
-                    B = MobiusTransitivity().MobiusMatrixz1z2z3To0oo1(z1,z2,z1+1)
-                else:
-                    B = MobiusTransitivity().MobiusMatrixz1z2z3To0oo1(z1,z2,(z1+z2)/2)
-            result =  (B**(-1))*A*B
-            return result
+            if len(listOfFixedPoints) == 1 or listOfFixedPoints[0] == listOfFixedPoints[1]:
+                pass #### FALTA
+            else:
+                z0, z1 = listOfFixedPoints[0], listOfFixedPoints[1]
+                can = numpy.matrix([[complexalpha,0],[0,1]])
+                if numpy.absolute(complexalpha) == 1: # turning around z0 is counterclockwise
+                    if z1 != oo:
+                        if z0!=oo:
+                            C = numpy.matrix([[1,-z0],[1,-z1]])
+                        else:
+                            C = numpy.matrix([[0,1],[1,-z1]])
+                    else:
+                        C = numpy.matrix([[1,-z0],[0,1]])
+                else: # z0 is the repulsor, z1 is the attractor, IF numpy.absolute(complexalpha) > 1
+                    if z1 != oo:
+                        if z0!=oo:
+                            C = numpy.matrix([[1,-z0],[1,-z1]])
+                        else:
+                            C = numpy.matrix([[0,1],[1,-z1]])
+                    else: 
+                        C = numpy.matrix([[1,-z0],[0,1]])
+                result = (C**(-1))*can*C
+        return result
+                        
+                    
                 
-    def MobTransFromParams(self,listOfFixedPoints,complexmu):
-        if len(listOfFixedPoints) == 0 or len(listOfFixedPoints)>2:
-            pass
-        else:
-            A = self.MobMatrixFromParams(listOfFixedPoints,complexmu)
-            a,b,c,d = A[0,0], A[0,1], A[1,0], A[1,1]
-            def MobTrans(z):
-                return MobiusAssocToMatrix().EvaluationAtConcretePoint(a,b,c,d)(z)
-            return MobTrans
+
+                
+
             
                 
 
