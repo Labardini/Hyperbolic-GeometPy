@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'Window.ui'
 #
-# Created by: PyQt5 UI code generator 5.6
+# Created by: PyQt5 UI code generator 5.9.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(900, 611)
+        MainWindow.resize(900, 647)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.frameMainButtons = QtWidgets.QFrame(self.centralwidget)
@@ -202,11 +202,27 @@ class Ui_MainWindow(object):
         self.checkBoxCPMTMobFromParam.setGeometry(QtCore.QRect(5, 10, 271, 20))
         self.checkBoxCPMTMobFromParam.setObjectName("checkBoxCPMTMobFromParam")
         self.lineEditCPMTMobFromParam = QtWidgets.QLineEdit(self.pageCPMobiusTransformations)
-        self.lineEditCPMTMobFromParam.setGeometry(QtCore.QRect(20, 30, 113, 21))
+        self.lineEditCPMTMobFromParam.setGeometry(QtCore.QRect(80, 220, 195, 21))
         self.lineEditCPMTMobFromParam.setObjectName("lineEditCPMTMobFromParam")
         self.pushButtonCPMTMobFromParam = QtWidgets.QPushButton(self.pageCPMobiusTransformations)
-        self.pushButtonCPMTMobFromParam.setGeometry(QtCore.QRect(20, 60, 121, 32))
+        self.pushButtonCPMTMobFromParam.setGeometry(QtCore.QRect(160, 240, 121, 32))
         self.pushButtonCPMTMobFromParam.setObjectName("pushButtonCPMTMobFromParam")
+        self.PlotWidgetIn_pageCPMobiusTransformations = PlotWidget(self.pageCPMobiusTransformations)
+        self.PlotWidgetIn_pageCPMobiusTransformations.setEnabled(True)
+        self.PlotWidgetIn_pageCPMobiusTransformations.setGeometry(QtCore.QRect(0, 30, 281, 181))
+        brush = QtGui.QBrush(QtGui.QColor(255, 255, 255))
+        brush.setStyle(QtCore.Qt.NoBrush)
+        self.PlotWidgetIn_pageCPMobiusTransformations.setBackgroundBrush(brush)
+        self.PlotWidgetIn_pageCPMobiusTransformations.setObjectName("PlotWidgetIn_pageCPMobiusTransformations")
+        self.labelCPMTxNumber = QtWidgets.QLabel(self.pageCPMobiusTransformations)
+        self.labelCPMTxNumber.setGeometry(QtCore.QRect(0, 210, 75, 16))
+        self.labelCPMTxNumber.setObjectName("labelCPMTxNumber")
+        self.labelCPMTyNumber = QtWidgets.QLabel(self.pageCPMobiusTransformations)
+        self.labelCPMTyNumber.setGeometry(QtCore.QRect(0, 225, 75, 16))
+        self.labelCPMTyNumber.setObjectName("labelCPMTyNumber")
+        self.labelCPMTNormNumber = QtWidgets.QLabel(self.pageCPMobiusTransformations)
+        self.labelCPMTNormNumber.setGeometry(QtCore.QRect(0, 240, 75, 16))
+        self.labelCPMTNormNumber.setObjectName("labelCPMTNormNumber")
         self.stackedWidgetIn_pageCP.addWidget(self.pageCPMobiusTransformations)
         self.pushButtonCPClearCanvas = QtWidgets.QPushButton(self.pageCP)
         self.pushButtonCPClearCanvas.setGeometry(QtCore.QRect(250, 510, 113, 32))
@@ -853,14 +869,14 @@ class Ui_MainWindow(object):
   #      MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
-        self.stackedWidgetAllPages.setCurrentIndex(1)
-        self.tabsIn_pageCP.setCurrentIndex(1)
-        self.stackedWidgetIn_pageCP.setCurrentIndex(1)
-        self.tabsIn_pageHP.setCurrentIndex(1)
+        self.stackedWidgetAllPages.setCurrentIndex(0)
+        self.tabsIn_pageCP.setCurrentIndex(0)
+        self.stackedWidgetIn_pageCP.setCurrentIndex(0)
+        self.tabsIn_pageHP.setCurrentIndex(0)
         self.tabsIn_tabUHP.setCurrentIndex(0)
         self.stackedWidgetIn_pageUHP.setCurrentIndex(0)
-        self.tabsIn_tabPD.setCurrentIndex(3)
-        self.stackedWidgetIn_pagePD.setCurrentIndex(2)
+        self.tabsIn_tabPD.setCurrentIndex(0)
+        self.stackedWidgetIn_pagePD.setCurrentIndex(0)
         self.tabsIn_pageCP.currentChanged['int'].connect(self.stackedWidgetIn_pageCP.setCurrentIndex)
         self.tabsIn_tabPD.currentChanged['int'].connect(self.stackedWidgetIn_pagePD.setCurrentIndex)
         self.tabsIn_tabUHP.currentChanged['int'].connect(self.stackedWidgetIn_pageUHP.setCurrentIndex)
@@ -888,14 +904,14 @@ class Ui_MainWindow(object):
         self.textWelcome.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'.SF NS Text\'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
-"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:24pt;\">Hyperbolic GeometPy</span></p>\n"
-"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt;\">Una app para interactuar con el plano hyperbólico</span></p>\n"
-"<p align=\"justify\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:24pt;\"><br /></p>\n"
-"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt;\">Daniel Labardini Fragoso</span></p>\n"
-"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt;\">IM-UNAM</span></p>\n"
-"<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:18pt;\"><br /></p>\n"
-"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">(Trabajo por siempre en proceso desde hace 6 años)</span></p></body></html>"))
+"</style></head><body style=\" font-family:\'.AppleSystemUIFont\'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'.SF NS Text\'; font-size:24pt;\">Hyperbolic GeometPy</span></p>\n"
+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'.SF NS Text\'; font-size:18pt;\">An app to interact with the Hyperbolic Plane</span></p>\n"
+"<p align=\"justify\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'.SF NS Text\'; font-size:24pt;\"><br /></p>\n"
+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'.SF NS Text\'; font-size:18pt;\">Daniel Labardini Fragoso</span></p>\n"
+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'.SF NS Text\'; font-size:18pt;\">IM-UNAM</span></p>\n"
+"<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'.SF NS Text\'; font-size:18pt;\"><br /></p>\n"
+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'.SF NS Text\'; font-size:12pt;\">(Work in progress)</span></p></body></html>"))
         self.tabsIn_pageCP.setTabText(self.tabsIn_pageCP.indexOf(self.tabCPSteinerGrids), _translate("MainWindow", "Steiner grids"))
         self.tabsIn_pageCP.setTabText(self.tabsIn_pageCP.indexOf(self.tabCPMobiusTransformations), _translate("MainWindow", "Möbius transformations"))
         self.pushButtonCPSGCommon.setText(_translate("MainWindow", "Show Common Circles"))
@@ -915,7 +931,11 @@ class Ui_MainWindow(object):
         self.checkBoxCPMTInvariantCurve.setText(_translate("MainWindow", "Invariant curve"))
         self.pushButtonCPMTFixedPoints.setText(_translate("MainWindow", "Fixed points"))
         self.checkBoxCPMTMobFromParam.setText(_translate("MainWindow", "Möbius transformations from parameters"))
+        self.lineEditCPMTMobFromParam.setPlaceholderText(_translate("MainWindow", "\\multiplier"))
         self.pushButtonCPMTMobFromParam.setText(_translate("MainWindow", "Compute Matrix"))
+        self.labelCPMTxNumber.setText(_translate("MainWindow", "--"))
+        self.labelCPMTyNumber.setText(_translate("MainWindow", "--"))
+        self.labelCPMTNormNumber.setText(_translate("MainWindow", "--"))
         self.pushButtonCPClearCanvas.setText(_translate("MainWindow", "Clear Canvas"))
         self.radioButtonCPoo.setText(_translate("MainWindow", "oo"))
         self.tabsIn_tabUHP.setTabText(self.tabsIn_tabUHP.indexOf(self.tabUHPBasicConstructions), _translate("MainWindow", "Basic Constructions"))
@@ -984,8 +1004,8 @@ class Ui_MainWindow(object):
         self.textBrowserPDIsomsOrdersOfOrbPts.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'.SF NS Text\'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
-"<p align=\"justify\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">If you want orbifold points, please write their orders (integers greater than 1) separated by commas, or leave blank if you don\'t want orbifold points.</p></body></html>"))
+"</style></head><body style=\" font-family:\'.AppleSystemUIFont\'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
+"<p align=\"justify\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'.SF NS Text\';\">If you want orbifold points, please write their orders (integers greater than 1) separated by commas, or leave blank if you don\'t want orbifold points.</span></p></body></html>"))
         self.checkBox.setText(_translate("MainWindow", "Make GIF"))
         self.labelPDyNumber.setText(_translate("MainWindow", "--"))
         self.labelPDxNumber.setText(_translate("MainWindow", "--"))

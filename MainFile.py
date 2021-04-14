@@ -21,7 +21,7 @@ from pyqtgraph.Qt import QtCore
 from pyqtgraph.ptime import time
 
 #### FOR HYPERBOLOID
-import pyqtgraph.opengl as gl
+#import pyqtgraph.opengl as gl
 ####
 
 
@@ -88,6 +88,8 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         
         ### pens
         self.blackPenWidth2 = pg.mkPen('k', width=2)
+        self.redPenWidth2 = pg.mkPen('r', width=2)
+        self.bluePenWidth2 = pg.mkPen('b', width=2)
         
         
 
@@ -106,8 +108,38 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         self.PlotWidgetIn_pageCP.disableAutoRange()
 #        self.graphicsView_2.setYRange(self.CP_ylim_down,self.CP_ylim_up)
         self.PlotWidgetIn_pageCP.setAspectLocked(1.0)
-        self.CPdraggableDotsMobTransFromParameters = dD.draggableDot() 
+        self.CPdraggableDotsMobTransFromParameters = dD.draggableDot() # FIXED POINTS AS DRAGGABLE DOTS
         self.PlotWidgetIn_pageCP.addItem(self.CPdraggableDotsMobTransFromParameters)
+        
+        self.PlotWidgetIn_pageCPMobiusTransformations.setYRange(-2,2)
+        #self.PlotWidgetIn_pageCPMobiusTransformations.setLimits(yMin=-2)
+        #self.PlotWidgetIn_pageCPMobiusTransformations.disableAutoRange()
+#        self.graphicsView_2.setYRange(self.CP_ylim_down,self.CP_ylim_up)
+        self.PlotWidgetIn_pageCPMobiusTransformations.setAspectLocked(1.0)
+        self.PlotWidgetIn_pageCPMobiusTransformations.disableAutoRange()
+        # self.horLineCrosshairCPMT = pg.InfiniteLine(angle=0, movable = False, pen=pg.mkPen('k', width=1.5))
+        # self.vertLineCrosshairCPMT = pg.InfiniteLine(angle=90, movable = False, pen=pg.mkPen('k', width=1.5))
+        # self.PlotWidgetIn_pageCPMobiusTransformations.addItem(self.horLineCrosshairCPMT)
+        # self.PlotWidgetIn_pageCPMobiusTransformations.addItem(self.vertLineCrosshairCPMT)        
+        self.widthunitCircleCPMobTransFromParameters = 3
+        self.unitCircleCPMobTransFromParameters = pg.PlotCurveItem(numpy.cos(numpy.linspace(0,2*numpy.pi,1000)),numpy.sin(numpy.linspace(0,2*numpy.pi,1000)), pen=pg.mkPen('b',width=self.widthunitCircleCPMobTransFromParameters), clickable=True)
+        self.PlotWidgetIn_pageCPMobiusTransformations.addItem(self.unitCircleCPMobTransFromParameters)
+        self.widthPosRealsCPMobTransFromParameters = 3
+        self.PosRealsCPMobTransFromParameters = pg.InfiniteLine(pos=0, angle=0, pen=pg.mkPen('k', width=self.widthPosRealsCPMobTransFromParameters))
+        self.PlotWidgetIn_pageCPMobiusTransformations.addItem(self.PosRealsCPMobTransFromParameters )
+        self.ImagAxisCPMobTransFromParameters = pg.InfiniteLine(pos=0, angle=90, pen=pg.mkPen('k', width=self.widthPosRealsCPMobTransFromParameters))
+        self.PlotWidgetIn_pageCPMobiusTransformations.addItem(self.ImagAxisCPMobTransFromParameters )
+        #self.myPlotCurveItem = pg.PlotCurveItem([0, 2],[0,0],pen=pg.mkPen('b',width=3),clickable=True)
+        #self.PlotWidgetIn_pageCPMobiusTransformations.addItem(self.myPlotCurveItem)
+        self.CPdraggableDotsMobTransFromParametersParEllAlphaParameter = dD.unitCircledraggableDot() # ALPHA PARAMETER AS DRAGGABLE DOT FOR PARABOLIC OR ELLIPTIC TRANSFORMATION
+        self.CPdraggableDotsMobTransFromParametersParEllAlphaParameter.setData(pos=numpy.array([[0,1]],dtype=float),pxMode=True)
+        self.CPdraggableDotsMobTransFromParametersParHypAlphaParameter = dD.PosRealsdraggableDot() # ALPHA PARAMETER AS DRAGGABLE DOT FOR PARABOLIC OR HYPERBOLIC TRANSFORMATION
+        self.CPdraggableDotsMobTransFromParametersParHypAlphaParameter.setData(pos=numpy.array([[2,0]],dtype=float),pxMode=True)
+        self.CPdraggableDotsMobTransFromParametersParLoxAlphaParameter = dD.draggableDot() # ALPHA PARAMETER AS DRAGGABLE DOT FOR PARABOLIC OR LOXODROMIC TRANSFORMATION
+        self.CPdraggableDotsMobTransFromParametersParLoxAlphaParameter.setData(pos=numpy.array([[1,1]],dtype=float),pxMode=True)
+        self.PlotWidgetIn_pageCPMobiusTransformations.addItem(self.CPdraggableDotsMobTransFromParametersParEllAlphaParameter)
+        self.PlotWidgetIn_pageCPMobiusTransformations.addItem(self.CPdraggableDotsMobTransFromParametersParHypAlphaParameter)
+        self.PlotWidgetIn_pageCPMobiusTransformations.addItem(self.CPdraggableDotsMobTransFromParametersParLoxAlphaParameter)
 
 
 
@@ -268,6 +300,21 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #####
 ##### Daniel's own configuration of some buttons, signals and slots,
 ##### for navigation through the app's pages
@@ -303,13 +350,20 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         self.horizontalSliderCPSGLoxodromesAngleTheta.sliderMoved.connect(self.effectOf_horizontalSliderCPSGLoxodromesAngleTheta)
         
         self.pushButtonCPMTFixedPoints.clicked.connect(self.effectOf_pushButtonCPMTFixedPoints)
-        self.pushButtonCPMTAnimOrbitSinglePoint.clicked.connect(self.effectOf_pushButtonCPMTAnimOrbitSinglePoint)
         self.pushButtonCPMTStaticOrbitSinglePoint.clicked.connect(self.effectOf_pushButtonCPMTStaticOrbitSinglePoint)
 #        self.pushButtonCPMTOrbitsRandomCircle.clicked.connect(self.effectOf_pushButtonCPMTOrbitsRandomCircle)
 #        self.pushButtonCPMTOrbitsSteinerGrid.clicked.connect(self.effectOf_pushButtonCPMTOrbitsSteinerGrid)
 
 
+
         self.PlotWidgetIn_pageCP.scene().sigMouseClicked.connect(self.CPMTMobFromParamFixedPoints)
+        #self.unitCircleCPMobTransFromParameters.sigClicked.connect(self.CPMTellHypAlphaParameter)
+
+        #self.proxyCPMT = pg.SignalProxy(self.PlotWidgetIn_pageCPMobiusTransformations.scene().sigMouseMoved, rateLimit=60, slot=self.CPMTmouseMoved)
+        self.CPdraggableDotsMobTransFromParametersParEllAlphaParameter.Dot.moved.connect(self.CPMTAlphaParameter)
+        self.CPdraggableDotsMobTransFromParametersParHypAlphaParameter.Dot.moved.connect(self.CPMTAlphaParameter)
+        self.CPdraggableDotsMobTransFromParametersParLoxAlphaParameter.Dot.moved.connect(self.CPMTAlphaParameter)
+        
 
 
 
@@ -545,24 +599,33 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 #############################################
 ##############
 ############## MOBIUS TRANSFORMATIONS FROM PARAMETERS
+            
+        
+        
+
+    def CPMTAlphaParameter(self,pt):
+        self.lineEditCPMTMobFromParam.setText(str(pt[0]+pt[1]*(1j)))
+        self.labelCPMTxNumber.setText("<span style='font-size: 12pt'><span style='color: black'>x=%0.100f" % (pt[0]))
+        self.labelCPMTyNumber.setText("<span style='font-size: 12pt'><span style='color: black'>y=%0.100f" % (pt[1]))   
+        self.labelCPMTNormNumber.setText("<span style='font-size: 12pt'><span style='color: black'>Norm=%0.100f" % (numpy.sqrt(((pt[0])**2) + ((pt[1])**2)))) 
+
+
 
     def CPMTMobFromParamFixedPoints(self,ev):
         if self.checkBoxCPMTMobFromParam.isChecked() == True and self.stackedWidgetIn_pageCP.currentIndex() == 1:
-            global arbManyClicks
-            global oneClick
             global twoClicks
             global auxStorage
             x = self.PlotWidgetIn_pageCP.plotItem.vb.mapSceneToView(ev.scenePos()).x()
             y = self.PlotWidgetIn_pageCP.plotItem.vb.mapSceneToView(ev.scenePos()).y()
-            arbManyClicks.append([x,y])
-            if len(arbManyClicks)==1:
-                points = numpy.array([[arbManyClicks[0][0],arbManyClicks[0][1]]],dtype=float)
+            twoClicks.append([x,y])
+            if len(twoClicks)==1:
+                points = numpy.array([[twoClicks[0][0],twoClicks[0][1]]],dtype=float)
                 #initialPoint = pg.GraphItem(pos=[[twoClicks[0][0],twoClicks[0][1]]])
                 self.CPdraggableDotsMobTransFromParameters.setData(pos=points,  pxMode=True)
+                z0 = twoClicks[-1][0]+twoClicks[-1][1]*(1j)
+                auxStorage.clear()
+                auxStorage.append(z0)
             else:
-                twoClicks.clear()
-                twoClicks.append(arbManyClicks[-2])
-                twoClicks.append(arbManyClicks[-1])
                 #print(twoClicks)
                 points = numpy.array([[twoClicks[k][0],twoClicks[k][1]] for k in range(len(twoClicks))],dtype=float)
                 self.CPdraggableDotsMobTransFromParameters.setData(pos=points,  pxMode=True)
@@ -571,33 +634,192 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                 z1 = twoClicks[-1][0]+twoClicks[-1][1]*(1j)
 #                self.lineEditUHPGMComplexNumber1.setText(str(z0))
 #                self.lineEditUHPGMComplexNumber2.setText(str(z0))
+                twoClicks.clear()
                 auxStorage.clear()
                 auxStorage.append(z0)
                 auxStorage.append(z1)
+                
+
+
+
+
+
 
 
             def effectOf_pushButtonCPMTMobFromParam():
                 if self.checkBoxCPMTMobFromParam.isChecked() == True and self.stackedWidgetIn_pageCP.currentIndex() == 1:
-                    global auxStorage
                     complexalpha = numpy.complex(str(self.lineEditCPMTMobFromParam.text()))
-                    if len(auxStorage) !=2:
-                        pass
-                    else:
-                        listOfFixedPoints = auxStorage
-                        A = Mobius_CP.MobiusFromParameters().MobMatrixFromParams(listOfFixedPoints,complexalpha)
-                        a = A[0,0]
-                        b = A[0,1]
-                        c = A[1,0]
-                        d = A[1,1]
-                        self.lineEditCPMTOrbitsComplexNumberalpha.setText(str(a))
-                        self.lineEditCPMTOrbitsComplexNumberbeta.setText(str(b))
-                        self.lineEditCPMTOrbitsComplexNumbergamma.setText(str(c))
-                        self.lineEditCPMTOrbitsComplexNumberdelta.setText(str(d))
+                    A = Mobius_CP.MobiusFromParameters().MobMatrixFromParams(auxStorage,complexalpha)
+                    a = A[0,0]
+                    b = A[0,1]
+                    c = A[1,0]
+                    d = A[1,1]
+                    self.lineEditCPMTOrbitsComplexNumberalpha.setText(str(a))
+                    self.lineEditCPMTOrbitsComplexNumberbeta.setText(str(b))
+                    self.lineEditCPMTOrbitsComplexNumbergamma.setText(str(c))
+                    self.lineEditCPMTOrbitsComplexNumberdelta.setText(str(d))
                         
-    
             self.pushButtonCPMTMobFromParam.clicked.connect(effectOf_pushButtonCPMTMobFromParam)                    
                 
             
+            def effectOf_pushButtonCPMTAnimOrbitSinglePoint():#1,100,1j,1 is a nice loxodromic Mobius transformation for examples
+                complexalpha = numpy.complex(str(self.lineEditCPMTMobFromParam.text()))
+                a = self.lineEditCPMTOrbitsComplexNumberalpha.text()
+                b = self.lineEditCPMTOrbitsComplexNumberbeta.text()
+                c = self.lineEditCPMTOrbitsComplexNumbergamma.text()
+                d = self.lineEditCPMTOrbitsComplexNumberdelta.text()
+                z_0 = extendedValue(self.lineEditCPMTOrbitsComplexNumberz_0.text())
+                transformation = Mobius_CP.MobiusAssocToMatrix().EvaluationAtConcretePoint(a,b,c,d)
+                numberOfIterations = int(self.spinBoxCPMTOrbits.cleanText())
+                OrbitAllPts = Mobius_CP.MobiusAssocToMatrix().MobTransOrbit(a,b,c,d,numberOfIterations)(z_0)[0]
+                OrbitFinitePts = Mobius_CP.MobiusAssocToMatrix().MobTransOrbit(a,b,c,d,numberOfIterations)(z_0)[1]
+                PartialOrbit = dD.draggableDot()
+                CurrentPoint = dD.draggableDot()
+                #Dots.Dot.moved.connect(CPMTMobiusOrbitDrag)
+                self.PlotWidgetIn_pageCP.addItem(PartialOrbit)
+                self.PlotWidgetIn_pageCP.addItem(CurrentPoint)
+                self.labelCPMTTypeOfMobius.setText(str(Mobius_CP.MobiusAssocToMatrix().isParEllHypLox(a,b,c,d)[0]))
+                
+                
+        
+                if z_0 != oo:
+                    self.radioButtonCPoo.setChecked(False)
+                    points = numpy.array([[z_0.real,z_0.imag]],dtype=float)
+                    PartialOrbit.setData(pos=points,  pxMode=True)
+                else:
+                    self.radioButtonCPoo.setChecked(True)
+                    
+                if self.checkBoxCPMTInvariantCurve.isChecked() == True:
+                        curves = Mobius_CP.MobiusAssocToMatrix().invariantCurveThroughPt(a,b,c,d,z_0)
+                        drawings = []
+                        if len(curves)>0:
+                            for curve in curves:
+                                drawing = pg.PlotCurveItem(curve[0],curve[1],pen=self.blackPenWidth2)
+                                drawings.append(drawing)
+                                self.PlotWidgetIn_pageCP.addItem(drawing)
+                
+                OrbitFinitePtsForCircles = [OrbitFinitePts[numpy.sign(numberOfIterations)*i] for i in range(abs(numberOfIterations)) if numpy.sign(numberOfIterations)*i in OrbitFinitePts]
+                # ApolloniusCircles = []
+                # CommonCircles = []        
+                # for i in range(len(OrbitFinitePtsForCircles)):
+                #     if len(auxStorage)==1:
+                #         z_i = OrbitFinitePtsForCircles[numpy.sign(numberOfIterations)*i]
+                #         auxPt1, auxPt2, auxPt3 = z_i, transformation(z_i), transformation(transformation(z_i))
+                #         AppolloniuseCenterAndRadius = extended_complex_plane_CP.numpyExtendedComplexPlane().e_circumcenter_and_radius(auxPt1, auxPt2, auxPt3)
+                #         AppolloniuseCenter = AppolloniuseCenterAndRadius[0]
+                #         AppolloniuseRadius = AppolloniuseCenterAndRadius[1]
+                #         t = numpy.linspace(0, 2*numpy.pi,100)
+                #         Appolloniusx_coord, Appolloniusy_coord = AppolloniuseCenter[0]+AppolloniuseRadius*numpy.cos(t), AppolloniuseCenter[1]+AppolloniuseRadius*numpy.sin(t)
+                #         ApolloniusCircleThroughz_i = pg.PlotCurveItem(Appolloniusx_coord,Appolloniusy_coord,pen=self.redPenWidth2)
+                #         ApolloniusCircles.append(ApolloniusCircleThroughz_i)
+                #         #self.PlotWidgetIn_pageCP.addItem(ApolloniusCircleThroughz_i)
+                #         auxMatrix = Mobius_CP.MobiusFromParameters().MobMatrixFromParams(auxStorage,(1j)*complexalpha)
+                #         auxTrans = Mobius_CP.MobiusAssocToMatrix().EvaluationAtConcretePoint(auxMatrix[0,0],auxMatrix[0,1],auxMatrix[1,0],auxMatrix[1,1])
+                #         CommoneCenterAndRadius = extended_complex_plane_CP.numpyExtendedComplexPlane().e_circumcenter_and_radius(auxStorage[0],z_i,auxTrans(z_i))
+                #         CommoneCenter = CommoneCenterAndRadius[0]
+                #         CommoneRadius = CommoneCenterAndRadius[1]
+                #         t = numpy.linspace(0, 2*numpy.pi,100)
+                #         Commonx_coord, Commony_coord = CommoneCenter[0]+CommoneRadius*numpy.cos(t), CommoneCenter[1]+CommoneRadius*numpy.sin(t)
+                #         commonCircleThroughz_i = pg.PlotCurveItem(Commonx_coord,Commony_coord,pen=self.bluePenWidth2)
+                #         CommonCircles.append(commonCircleThroughz_i)
+                #     if len(auxStorage)==2:
+                #         z_i = OrbitFinitePtsForCircles[numpy.sign(numberOfIterations)*i]
+                #         conjMatrix = Mobius_CP.MobiusTransitivity().MobiusMatrix0oo1Toz1z2z3(auxStorage[0],auxStorage[1],z_i) # THIS ASSUMES THAT z_i IS NOT A FIXED POINT!!!!!
+                #         conjTrans = Mobius_CP.MobiusAssocToMatrix().EvaluationAtConcretePoint(conjMatrix[0,0],conjMatrix[0,1],conjMatrix[1,0],conjMatrix[1,1])
+                #         auxPt1, auxPt2, auxPt3 = z_i, conjTrans(1j), conjTrans(-1)
+                #         AppolloniuseCenterAndRadius = extended_complex_plane_CP.numpyExtendedComplexPlane().e_circumcenter_and_radius(auxPt1, auxPt2, auxPt3)
+                #         AppolloniuseCenter = AppolloniuseCenterAndRadius[0]
+                #         AppolloniuseRadius = AppolloniuseCenterAndRadius[1]
+                #         t = numpy.linspace(0, 2*numpy.pi,100)
+                #         Appolloniusx_coord, Appolloniusy_coord = AppolloniuseCenter[0]+AppolloniuseRadius*numpy.cos(t), AppolloniuseCenter[1]+AppolloniuseRadius*numpy.sin(t)
+                #         ApolloniusCircleThroughz_i = pg.PlotCurveItem(Appolloniusx_coord,Appolloniusy_coord,pen=self.redPenWidth2)
+                #         ApolloniusCircles.append(ApolloniusCircleThroughz_i)
+                #         #self.PlotWidgetIn_pageCP.addItem(ApolloniusCircleThroughz_i)
+                #         CommoneCenterAndRadius = extended_complex_plane_CP.numpyExtendedComplexPlane().e_circumcenter_and_radius(auxStorage[0],auxStorage[1],z_i)
+                #         CommoneCenter = CommoneCenterAndRadius[0]
+                #         CommoneRadius = CommoneCenterAndRadius[1]
+                #         t = numpy.linspace(0, 2*numpy.pi,100)
+                #         Commonx_coord, Commony_coord = CommoneCenter[0]+CommoneRadius*numpy.cos(t), CommoneCenter[1]+CommoneRadius*numpy.sin(t)
+                #         commonCircleThroughz_i = pg.PlotCurveItem(Commonx_coord,Commony_coord,pen=self.bluePenWidth2)
+                #         CommonCircles.append(commonCircleThroughz_i)
+                #         #self.PlotWidgetIn_pageCP.addItem(commonCircleThroughz_i)
+                
+                # conjMatrix = Mobius_CP.MobiusTransitivity().MobiusMatrix0oo1Toz1z2z3(auxStorage[0],auxStorage[1],z_0) # THIS ASSUMES THAT z_0 IS NOT A FIXED POINT!!!!!
+                # conjTrans = Mobius_CP.MobiusAssocToMatrix().EvaluationAtConcretePoint(conjMatrix[0,0],conjMatrix[0,1],conjMatrix[1,0],conjMatrix[1,1])
+                # auxPt1, auxPt2, auxPt3 = z_0, conjTrans(1j), conjTrans(-1)
+                # eCenterAndRadius = extended_complex_plane_CP.numpyExtendedComplexPlane().e_circumcenter_and_radius(auxPt1, auxPt2, auxPt3)
+                # eCenter = eCenterAndRadius[0]
+                # eRadius = eCenterAndRadius[1]
+                # t = numpy.linspace(0, 2*numpy.pi,100)
+                # x_coord, y_coord = eCenter[0]+eRadius*numpy.cos(t), eCenter[1]+eRadius*numpy.sin(t)
+                # ApolloniusCircleThroughCurrent_z = pg.PlotCurveItem(pen=self.redPenWidth2)
+                # self.PlotWidgetIn_pageCP.addItem(ApolloniusCircleThroughCurrent_z)
+                # #ApolloniusCircleThroughCurrent_z.setData(x_coord,y_coord)
+                # eCenterAndRadius = extended_complex_plane_CP.numpyExtendedComplexPlane().e_circumcenter_and_radius(auxStorage[0],auxStorage[1],z_0)
+                # eCenter = eCenterAndRadius[0]
+                # eRadius = eCenterAndRadius[1]
+                # t = numpy.linspace(0, 2*numpy.pi,100)
+                # x_coord, y_coord = eCenter[0]+eRadius*numpy.cos(t), eCenter[1]+eRadius*numpy.sin(t)
+                # commonCircleThroughCurrent_z = pg.PlotCurveItem(pen=self.bluePenWidth2)
+                # self.PlotWidgetIn_pageCP.addItem(commonCircleThroughCurrent_z)
+                # #commonCircleThroughCurrent_z.setData(x_coord,y_coord)
+                               
+
+                
+                k=0
+                def update():
+                    self.radioButtonCPoo.setChecked(False)
+                    nonlocal k
+                    points = numpy.array([[OrbitFinitePts[numpy.sign(numberOfIterations)*i].real,OrbitFinitePts[numpy.sign(numberOfIterations)*i].imag] for i in range(k+1) if numpy.sign(numberOfIterations)*i in OrbitFinitePts],dtype=float)
+                    if len(points) > 0:
+                        PartialOrbit.setData(pos=points, pxMode=True)                            
+  
+                    current_z = OrbitAllPts[numpy.sign(numberOfIterations)*(k)%numberOfIterations]
+                    if current_z !=oo:
+                        current = numpy.array([[current_z.real,current_z.imag]],dtype=float)
+                        CurrentPoint.setData(pos=current, symbolBrush=(217,83,25), symbolPen='r',  pxMode=True)
+                        # if len(auxStorage)==1:
+                        #     pass
+                        # if len(auxStorage)==2:
+                        #     conjMatrix = Mobius_CP.MobiusTransitivity().MobiusMatrix0oo1Toz1z2z3(auxStorage[0],auxStorage[1],current_z) # THIS ASSUMES THAT current_z IS NOT A FIXED POINT!!!!!
+                        #     conjTrans = Mobius_CP.MobiusAssocToMatrix().EvaluationAtConcretePoint(conjMatrix[0,0],conjMatrix[0,1],conjMatrix[1,0],conjMatrix[1,1])
+                        #     auxPt1, auxPt2, auxPt3 = current_z, conjTrans(1j), conjTrans(-1)
+                        #     eCenterAndRadius = extended_complex_plane_CP.numpyExtendedComplexPlane().e_circumcenter_and_radius(auxPt1, auxPt2, auxPt3)
+                        #     eCenter = eCenterAndRadius[0]
+                        #     eRadius = eCenterAndRadius[1]
+                        #     t = numpy.linspace(0, 2*numpy.pi,100)
+                        #     x_coord, y_coord = eCenter[0]+eRadius*numpy.cos(t), eCenter[1]+eRadius*numpy.sin(t)
+                        #     ApolloniusCircleThroughCurrent_z.setData(x_coord,y_coord)
+                        #     eCenterAndRadius = extended_complex_plane_CP.numpyExtendedComplexPlane().e_circumcenter_and_radius(auxStorage[0],auxStorage[1],current_z)
+                        #     eCenter = eCenterAndRadius[0]
+                        #     eRadius = eCenterAndRadius[1]
+                        #     t = numpy.linspace(0, 2*numpy.pi,100)
+                        #     x_coord, y_coord = eCenter[0]+eRadius*numpy.cos(t), eCenter[1]+eRadius*numpy.sin(t)
+                        #     commonCircleThroughCurrent_z.setData(x_coord,y_coord)
+                            
+                        # for i in range(k+1):
+                        #     self.PlotWidgetIn_pageCP.addItem(ApolloniusCircles[i])
+                        #     self.PlotWidgetIn_pageCP.addItem(CommonCircles[i])
+                            
+                    else:
+                        self.radioButtonCPoo.setChecked(True)
+                        CurrentPoint.setData(symbolBrush=(0,0,200))
+                    if k+1 == abs(numberOfIterations):
+                        for i in range(k+1):
+                            self.PlotWidgetIn_pageCP.clear()
+                            self.PlotWidgetIn_pageCP.clear()
+                        self.PlotWidgetIn_pageCP.addItem(PartialOrbit)
+                        self.PlotWidgetIn_pageCP.addItem(CurrentPoint)
+                    k = (k+1)%abs(numberOfIterations)
+        
+                if self.timer:
+                    self.timer.stop()
+                    self.timer.deleteLater()
+                self.timer = QtCore.QTimer(self)
+                self.timer.timeout.connect(update)
+                self.timer.start(250)
+                
+            self.pushButtonCPMTAnimOrbitSinglePoint.clicked.connect(effectOf_pushButtonCPMTAnimOrbitSinglePoint) 
         
 
 
@@ -624,70 +846,6 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
             self.radioButtonCPoo.setChecked(True)
             
 
-    def effectOf_pushButtonCPMTAnimOrbitSinglePoint(self):#1,100,1j,1 is a nice loxodromic Mobius transformation for examples
-        a = self.lineEditCPMTOrbitsComplexNumberalpha.text()
-        b = self.lineEditCPMTOrbitsComplexNumberbeta.text()
-        c = self.lineEditCPMTOrbitsComplexNumbergamma.text()
-        d = self.lineEditCPMTOrbitsComplexNumberdelta.text()
-        z_0 = extendedValue(self.lineEditCPMTOrbitsComplexNumberz_0.text())
-        numberOfIterations = int(self.spinBoxCPMTOrbits.cleanText())
-        OrbitAllPts = Mobius_CP.MobiusAssocToMatrix().MobTransOrbit(a,b,c,d,numberOfIterations)(z_0)[0]
-        OrbitFinitePts = Mobius_CP.MobiusAssocToMatrix().MobTransOrbit(a,b,c,d,numberOfIterations)(z_0)[1]
-        PartialOrbit = dD.draggableDot()
-        CurrentPoint = dD.draggableDot()
-        #Dots.Dot.moved.connect(CPMTMobiusOrbitDrag)
-        self.PlotWidgetIn_pageCP.addItem(PartialOrbit)
-        self.PlotWidgetIn_pageCP.addItem(CurrentPoint)
-        self.labelCPMTTypeOfMobius.setText(str(Mobius_CP.MobiusAssocToMatrix().isParEllHypLox(a,b,c,d)[0]))
-
-        FixedPts = [auxStorage[0],auxStorage[1]]
-        conjMatrix = Mobius_CP.MobiusTransitivity().MobiusMatrix0oo1Toz1z2z3(FixedPts[0],FixedPts[1],z0)
-        conjTrans = Mobius_CP.MobiusAssocToMatrix().EvaluationAtConcretePoint(conjMatrix[0,0],conjMatrix[0,1],conjMatrix[1,0],conjMatrix[1,1])
-        auxPt1, auxPt2, auxPt3 = z0, conjTrans(1j), conjTrans(-1)
-        eCenterAndRadius = extended_complex_plane_CP.NumpyExtendedComplexPlane().e_circumcenter_and_radius(auxPt1, auxPt2, auxPt3)
-        
-        
-        
-
-
-        if z_0 != oo:
-            self.radioButtonCPoo.setChecked(False)
-            points = numpy.array([[z_0.real,z_0.imag]],dtype=float)
-            PartialOrbit.setData(pos=points,  pxMode=True)
-        else:
-            self.radioButtonCPoo.setChecked(True)
-            
-        if self.checkBoxCPMTInvariantCurve.isChecked() == True:
-                curves = Mobius_CP.MobiusAssocToMatrix().invariantCurveThroughPt(a,b,c,d,z_0)
-                drawings = []
-                if len(curves)>0:
-                    for curve in curves:
-                        drawing = pg.PlotCurveItem(curve[0],curve[1],pen=self.blackPenWidth2)
-                        drawings.append(drawing)
-                        self.PlotWidgetIn_pageCP.addItem(drawing)
-            
-        k=0
-        def update():
-            self.radioButtonCPoo.setChecked(False)
-            nonlocal k
-            points = numpy.array([[OrbitFinitePts[numpy.sign(numberOfIterations)*i].real,OrbitFinitePts[numpy.sign(numberOfIterations)*i].imag] for i in range(k+1) if numpy.sign(numberOfIterations)*i in OrbitFinitePts],dtype=float)
-            if len(points) > 0:
-                PartialOrbit.setData(pos=points, pxMode=True)
-            current_z = OrbitAllPts[numpy.sign(numberOfIterations)*(k)%numberOfIterations]
-            if current_z !=oo:
-                current = numpy.array([[current_z.real,current_z.imag]],dtype=float)
-                CurrentPoint.setData(pos=current, symbolBrush=(217,83,25), symbolPen='k',  pxMode=True)
-            else:
-                self.radioButtonCPoo.setChecked(True)
-                CurrentPoint.setData(symbolBrush=(0,0,200))
-            k = (k+1)%abs(numberOfIterations)
-
-        if self.timer:
-            self.timer.stop()
-            self.timer.deleteLater()
-        self.timer = QtCore.QTimer(self)
-        self.timer.timeout.connect(update)
-        self.timer.start(200)
         
         
         
@@ -1483,16 +1641,20 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                     theSegment = self.PlotWidgetIn_pageUHP.plot(pen=self.blackPenWidth2)
                     movingDot = pg.ScatterPlotItem([curve(0).real],[curve(0).imag])
                     self.PlotWidgetIn_pageUHP.addItem(movingDot)
-                    numberOfSteps = 500
+                    numberOfSteps = 50
                     t = numpy.linspace(0,5*length,numberOfSteps+1)
                     k = 0
                     def update():
+                        nonlocal hCenter
                         nonlocal k
                         if k < len(t)-1:
                             movingDot.setData([curve(t[k+1]).real],[curve(t[k+1]).imag])
                             partialInterval = numpy.linspace(0,t[k+1],k*100)
                             x_coord,y_coord = curve(partialInterval).real, curve(partialInterval).imag
                             theSegment.setData(x_coord,y_coord)
+                            currentPt= curve(t[k])
+                            radialGeodesicSegment = UHP_HP.UHPBasics().UHPGeodesicSegment_rcostrsint(hCenter,currentPt)
+                            self.PlotWidgetIn_pageUHP.plot(radialGeodesicSegment.real,radialGeodesicSegment.imag,pen='r')
                             k = k+1
                         if k == len(t)-1:
                             self.timer.stop()
