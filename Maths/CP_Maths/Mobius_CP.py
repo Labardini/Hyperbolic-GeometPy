@@ -414,7 +414,12 @@ class MobiusFromParameters:
             pass
         else:
             if len(listOfFixedPoints) == 1 or listOfFixedPoints[0] == listOfFixedPoints[1]:
-                pass #### FALTA
+                z0 = listOfFixedPoints[0]
+                can = numpy.matrix([[1,complexalpha],[0,1]])
+                if z0 != oo:
+                    C = numpy.matrix([[0,1],[1,-z0]])
+                else:
+                    C = numpy.matrix([1,0],[0,1])
             else:
                 z0, z1 = listOfFixedPoints[0], listOfFixedPoints[1]
                 can = numpy.matrix([[complexalpha,0],[0,1]])
@@ -434,7 +439,7 @@ class MobiusFromParameters:
                             C = numpy.matrix([[0,1],[1,-z1]])
                     else: 
                         C = numpy.matrix([[1,-z0],[0,1]])
-                result = (C**(-1))*can*C
+            result = (C**(-1))*can*C
         return result
                         
                     
