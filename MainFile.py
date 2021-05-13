@@ -34,6 +34,8 @@ import draggableDots as dD
 from exception_handling import Maybe
 from exception_handling import myInputError
 
+from curvesAndDrawings import circle_segments
+
 from Maths.CP_Maths import extended_complex_plane_CP
 from Maths.CP_Maths import Steiner_grids_CP
 from Maths.CP_Maths import Mobius_CP
@@ -166,6 +168,20 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         self.PlotWidgetIn_pageUHP.addItem(self.UHPdraggableDotsStaticGeodSegs)
         self.UHPdraggableDotsConvexHull = dD.UHPdraggableDot()
         self.PlotWidgetIn_pageUHP.addItem(self.UHPdraggableDotsConvexHull)
+        
+
+        
+        
+        
+#         self.segmentoDePrueba = circle_segments.circSegment(10,10,50,numpy.pi/8,-numpy.pi/4)
+#         self.PlotWidgetIn_pageUHP.addItem(self.segmentoDePrueba.goodSegment)
+#         self.PlotWidgetIn_pageUHP.addItem(self.segmentoDePrueba.complementarySegment)
+# #         self.whitebrush = QtGui.QBrush(QtGui.QColor(191, 191, 191))
+# # #            #brush.setStyle(QtCore.Qt.NoBrush)
+# #         self.PlotWidgetIn_pageUHP.setBackgroundBrush(self.whitebrush)
+        
+        
+        
 
 
         
@@ -2223,7 +2239,9 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
             #self.PDdraggableDotsMidPtForSidePairing.setData(pos=points, brush = 'k',  pxMode=True)
 
             curvesToSidePairingDict = {}
+            faceColors = ['c','m']
             firstFace = []
+            
 
             for k in range(NumOfSides):
                 kthTriple = (triplesOfPtsAndColors["triplesOfPtsOnCurves"][k])[0]
@@ -2250,8 +2268,9 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                 curvesToSidePairingDict[theDrawing]=[matrix,colour,[kthTriple[0],kthTriple[2]],Mobius_CP.MobiusAssocToMatrix().EvaluationAtConcretePoint(alpha,beta,gamma,delta)(0)]
                 firstFace.append(theDrawing)
 
-                
+            firstFaceAsDictCurvesAndColor = {"curvas":firstFace,"color":faceColors[0]}    
             Faces = [firstFace]
+            coloredFaces = [firstFaceAsDictCurvesAndColor]
                 
 
                 
@@ -2264,7 +2283,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 #                self.PlotWidgetIn_pagePD.addItem(f)
             # randomChoiceOfColors = numpy.random.choice(5, 3, replace=False)
             x, y = numpy.array([[0,0],[0,0]])
-            fills = [pg.FillBetweenItem(pg.PlotCurveItem(x,y,pen=pg.mkPen(color="c", width=1)), theCurve, "c") for theCurve in drawnCurvesList]
+            fills = [pg.FillBetweenItem(pg.PlotCurveItem(x,y,pen=pg.mkPen(color=firstFaceAsDictCurvesAndColor["color"], width=1)), theCurve, "c") for theCurve in drawnCurvesList]
             for f in fills:
                 self.PlotWidgetIn_pagePD.addItem(f)
 
@@ -2276,12 +2295,17 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                     if c is curve:
                         c.setPen(pg.mkPen(color=(curvesToSidePairingDict[c])[1], width=4))
                         cFaces = []
+                        cFacesAsDictCurvesAndColor = []
                         for face in Faces:
                             if c in face:
                                 cFaces.append(face)
+                                cFacesAsDictCurvesAndColor.append(coloredFaces[Faces.index(face)])
                         if len(cFaces) == 1:
                             matrix = (curvesToSidePairingDict[c])[0]
                             Mobius = Mobius_CP.MobiusAssocToMatrix().EvaluationAtConcretePoint(matrix[0,0],matrix[0,1],matrix[1,0],matrix[1,1])
+                            starPointForColoringNewFace = Mobius(curvesToSidePairingDict[c][2][0])
+                            lastColor = cFacesAsDictCurvesAndColor[-1]["color"]
+                            newColor = faceColors[(faceColors.index(lastColor)+1)%2]
                             newcFace = []
                             for side in cFaces[0]:
                                 point1 = Mobius(curvesToSidePairingDict[side][2][0])
@@ -2298,13 +2322,18 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                                 curvesToSidePairingDict[newDrawing]=[newMatrix,(curvesToSidePairingDict[side])[1],[point1,point2],Mobius_CP.MobiusAssocToMatrix().EvaluationAtConcretePoint(newAlpha,newBeta,newGamma,newDelta)((curvesToSidePairingDict[c])[3])]
                                 newDrawing.sigClicked.connect(plotClicked)
                                 
-                                #x, y = numpy.array([[curvesToSidePairingDict[c][3].real,curvesToSidePairingDict[c][3].imag],[curvesToSidePairingDict[c][3].real,curvesToSidePairingDict[c][3].imag]])
-                                #fills = [pg.FillBetweenItem(pg.PlotCurveItem(x,y,pen=pg.mkPen(color="r", width=1)), c, "r")]
-                                #for f in fills:
-                                #    self.PlotWidgetIn_pagePD.addItem(f)
-
+                                # x, y = numpy.array([[starPointForColoringNewFace.real,starPointForColoringNewFace.imag],[starPointForColoringNewFace.real,starPointForColoringNewFace.imag]])
+                                # fills = [pg.FillBetweenItem(pg.PlotCurveItem(x,y,pen=pg.mkPen(width=1)), c, newColor)]
+                                # for f in fills:
+                                #     self.PlotWidgetIn_pagePD.addItem(f)
                                 
+                                
+                            
+                            
+                            newcFaceAsDictCurvesAndColor = {"curvas":newcFace,"color":lastColor}
                             Faces.append(newcFace)
+                            coloredFaces.append(newcFaceAsDictCurvesAndColor)
+                            
                     else:
                         c.setPen(pg.mkPen(color=(curvesToSidePairingDict[c])[1], width=2))
                         
