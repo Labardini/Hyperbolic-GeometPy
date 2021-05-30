@@ -9,8 +9,7 @@ Created on Tue Feb 13 07:54:19 2018
 import numpy
 
 
-
-from exception_handling import myInputError
+#import exception_handling
 from Maths.CP_Maths import extended_complex_plane_CP
 from Maths.CP_Maths import Mobius_CP
 from Maths.HP_Maths import UHP_PD_Hyper_Isometries_HP
@@ -35,15 +34,18 @@ myNumpyCosecant = extended_complex_plane_CP.numpyExtendedComplexPlane().myNumpyC
 myNumpyCotangent = extended_complex_plane_CP.numpyExtendedComplexPlane().myNumpyCotangent
 myarg0To2Pi = extended_complex_plane_CP.numpyExtendedComplexPlane().myarg0To2Pi
 ####
+#### Some abbreviations for AngleOfParallelism
+
+####
 
 
 
-        
+
 class PDBasics:
-    
+
     def __init__(self):
         pass
-    
+
     def isInPD(self,complexP):
         P = extendedValue(complexP)
         if P != oo and numpy.absolute(P) < 1:
@@ -51,7 +53,7 @@ class PDBasics:
         else:
             answer = False
         return answer
-    
+
     def isIdealPoint(self,complexP):
         P = extendedValue(complexP)
         if numpy.absolute(P) == 1:
@@ -59,14 +61,14 @@ class PDBasics:
         else:
             answer = False
         return answer
-    
+
     def isInPDBar(self,complexP):
         if self.isInPD(complexP) == True or self.isIdealPoint(complexP) == True:
             answer = True
         else:
             answer = False
         return answer
-        
+
     def areEuclidCollinearWithCenterInPD(self,hPointP,hPointQ): # NOTE: if one of the points is the center, the answer will be "True"
         P, Q = extendedValue(hPointP), extendedValue(hPointQ)
 #        if self.isInPD(P) == True and self.isInPD(Q) == True and P != Q:
@@ -95,9 +97,9 @@ class PDBasics:
         Q = numpy.complex(pointQ)
         dist_expression = 2*numpy.arctanh( numpy.absolute( (Q-P) / (1 - numpy.conjugate(P)*Q) ) )
         return dist_expression
-    
 
-            
+
+
     def eCenterAndRadiusNonStraightGeodesicThroughPAndQ(self,hpointP,hpointQ):
         P, Q = extendedValue(hpointP), extendedValue(hpointQ)
         if self.areEuclidCollinearWithCenterInPD(P,Q) == False:
@@ -111,18 +113,18 @@ class PDBasics:
             eCenter = -100
             eRadius = 1
         return [eCenter,eRadius]
-    
-         
-            
 
 
 
-        
-        
-            
+
+
+
+
+
+
     def eCenterAndRadiusH_Circle(self,hcenter,hradius): ##### PERSONAL NOTE: WRITE A CODE TO COMPUTE DIRECTLY IN PD, IE, WITHOUT PASSING THROUGH UHP
         UHPcenter = UHP_PD_Hyper_Isometries_HP.CanonicalIsometriesBetweenModels().IsometryPDtoUHP(numpy.complex(hcenter))
-        Hradius = numpy.real(hradius)            
+        Hradius = numpy.real(hradius)
         x0 = numpy.real(UHPcenter)
         x1 = numpy.imag(UHPcenter)
         UHPeuclidean_center_x = x0
@@ -215,8 +217,8 @@ class PDBasics:
                 parametrization = (1-t)*w + t*z
                 return parametrization
         return parametrized_curve(interval)
-            
-            
+
+
 ####################
 #### FOR POLYGONS IN PD
 
@@ -237,7 +239,9 @@ class PDBasics:
                 sign = numpy.sign(numpy.angle(((P2-center)/(P1-center))))
                 unit_vector =  sign*orthogonal_vector/self.PDNorm(P1,orthogonal_vector)
             return unit_vector
-        
+
+
+
     def tangent_unit_Hbar(self,point1,point2):
         P1, P2 = extendedValue(point1), extendedValue(point2)
         if P1 == P2:
@@ -248,8 +252,8 @@ class PDBasics:
             if numpy.absolute(P1) == 1:
                 result = -P1
             return result
-        
-        
+
+
 #### CYCLIC ORDERING OF A FAMILY OF POINTS AROUND A FIXED BASEPOINT
 
     def cyclic_order_counter_clockwise(self,basepoint,vertices):
@@ -271,9 +275,9 @@ class PDBasics:
                 vector = self.tangent_unit_Hbar(basepoint,point)
                 difference_of_arguments_in_radians = myarg0To2Pi(vector/reference_vector)#numpy.angle(vector/reference_vector)
                 if t == difference_of_arguments_in_radians:
-                    cyclic_order.append(point)        
+                    cyclic_order.append(point)
         return cyclic_order
-            
+
 
     def is_point_in_h_convex_hull(self,point,points):
         remaining_vertices = [k for k in points]
@@ -317,12 +321,8 @@ class PDBasics:
         return result
 
 
-        
 
-            
-    
-        
-                
+
     def find_verts_of_h_convex_hull(self,points):
         vert = [k for k in points]
         for k in points:
@@ -339,9 +339,10 @@ class PDBasics:
             #print(vertices)
         result = vertices
         return result
-                
-                
-            
+
+
+
+
     def somePointOnGeodesicSegment(self,point1,point2): ## THE OUTPUT POINT IS NOTHING SPECIAL, IT WILL BE USED ONLY TO PROVIDE A BASEPOINT AROUND WHICH TO ORDER CYCLICALLY
         A = extendedValue(point1)
         B = extendedValue(point2)
@@ -352,8 +353,8 @@ class PDBasics:
         else:
             point = (A+B)/2
         return point
-        
-    
+
+
 
     def verts_h_polygon_counter_clockwise(self,points): ## requires at least two different points in points
         points_no_repetition = [j for j in points]
@@ -384,32 +385,40 @@ class PDBasics:
             vertices.append(p0)
         return vertices
 
-        
-                    
-
-        
-        
-        
-
-    
 
 
+# Code 2 added by J. on may 28 2021  # NOTE: Alternatively, area_of_h_polygon could recieve just any list of vertices and apply verts_h_polygon_counter_clockwise, but I think it's unnecessary
 
-        
+    def area_of_h_polygon(self, orderedVertices): # recieves cyclically ordered vertices of a hyp polygon (i.e. output of verts_h_polygon_counter_clockwise )
+        vertices = orderedVertices
+        angleSum = 0
+        n = len(vertices) - 1 # this is because orderedVertices has the same first and last element. For some reason, vertices.pop() was affecting the nonlocal vertex list in orderedVertices
+        for k in range(0, n):
+            t1 = self.tangent_unit_Hbar(vertices[k], vertices[(k-1) % n])
+            t2 = self.tangent_unit_Hbar(vertices[k], vertices[(k+1) % n])
+            a1 = myarg0To2Pi(t1)
+            a2 = myarg0To2Pi(t2)
+            alpha = a1-a2 # in theory, this should be zero when vertices[k] is an ideal vertex
+            if alpha < 0:
+                alpha = -1*alpha
+            possibleAngles = [alpha, 2*numpy.pi - alpha]
+            sortedAngles = numpy.sort(possibleAngles)
+            print(n,k)
+            alpha = sortedAngles[0]
+            angleSum += alpha
+        area = (n-2)*numpy.pi - angleSum
+        return area
+
+        # what to do when we have ideal vertices?
 
 
 
-
-
-
-
-    
 class PDGeodesicMotion:
-    
+
     def __init__(self):
         pass
-    
-    def PDGeodesicSegmentParamByArcLength(self,startpoint,endpoint): ## THE OUTPUT IS A FUNCTION, TO BE USED FOR ANIMATION 
+
+    def PDGeodesicSegmentParamByArcLength(self,startpoint,endpoint): ## THE OUTPUT IS A FUNCTION, TO BE USED FOR ANIMATION
         A = extendedValue(startpoint)
         B = extendedValue(endpoint)
         distance = PDBasics().PDDist(A,B)
@@ -444,13 +453,13 @@ class PDGeodesicMotion:
                     parametrization = intersection1
             return parametrization
         return [parametrized_curve,distance]
-    
-    #### I AM EDITING HERE HERE HERE HERE
-    
-    
 
-             
-            
+    #### I AM EDITING HERE HERE HERE HERE
+
+
+
+
+
     def PDGeodesicSegmentConstantRapidity(self,startpoint,initialvelocityvector):
         P = extendedValue(startpoint)
         V = extendedValue(initialvelocityvector)
@@ -485,10 +494,10 @@ class PDGeodesicMotion:
             auxArg2 = myarg0To2Pi(intPt2-eCenter)
             if auxArg2-auxArg1 <= -numpy.pi:
                 auxAngle1 = numpy.angle(intPt1-eCenter)
-                auxAngle2 = numpy.angle(intPt2-eCenter)                
+                auxAngle2 = numpy.angle(intPt2-eCenter)
             if -numpy.pi < auxArg2-auxArg1 < 0:
                 auxAngle1 = numpy.angle(intPt2-eCenter)
-                auxAngle2 = numpy.angle(intPt1-eCenter)                
+                auxAngle2 = numpy.angle(intPt1-eCenter)
             if 0 < auxArg2-auxArg1 < numpy.pi:
                 auxAngle1 = numpy.angle(intPt1-eCenter)
                 auxAngle2 = numpy.angle(intPt2-eCenter)
@@ -503,35 +512,89 @@ class PDGeodesicMotion:
                 Q = eCenter + ( eRadius * (numpy.cos(theta)+numpy.sin(theta)*(1j)) )
         def paramCurve(time):
             return self.PDGeodesicSegmentParamByArcLength(P,Q)[0](rapidity*time)
-        return paramCurve            
-        
-        
+        return paramCurve
 
-    
+
+# Code 1 added by J. on may 27 2021
+
+class AngleOfParallelism: # Some methods in this class could be more generally useful, so probably should be in PDBasics
+
+    def __init__(self):
+        pass
+
+    def edgesOfGeodesic(self, hp, hq):
+         p, q = extendedValue(hp), extendedValue(hq)
+         if PDBasics().areEuclidCollinearWithCenterInPD(p,q):
+             e1 = p/abs(p)
+             e2 = -1*e1
+         else:
+             a = PDBasics().eCenterAndRadiusNonStraightGeodesicThroughPAndQ(p,q)
+             center = a[0]
+             ang = numpy.arccos(1/abs(center))
+             rotate = complex(1/abs(center),numpy.sin(ang))
+             center = center/abs(center)
+             e1 = e2 = complex()
+             e1 = rotate*center
+             e2 = numpy.conj(rotate)*center
+         return [e1, e2] # Do we want these to be cyclically ordered? Probably yes to replicate p5.js behaviour
+
+    def phi(self, z, z0): # Better name? Also, can probably be refactored as a particular case of a mobius function
+         OnBoundary = 0
+         if abs(z0) == 0:
+             return z
+         if abs(z0) == 1: # This is temporal, apply Daniel's solution in the future
+             z0 = z0*0.999999
+             OnBoundary = 1
+         Dx = 1 - z0.real*z.real - z0.imag*z.imag # x coordinate of denominator
+         Dy = z.real*z0.imag - z0.real*z.imag     # y coordinate of denominator
+         k = 1/(Dx*Dx + Dy*Dy)
+         result = complex(k*((z.real-z0.real)*Dx + (z.imag - z0.imag)*Dy), k*((z.real - z0.real)*(-1)*Dy + (z.imag -z0.imag)*Dx))
+         if (OnBoundary == 1):
+             z0 = z0*(1/0.999999)
+         return result
+
+    def HypPerpendicularFromPoint(self, z0, z1, z2, giveAngle = False): # z0 is the point from where we drop the perpendicular to the arc determined by z1, z2
+         edges = self.edgesOfGeodesic(z1, z2)
+         e1, e2 = edges[0], edges[1]
+         fe1, fe2 = self.phi(e1, z0), self.phi(e2, z0)
+         angOfParallelism = myarg0To2Pi(fe1+fe2)
+         circ = PDBasics().eCenterAndRadiusNonStraightGeodesicThroughPAndQ(fe1, fe2)
+         center = circ[0]
+         radius = circ[1]
+         InverseOfPhiProyection = ((abs(center)+radius)/abs(fe1+fe2))*(fe1+fe2)
+         PhiProyection = InverseOfPhiProyection/(abs(InverseOfPhiProyection)**2)
+         negativez0 = -1*z0
+         Proyection = self.phi(PhiProyection, negativez0)
+         if giveAngle == True:
+             return [Proyection, angOfParallelism]
+         return Proyection # We could also return [Proyection, angOfParallelism] by default
+
+
+
 class PDCircularMotion:
-    
-    def __init__(self):
-        pass
-    
-    
-  
-    
-class PDIsometries:
-    
+
     def __init__(self):
         pass
 
-    
+
+
+
+class PDIsometries:
+
+    def __init__(self):
+        pass
+
+
 class PDFuchsianRepresentative: ##NOTE: SO FAR, THIS CLASS CONSTRUCTS
 # A VERY SPECIFIC FUCHSIAN GROUP IN A VERY SPECIFIC SETTING:
 # POSITIVE NUMBER OF PUNCTURES, NO ORBIFOLD POINTS, VERY SPECIFIC SET OF SIDE PAIRING TRANSFORMATIONS
-    
+
     def __init__(self):
         pass
 
 #    def PDSpecificCombinatorialSidePairing(self,genus,numberOfPunctures):#PERSONAL NOTE: FOR IMPLEMENTATION OF ORBIFOLD POINTS THIS HAS TO BE CHANGED
 #        g, p = genus, numberOfPunctures
-#        
+#
 #        if g == 0 and p < 3:
 #            pass
 #        elif g == 1 and p == 0:
@@ -575,7 +638,7 @@ class PDFuchsianRepresentative: ##NOTE: SO FAR, THIS CLASS CONSTRUCTS
                         result = k-1
                 return result
             return f
-    
+
     def PDSidesOfSpecificIdealPolygon(self,genus,numberOfPunctures,orders): #orders is supposed to be the list of orders of orb pts
         # NOTE: TRY TO IMPROVE THE WAY THE SIDES ARE COLORED
         g, p = genus, numberOfPunctures
@@ -634,7 +697,7 @@ class PDFuchsianRepresentative: ##NOTE: SO FAR, THIS CLASS CONSTRUCTS
 #            for k in range(4*(g-1)-2):
 #                if k % l == 0 or k % l == 4  :
 #                    curvesColors[k] = basicColors[int(k/2)%len(basicColors)]
-#                    curvesColors[k+2] = basicColors[int(k/2)%len(basicColors)]  
+#                    curvesColors[k+2] = basicColors[int(k/2)%len(basicColors)]
 #                if  k % l == 3 or k % l == 7 :
 #                    curvesColors[k] = basicColors[int((k-1)/2)%len(basicColors)]
 #                    curvesColors[k+2] = basicColors[int((k-1)/2)%len(basicColors)]
@@ -692,25 +755,25 @@ class PDFuchsianRepresentative: ##NOTE: SO FAR, THIS CLASS CONSTRUCTS
                                 midpoints[f(k)],x,
                                 w,midpoints[k],z)]
             return SidePairings
-                    
-        
 
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ### GO OVER THE FOLLOWING CODE, I HAVE NOT REALLY WORKED ON IT MUCH. IF I AM NOT MISTAKEN,
 ### THE OBJECTIVE WAS TO WRITE A CODE THAT COULD VERIFY THE PARABOLIC CYCLE CONDITION FOR THE
-### POLYGON AND SIDE PAIRINGS CONSTRUCTED ABOVE        
-        
+### POLYGON AND SIDE PAIRINGS CONSTRUCTED ABOVE
+
     def PDOrbitOfVertexUnderSpecificCombinatorialSidePairing(self,genus,numberOfPunctures):
         g, p = genus, numberOfPunctures
         if g == 0 and p < 3:
@@ -728,7 +791,7 @@ class PDFuchsianRepresentative: ##NOTE: SO FAR, THIS CLASS CONSTRUCTS
                     j = (f(j) + 1) % NumOfSides
                 return orbit
             return orbitOfVertex
-        
+
     def PDVertexOrbitsUnderSpecificCombinatorialSidePairing(self,genus,numberOfPunctures):
         g, p = genus, numberOfPunctures
         if g == 0 and p < 3:
@@ -747,7 +810,7 @@ class PDFuchsianRepresentative: ##NOTE: SO FAR, THIS CLASS CONSTRUCTS
                 for l in orbit:
                     vertices.remove(l)
             return orbits
-    
+
     def PDCheckIfTheGroupIsFuchsianForSpecificSidePairing(self,genus,numberOfPunctures):
         g, p = genus, numberOfPunctures
         if g == 0 and p < 3:
@@ -764,16 +827,3 @@ class PDFuchsianRepresentative: ##NOTE: SO FAR, THIS CLASS CONSTRUCTS
                     transformation = sidePairings[orbit[j]] * transformation
                     j = j+1
                 print(Mobius_CP.MobiusAssocToMatrix().isParEllHypLox(transformation[0,0],transformation[0,1],transformation[1,0],transformation[1,1]))
-                
-        
-                
-            
-            
-           
-            
-            
-            
-        
-    
-        
-    
