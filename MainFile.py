@@ -21,7 +21,7 @@ from pyqtgraph.Qt import QtCore
 from pyqtgraph.ptime import time
 
 #### FOR HYPERBOLOID
-#import pyqtgraph.opengl as gl
+import pyqtgraph.opengl as gl
 ####
 
 
@@ -64,7 +64,7 @@ arbManyClicks = []
 auxStorage = []
 auxStorage2 = []
 Clicks = [oneClick,twoClicks,threeClicks,arbManyClicks,auxStorage,auxStorage2]
-DebugVariable = True
+DebugVariable = True #We need a radioButton to click instead of this variable
 
 
 
@@ -280,7 +280,6 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         # TestProy = PD_HP.AngleOfParallelism().HypPerpendicularFromPoint(z0Test, z1Test, z2Test)
         # Proy = pg.ScatterPlotItem([TestProy.real], [TestProy.imag], pen ='k', brush ='b')
         # self.PlotWidgetIn_pagePD.addItem(Proy)
-        #
 
 
 
@@ -432,7 +431,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         self.PlotWidgetIn_pagePD.scene().sigMouseClicked.connect(self.PDGMGeodesicSegmentAnimated)
         self.PlotWidgetIn_pagePD.scene().sigMouseClicked.connect(self.PDGMGeodesicRayConstantRapidityAnimated)
         self.pushButtonPDIsomsComputePolygonAndFuchsianGroup.clicked.connect(self.PDIsomsSpecificIdealPolygon)
-
+        self.PlotWidgetIn_pagePD.scene().sigMouseClicked.connect(self.PDBCAngleOfParallelism)
 
 
 
@@ -2142,7 +2141,6 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         if DebugVariable == True and self.stackedWidgetIn_pagePD.currentIndex() == 0:
             global arbManyClicks
             global auxStorage
-            arbManyClicks = [] # preferibly I would like to clear canvas
             x = self.PlotWidgetIn_pagePD.plotItem.vb.mapSceneToView(ev.scenePos()).x()
             y = self.PlotWidgetIn_pagePD.plotItem.vb.mapSceneToView(ev.scenePos()).y()
             if x**2+y**2 > 1:
@@ -2155,15 +2153,15 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                 elif len(arbManyClicks) % 3 == 0:
                     points = numpy.array([[arbManyClicks[k][0],arbManyClicks[k][1]] for k in range(len(arbManyClicks))],dtype=float)
                     self.PDdraggableDotsStaticGeodSegs.setData(pos=points,  pxMode=True)
-                    z1 = arbManyClicks[-2][0]+arbManyClicks[-2][1]*(1j)
-                    z2 = arbManyClicks[-1][0]+arbManyClicks[-1][1]*(1j)
-                    z0 = arbManyClicks[0][0] +arbManyClicks[0][1]*(1j)
+                    z1 = arbManyClicks[0][0]+arbManyClicks[0][1]*(1j)
+                    z2 = arbManyClicks[1][0]+arbManyClicks[1][1]*(1j)
+                    z0 = arbManyClicks[2][0] +arbManyClicks[2][1]*(1j)
                     ProyectionFromZ0 = PD_HP.AngleOfParallelism().HypPerpendicularFromPoint(z0, z1, z2)
-                    EdgesOfZ1Z2 = PD_HP.AngleOfParallelism().edgesOfGeodesic(z1, z2)
+                    EdgesOfZ1Z2 = PD_HP.AngleOfParallelism().endpointsOfGeodesic(z1, z2)
                     e1 = EdgesOfZ1Z2[0]
                     e2 = EdgesOfZ1Z2[1]
-                    EdgesOfDelimitingCurve1 = PD_HP.AngleOfParallelism().edgesOfGeodesic(z0, e1)
-                    EdgesOfDelimitingCurve2 = PD_HP.AngleOfParallelism().edgesOfGeodesic(z0, e2)
+                    EdgesOfDelimitingCurve1 = PD_HP.AngleOfParallelism().endpointsOfGeodesic(z0, e1)
+                    EdgesOfDelimitingCurve2 = PD_HP.AngleOfParallelism().endpointsOfGeodesic(z0, e2)
 
                     e1ofD1 = EdgesOfDelimitingCurve1[0]
                     e2ofD1 = EdgesOfDelimitingCurve1[1]
@@ -2173,21 +2171,26 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                     Perpendicular = PD_HP.PDBasics().PDGeodesicSegment_rcostrsint(z0,ProyectionFromZ0)
                     DelimitingCurve1 = PD_HP.PDBasics().PDGeodesicSegment_rcostrsint(e1ofD1,e2ofD1)
                     DelimitingCurve2 = PD_HP.PDBasics().PDGeodesicSegment_rcostrsint(e1ofD2,e2ofD2)
+                    CompleteGeodesicZ1Z2 = PD_HP.PDBasics().PDGeodesicSegment_rcostrsint(e1, e2)
 
                     PerpendicularX, PerpendicularY = Perpendicular.real, Perpendicular.imag
                     DC1X, DC1Y = DelimitingCurve1.real, DelimitingCurve1.imag
                     DC2X, DC2Y = DelimitingCurve2.real, DelimitingCurve2.imag
+                    CGZ1Z2X, CGZ1Z2Y = CompleteGeodesicZ1Z2.real, CompleteGeodesicZ1Z2.imag
                     PerpendicularDrawing = pg.PlotCurveItem(PerpendicularX,PerpendicularY,pen=self.blackPenWidth2)
                     DC1Drawing = pg.PlotCurveItem(DC1X,DC1Y,pen=self.redPenWidth2)
                     DC2Drawing = pg.PlotCurveItem(DC2X,DC2Y,pen=self.redPenWidth2)
+                    CGZ1Z2Drawing = pg.PlotCurveItem(CGZ1Z2X, CGZ1Z2Y, pen = self.blackPenWidth2)
 
                     self.PlotWidgetIn_pagePD.addItem(PerpendicularDrawing)
                     self.PlotWidgetIn_pagePD.addItem(DC1Drawing)
                     self.PlotWidgetIn_pagePD.addItem(DC2Drawing)
+                    self.PlotWidgetIn_pagePD.addItem(CGZ1Z2Drawing)
 
                     auxStorage.append(PerpendicularDrawing)
                     auxStorage.append(DC1Drawing)
                     auxStorage.append(DC2Drawing)
+                    arbManyClicks.clear()
                 else:
                     pass
 
