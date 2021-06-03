@@ -522,7 +522,7 @@ class AngleOfParallelism: # Some methods in this class could be more generally u
     def __init__(self):
         pass
 
-    def edgesOfGeodesic(self, hp, hq):
+    def endpointsOfGeodesic(self, hp, hq):
          p, q = extendedValue(hp), extendedValue(hq)
          if PDBasics().areEuclidCollinearWithCenterInPD(p,q):
              e1 = p/abs(p)
@@ -554,7 +554,7 @@ class AngleOfParallelism: # Some methods in this class could be more generally u
          return result
 
     def HypPerpendicularFromPoint(self, z0, z1, z2, giveAngle = False): # z0 is the point from where we drop the perpendicular to the arc determined by z1, z2
-         edges = self.edgesOfGeodesic(z1, z2)
+         edges = self.endpointsOfGeodesic(z1, z2)
          e1, e2 = edges[0], edges[1]
          fe1, fe2 = self.phi(e1, z0), self.phi(e2, z0)
          angOfParallelism = myarg0To2Pi(fe1+fe2)
