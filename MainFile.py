@@ -34,6 +34,7 @@ import draggableDots as dD
 from exception_handling import Maybe
 from exception_handling import myInputError
 
+from BackgroundControl import background_control
 from curvesAndDrawings import circle_segments
 
 from Maths.CP_Maths import extended_complex_plane_CP
@@ -64,6 +65,15 @@ arbManyClicks = []
 auxStorage = []
 auxStorage2 = []
 Clicks = [oneClick,twoClicks,threeClicks,arbManyClicks,auxStorage,auxStorage2]
+blackDrawings = []
+whiteDrawings = []
+blueDrawings = []
+redDrawings = []
+cyanDrawings = []
+yellowDrawings = []
+magentaDrawings = []
+greenDrawings = []
+
 
 
 
@@ -88,12 +98,32 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         
         self.timer = None # in some animations it will become QtCore.QTimer(self)
         
-        ### pens
-        self.blackPenWidth2 = pg.mkPen('k', width=2)
-        self.redPenWidth2 = pg.mkPen('r', width=2)
-        self.bluePenWidth2 = pg.mkPen('b', width=2)
+
+        self.background = background_control.choosingBackground('Black')
+        # self.black = self.background.black
+        # self.white = self.background.white
+        # self.blue = self.background.blue
+        # self.red = self.background.red
+        # self.cyan = self.background.cyan
+        # self.yellow = self.background.yellow
+        # self.magenta = self.background.magenta
+        # self.green = self.background.green
+        # self.blackPenWidth2 = self.background.blackPenWidth2
+        # self.whitePenWidth2 = self.background.whitePenWidth2
+        # self.bluePenWidth2 = self.background.bluePenWidth2
+        # self.redPenWidth2 = self.background.redPenWidth2
+        # self.cyanPenWidth2 = self.background.cyanPenWidth2
+        # self.yellowPenWidth2 = self.background.yellowPenWidth2
+        # self.magentaPenWidth2 = self.background.magentaPenWidth2
+        # self.greenPenWidth2 = self.background.greenPenWidth2
         
+        self.comboBoxChooseCanvasColor.currentIndexChanged.connect(self.effectOf_comboBoxChooseCanvasColor)
         
+
+
+            
+
+            
 
 ##################
 ##################
@@ -147,6 +177,50 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 
 
 
+
+
+  
+##################
+##################
+#####LAYOUT FOR plotWidgetDomainIn_pageFG AND plotWidgetDomainIn_pageFG
+
+        self.plotWidgetDomainIn_pageFG.setXRange(self.CP_xlim_left,self.CP_xlim_right)
+        self.plotWidgetCodomainIn_pageFG.setXRange(self.CP_xlim_left,self.CP_xlim_right)
+        #self.PlotWidgetIn_pageCP.setLimits(yMin=0.0)
+        self.plotWidgetDomainIn_pageFG.disableAutoRange()
+        self.plotWidgetCodomainIn_pageFG.disableAutoRange()
+#        self.graphicsView_2.setYRange(self.CP_ylim_down,self.CP_ylim_up)
+        self.plotWidgetDomainIn_pageFG.setAspectLocked(1.0)
+        self.plotWidgetCodomainIn_pageFG.setAspectLocked(1.0)
+        self.CPdraggableDotsDomainIn_pageFG = dD.draggableDot()
+        self.CPdraggableDotsCodomainIn_pageFG = dD.draggableDot()
+        self.plotWidgetDomainIn_pageFG.addItem(self.CPdraggableDotsDomainIn_pageFG)
+        self.plotWidgetCodomainIn_pageFG.addItem(self.CPdraggableDotsCodomainIn_pageFG)
+        
+
+        self.widthAxes = 3
+        self.plotWidgetDomainIn_pageFG.addItem(pg.InfiniteLine(pos=0, angle=0, pen=pg.mkPen('w', width=self.widthAxes)))
+        self.plotWidgetCodomainIn_pageFG.addItem(pg.InfiniteLine(pos=0, angle=0, pen=pg.mkPen('w', width=self.widthAxes)))
+        self.plotWidgetDomainIn_pageFG.addItem(pg.InfiniteLine(pos=0, angle=90, pen=pg.mkPen('w', width=self.widthAxes)))
+        self.plotWidgetCodomainIn_pageFG.addItem(pg.InfiniteLine(pos=0, angle=90, pen=pg.mkPen('w', width=self.widthAxes)))
+        #self.myPlotCurveItem = pg.PlotCurveItem([0, 2],[0,0],pen=pg.mkPen('b',width=3),clickable=True)
+        #self.PlotWidgetIn_pageCPMobiusTransformations.addItem(self.myPlotCurveItem)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ##################
 ##################
 ##### AXES LIMITS for PlotWidgetIn_pageUHP
@@ -161,6 +235,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         self.PlotWidgetIn_pageUHP.disableAutoRange()
 #        self.graphicsView_2.setYRange(self.CP_ylim_down,self.CP_ylim_up)
         self.PlotWidgetIn_pageUHP.setAspectLocked(1.0)
+        self.PlotWidgetIn_pageUHP.setBackgroundBrush(self.background.backgroundBrush)
         self.widthBoundingLineUHP = 5
         self.boundingLineUHP = pg.InfiniteLine(pos=0, angle=0, pen=pg.mkPen('k', width=self.widthBoundingLineUHP))
         self.PlotWidgetIn_pageUHP.addItem(self.boundingLineUHP)
@@ -173,9 +248,13 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         
         
         
-#         self.segmentoDePrueba = circle_segments.circSegment(10,10,50,numpy.pi/8,-numpy.pi/4)
-#         self.PlotWidgetIn_pageUHP.addItem(self.segmentoDePrueba.goodSegment)
-#         self.PlotWidgetIn_pageUHP.addItem(self.segmentoDePrueba.complementarySegment)
+        self.segmentoDePrueba = circle_segments.circSegment(50,50,50,numpy.pi/4,-numpy.pi/2)
+        whiteDrawings.append(self.segmentoDePrueba)
+        self.PlotWidgetIn_pageUHP.addItem(self.segmentoDePrueba.goodSegment)
+        self.PlotWidgetIn_pageUHP.addItem(self.segmentoDePrueba.complementarySegment)
+
+
+
 # #         self.whitebrush = QtGui.QBrush(QtGui.QColor(191, 191, 191))
 # # #            #brush.setStyle(QtCore.Qt.NoBrush)
 # #         self.PlotWidgetIn_pageUHP.setBackgroundBrush(self.whitebrush)
@@ -342,6 +421,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         
         self.toolButtonHome.clicked.connect(self.effectOf_toolButtonHome)
         self.toolButtonCP.clicked.connect(self.effectOf_toolButtonCP)
+        self.toolButtonFG.clicked.connect(self.effectOf_toolButtonFG)
         self.toolButtonHP.clicked.connect(self.effectOf_toolButtonHP)
 #        self.toolButtonTS.clicked.connect(self.effectOf_toolButtonTS)
 #        self.toolButtonMS.clicked.connect(self.effectOf_toolButtonMS)
@@ -382,6 +462,13 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         
 
 
+
+############
+        
+        self.plotWidgetDomainIn_pageFG.scene().sigMouseClicked.connect(self.drawzsquare)
+        self.CPdraggableDotsDomainIn_pageFG.Dot.moved.connect(self.dragDrawzsquare)
+
+#############
 
 
 
@@ -438,17 +525,20 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
     def effectOf_toolButtonCP(self):
         self.stackedWidgetAllPages.setCurrentIndex(1)
     
-    def effectOf_toolButtonHP(self):
+    def effectOf_toolButtonFG(self):
         self.stackedWidgetAllPages.setCurrentIndex(2)
-    
-    def effectOf_toolButtonTS(self):
+
+    def effectOf_toolButtonHP(self):
         self.stackedWidgetAllPages.setCurrentIndex(3)
     
-    def effectOf_toolButtonMS(self):
+    def effectOf_toolButtonTS(self):
         self.stackedWidgetAllPages.setCurrentIndex(4)
     
-    def effectOf_toolButtonArt(self):
+    def effectOf_toolButtonMS(self):
         self.stackedWidgetAllPages.setCurrentIndex(5)
+    
+    def effectOf_toolButtonArt(self):
+        self.stackedWidgetAllPages.setCurrentIndex(6)
         
     def deleteClicks(self):
         for clicked in Clicks:
@@ -1135,6 +1225,40 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         
         
         
+        
+        
+        
+#################################
+#################################
+#################################
+### FUNCTIONS AND GERMS
+### GERMS 
+        
+        
+    def drawzsquare(self,ev):
+        global oneClick
+        x = self.plotWidgetDomainIn_pageFG.plotItem.vb.mapSceneToView(ev.scenePos()).x()
+        y = self.plotWidgetDomainIn_pageFG.plotItem.vb.mapSceneToView(ev.scenePos()).y() 
+        oneClick.clear()
+        oneClick.append([x,y])
+        pointsDomain = numpy.array([[x,y]],dtype=float)
+        #initialPoint = pg.GraphItem(pos=[[twoClicks[0][0],twoClicks[0][1]]])
+        self.CPdraggableDotsDomainIn_pageFG.setData(pos=pointsDomain,  pxMode=True)
+        z = x+y*(1j)
+        zSq = z**2
+        pointsCodomain = numpy.array([[zSq.real,zSq.imag]],dtype=float)
+        self.CPdraggableDotsCodomainIn_pageFG.setData(pos=pointsCodomain,  pxMode=True)
+
+        
+    def dragDrawzsquare(self,pt,ind):
+        global oneClick
+        z = pt[0]+pt[1]*(1j)
+        zSq = z**2
+        print(z)
+        pointsCodomain = numpy.array([[zSq.real,zSq.imag]],dtype=float)
+        self.CPdraggableDotsCodomainIn_pageFG.setData(pos=pointsCodomain,  pxMode=True)
+        oneClick.remove(oneClick[ind])
+        oneClick.insert(ind,pt)        
         
         
         
@@ -2342,8 +2466,270 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
     
                     
                     
+    def effectOf_comboBoxChooseCanvasColor(self):
+        if str(self.comboBoxChooseCanvasColor.currentText()) != "Choose canvas color":
+            backgroundColorAsText = str(self.comboBoxChooseCanvasColor.currentText())     
+            newBackground = background_control.choosingBackground(backgroundColorAsText)
+
+    # # #            #brush.setStyle(QtCore.Qt.NoBrush)
+            
+            newBlack = newBackground.black
+            newWhite = newBackground.white
+            newBlue = newBackground.blue
+            newRed = newBackground.red
+            newCyan = newBackground.cyan
+            newYellow = newBackground.yellow
+            newMagenta = newBackground.magenta
+            newGreen = newBackground.green
+            
+            for objeto in blackDrawings:
+                objeto.color = newBlack
+                objeto.black = newBlack
+                objeto.white = newWhite
+                objeto.blue = newBlue
+                objeto.red = newRed
+                objeto.cyan = newCyan
+                objeto.yellow = newYellow
+                objeto.magenta = newMagenta
+                objeto.green = newGreen
+                for piece in objeto.blackPieces:
+                    piece.setPen(pg.mkPen(color=objeto.black,width=2))
+                for piece in objeto.whitePieces:
+                    piece.setPen(pg.mkPen(color=objeto.white,width=2))
+                for piece in objeto.bluePieces:
+                    piece.setPen(pg.mkPen(color=objeto.blue,width=2))
+                for piece in objeto.redPieces:
+                    piece.setPen(pg.mkPen(color=objeto.red,width=2))
+                for piece in objeto.cyanPieces:
+                    piece.setPen(pg.mkPen(color=objeto.cyan,width=2))
+                for piece in objeto.yellowPieces:
+                    piece.setPen(pg.mkPen(color=objeto.yellow,width=2))
+                for piece in objeto.magentaPieces:
+                    piece.setPen(pg.mkPen(color=objeto.magenta,width=2))
+                for piece in objeto.greenPieces:
+                    piece.setPen(pg.mkPen(color=objeto.green,width=2))            
+                                
+            for objeto in whiteDrawings:
+                objeto.color = newWhite
+                objeto.black = newBlack
+                objeto.white = newWhite
+                objeto.blue = newBlue
+                objeto.red = newRed
+                objeto.cyan = newCyan
+                objeto.yellow = newYellow
+                objeto.magenta = newMagenta
+                objeto.green = newGreen
+                for piece in objeto.blackPieces:
+                    piece.setPen(pg.mkPen(color=objeto.black,width=2))
+                for piece in objeto.whitePieces:
+                    piece.setPen(pg.mkPen(color=objeto.white,width=2))
+                for piece in objeto.bluePieces:
+                    piece.setPen(pg.mkPen(color=objeto.blue,width=2))
+                for piece in objeto.redPieces:
+                    piece.setPen(pg.mkPen(color=objeto.red,width=2))
+                for piece in objeto.cyanPieces:
+                    piece.setPen(pg.mkPen(color=objeto.cyan,width=2))
+                for piece in objeto.yellowPieces:
+                    piece.setPen(pg.mkPen(color=objeto.yellow,width=2))
+                for piece in objeto.magentaPieces:
+                    piece.setPen(pg.mkPen(color=objeto.magenta,width=2))
+                for piece in objeto.greenPieces:
+                    piece.setPen(pg.mkPen(color=objeto.green,width=2))
+                
+            for objeto in blueDrawings:
+                objeto.color = newBlue
+                objeto.black = newBlack
+                objeto.white = newWhite
+                objeto.blue = newBlue
+                objeto.red = newRed
+                objeto.cyan = newCyan
+                objeto.yellow = newYellow
+                objeto.magenta = newMagenta
+                objeto.green = newGreen
+                for piece in objeto.blackPieces:
+                    piece.setPen(pg.mkPen(color=objeto.black,width=2))
+                for piece in objeto.whitePieces:
+                    piece.setPen(pg.mkPen(color=objeto.white,width=2))
+                for piece in objeto.bluePieces:
+                    piece.setPen(pg.mkPen(color=objeto.blue,width=2))
+                for piece in objeto.redPieces:
+                    piece.setPen(pg.mkPen(color=objeto.red,width=2))
+                for piece in objeto.cyanPieces:
+                    piece.setPen(pg.mkPen(color=objeto.cyan,width=2))
+                for piece in objeto.yellowPieces:
+                    piece.setPen(pg.mkPen(color=objeto.yellow,width=2))
+                for piece in objeto.magentaPieces:
+                    piece.setPen(pg.mkPen(color=objeto.magenta,width=2))
+                for piece in objeto.greenPieces:
+                    piece.setPen(pg.mkPen(color=objeto.green,width=2))
+                    
+            for objeto in redDrawings:
+                objeto.color = newRed
+                objeto.black = newBlack
+                objeto.white = newWhite
+                objeto.blue = newBlue
+                objeto.red = newRed
+                objeto.cyan = newCyan
+                objeto.yellow = newYellow
+                objeto.magenta = newMagenta
+                objeto.green = newGreen
+                for piece in objeto.blackPieces:
+                    piece.setPen(pg.mkPen(color=objeto.black,width=2))
+                for piece in objeto.whitePieces:
+                    piece.setPen(pg.mkPen(color=objeto.white,width=2))
+                for piece in objeto.bluePieces:
+                    piece.setPen(pg.mkPen(color=objeto.blue,width=2))
+                for piece in objeto.redPieces:
+                    piece.setPen(pg.mkPen(color=objeto.red,width=2))
+                for piece in objeto.cyanPieces:
+                    piece.setPen(pg.mkPen(color=objeto.cyan,width=2))
+                for piece in objeto.yellowPieces:
+                    piece.setPen(pg.mkPen(color=objeto.yellow,width=2))
+                for piece in objeto.magentaPieces:
+                    piece.setPen(pg.mkPen(color=objeto.magenta,width=2))
+                for piece in objeto.greenPieces:
+                    piece.setPen(pg.mkPen(color=objeto.green,width=2))  
+            
+            for objeto in cyanDrawings:
+                objeto.color = newCyan
+                objeto.black = newBlack
+                objeto.white = newWhite
+                objeto.blue = newBlue
+                objeto.red = newRed
+                objeto.cyan = newCyan
+                objeto.yellow = newYellow
+                objeto.magenta = newMagenta
+                objeto.green = newGreen
+                for piece in objeto.blackPieces:
+                    piece.setPen(pg.mkPen(color=objeto.black,width=2))
+                for piece in objeto.whitePieces:
+                    piece.setPen(pg.mkPen(color=objeto.white,width=2))
+                for piece in objeto.bluePieces:
+                    piece.setPen(pg.mkPen(color=objeto.blue,width=2))
+                for piece in objeto.redPieces:
+                    piece.setPen(pg.mkPen(color=objeto.red,width=2))
+                for piece in objeto.cyanPieces:
+                    piece.setPen(pg.mkPen(color=objeto.cyan,width=2))
+                for piece in objeto.yellowPieces:
+                    piece.setPen(pg.mkPen(color=objeto.yellow,width=2))
+                for piece in objeto.magentaPieces:
+                    piece.setPen(pg.mkPen(color=objeto.magenta,width=2))
+                for piece in objeto.greenPieces:
+                    piece.setPen(pg.mkPen(color=objeto.green,width=2))
+                
+            for objeto in yellowDrawings:
+                objeto.color = newYellow
+                objeto.black = newBlack
+                objeto.white = newWhite
+                objeto.blue = newBlue
+                objeto.red = newRed
+                objeto.cyan = newCyan
+                objeto.yellow = newYellow
+                objeto.magenta = newMagenta
+                objeto.green = newGreen
+                for piece in objeto.blackPieces:
+                    piece.setPen(pg.mkPen(color=objeto.black,width=2))
+                for piece in objeto.whitePieces:
+                    piece.setPen(pg.mkPen(color=objeto.white,width=2))
+                for piece in objeto.bluePieces:
+                    piece.setPen(pg.mkPen(color=objeto.blue,width=2))
+                for piece in objeto.redPieces:
+                    piece.setPen(pg.mkPen(color=objeto.red,width=2))
+                for piece in objeto.cyanPieces:
+                    piece.setPen(pg.mkPen(color=objeto.cyan,width=2))
+                for piece in objeto.yellowPieces:
+                    piece.setPen(pg.mkPen(color=objeto.yellow,width=2))
+                for piece in objeto.magentaPieces:
+                    piece.setPen(pg.mkPen(color=objeto.magenta,width=2))
+                for piece in objeto.greenPieces:
+                    piece.setPen(pg.mkPen(color=objeto.green,width=2)) 
+                    
+            for objeto in magentaDrawings:
+                objeto.color = newMagenta
+                objeto.black = newBlack
+                objeto.white = newWhite
+                objeto.blue = newBlue
+                objeto.red = newRed
+                objeto.cyan = newCyan
+                objeto.yellow = newYellow
+                objeto.magenta = newMagenta
+                objeto.green = newGreen
+                for piece in objeto.blackPieces:
+                    piece.setPen(pg.mkPen(color=objeto.black,width=2))
+                for piece in objeto.whitePieces:
+                    piece.setPen(pg.mkPen(color=objeto.white,width=2))
+                for piece in objeto.bluePieces:
+                    piece.setPen(pg.mkPen(color=objeto.blue,width=2))
+                for piece in objeto.redPieces:
+                    piece.setPen(pg.mkPen(color=objeto.red,width=2))
+                for piece in objeto.cyanPieces:
+                    piece.setPen(pg.mkPen(color=objeto.cyan,width=2))
+                for piece in objeto.yellowPieces:
+                    piece.setPen(pg.mkPen(color=objeto.yellow,width=2))
+                for piece in objeto.magentaPieces:
+                    piece.setPen(pg.mkPen(color=objeto.magenta,width=2))
+                for piece in objeto.greenPieces:
+                    piece.setPen(pg.mkPen(color=objeto.green,width=2))
+
+            for objeto in greenDrawings:
+                objeto.color = newGreen
+                objeto.black = newBlack
+                objeto.white = newWhite
+                objeto.blue = newBlue
+                objeto.red = newRed
+                objeto.cyan = newCyan
+                objeto.yellow = newYellow
+                objeto.magenta = newMagenta
+                objeto.green = newGreen
+                for piece in objeto.blackPieces:
+                    piece.setPen(pg.mkPen(color=objeto.black,width=2))
+                for piece in objeto.whitePieces:
+                    piece.setPen(pg.mkPen(color=objeto.white,width=2))
+                for piece in objeto.bluePieces:
+                    piece.setPen(pg.mkPen(color=objeto.blue,width=2))
+                for piece in objeto.redPieces:
+                    piece.setPen(pg.mkPen(color=objeto.red,width=2))
+                for piece in objeto.cyanPieces:
+                    piece.setPen(pg.mkPen(color=objeto.cyan,width=2))
+                for piece in objeto.yellowPieces:
+                    piece.setPen(pg.mkPen(color=objeto.yellow,width=2))
+                for piece in objeto.magentaPieces:
+                    piece.setPen(pg.mkPen(color=objeto.magenta,width=2))
+                for piece in objeto.greenPieces:
+                    piece.setPen(pg.mkPen(color=objeto.green,width=2))                    
+                    
+            
+
+
+                
+                
+# black Drawings = []
+# blueDrawings = []
+# redDrawings = []
+# cyanDrawings = []
+# yellowDrawings = []
+# magentaDrawings = []
+# greenDrawings = []
+            
+            
+            # self.childrenOfPlotWidgetIn_pageUHP = self.PlotWidgetIn_pageUHP.allChildItems()
+            # for x in self.childrenOfPlotWidgetIn_pageUHP:
+            #     if type(x) == QtWidgets.QGraphicsEllipseItem:
+            #         color = x.brush().color()
+            #         if color == self.background.black:
+            #             x.setPen(pg.mkPen(color=self.newBackground.black, width=2))
+            #         if color == self.background.white:
+            #             x.setPen(pg.mkPen(color=self.newBackground.white, width=2))
+                        
                     
                     
+                        
+
+
+            self.background = newBackground
+            self.PlotWidgetIn_pageUHP.setBackgroundBrush(self.background.backgroundBrush)
+            
+                        
                     
                     
                     

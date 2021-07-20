@@ -19,7 +19,7 @@
      <rect>
       <x>-1</x>
       <y>0</y>
-      <width>901</width>
+      <width>911</width>
       <height>51</height>
      </rect>
     </property>
@@ -29,54 +29,54 @@
     <property name="frameShadow">
      <enum>QFrame::Raised</enum>
     </property>
-    <widget class="QWidget" name="horizontalLayoutWidget">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>901</width>
-       <height>51</height>
-      </rect>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QToolButton" name="toolButtonHome">
-        <property name="text">
-         <string>Home</string>
-        </property>
-        <property name="autoRepeat">
-         <bool>false</bool>
-        </property>
-        <property name="autoExclusive">
-         <bool>true</bool>
-        </property>
-        <property name="autoRaise">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QToolButton" name="toolButtonCP">
-        <property name="text">
-         <string>Complex Plane</string>
-        </property>
-        <property name="autoExclusive">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QToolButton" name="toolButtonHP">
-        <property name="text">
-         <string>Hyperbolic Plane</string>
-        </property>
-        <property name="autoExclusive">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QToolButton" name="toolButtonHome">
+       <property name="text">
+        <string>Home</string>
+       </property>
+       <property name="autoRepeat">
+        <bool>false</bool>
+       </property>
+       <property name="autoExclusive">
+        <bool>true</bool>
+       </property>
+       <property name="autoRaise">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="toolButtonCP">
+       <property name="text">
+        <string>Complex Plane</string>
+       </property>
+       <property name="autoExclusive">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="toolButtonFG">
+       <property name="text">
+        <string>Functions and Germs</string>
+       </property>
+       <property name="autoExclusive">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="toolButtonHP">
+       <property name="text">
+        <string>Hyperbolic Plane</string>
+       </property>
+       <property name="autoExclusive">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
    <widget class="QStackedWidget" name="stackedWidgetAllPages">
     <property name="geometry">
@@ -88,7 +88,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="pageWelcomeHome">
      <widget class="QTextBrowser" name="textWelcome">
@@ -1173,6 +1173,51 @@ p, li { white-space: pre-wrap; }
       </property>
      </widget>
     </widget>
+    <widget class="QWidget" name="pageFG">
+     <widget class="QTabWidget" name="tabsIn_pageFG">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>901</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="tabFGGerms">
+       <attribute name="title">
+        <string>Germs</string>
+       </attribute>
+      </widget>
+      <widget class="QWidget" name="tabFGAlgebraicFunctions">
+       <attribute name="title">
+        <string>Algebraic Functions</string>
+       </attribute>
+      </widget>
+     </widget>
+     <widget class="PlotWidget" name="plotWidgetCodomainIn_pageFG">
+      <property name="geometry">
+       <rect>
+        <x>370</x>
+        <y>30</y>
+        <width>350</width>
+        <height>350</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="PlotWidget" name="plotWidgetDomainIn_pageFG">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>30</y>
+        <width>350</width>
+        <height>350</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
     <widget class="QWidget" name="pageHP">
      <widget class="QTabWidget" name="tabsIn_pageHP">
       <property name="geometry">
@@ -1244,9 +1289,9 @@ p, li { white-space: pre-wrap; }
         <property name="backgroundBrush">
          <brush brushstyle="NoBrush">
           <color alpha="255">
-           <red>255</red>
-           <green>255</green>
-           <blue>255</blue>
+           <red>191</red>
+           <green>191</green>
+           <blue>191</blue>
           </color>
          </brush>
         </property>
@@ -2187,6 +2232,47 @@ p, li { white-space: pre-wrap; }
          <string>--</string>
         </property>
        </widget>
+       <widget class="QComboBox" name="comboBoxChooseCanvasColor">
+        <property name="geometry">
+         <rect>
+          <x>420</x>
+          <y>485</y>
+          <width>200</width>
+          <height>32</height>
+         </rect>
+        </property>
+        <property name="editable">
+         <bool>false</bool>
+        </property>
+        <property name="currentText">
+         <string>Choose canvas color</string>
+        </property>
+        <item>
+         <property name="text">
+          <string>Choose canvas color</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Black</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>White</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Blue</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Red</string>
+         </property>
+        </item>
+       </widget>
       </widget>
       <widget class="QWidget" name="tabPD">
        <attribute name="title">
@@ -2202,7 +2288,7 @@ p, li { white-space: pre-wrap; }
          </rect>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>3</number>
         </property>
         <widget class="QWidget" name="tabPDBasicConstructions">
          <attribute name="title">
@@ -2260,7 +2346,7 @@ p, li { white-space: pre-wrap; }
          </rect>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>3</number>
         </property>
         <widget class="QWidget" name="pageUHPBasicConstructions_2">
          <widget class="QLabel" name="labelPDBChdistance">
@@ -2847,9 +2933,9 @@ p, li { white-space: pre-wrap; }
   </property>
  </designerdata>
  <buttongroups>
-  <buttongroup name="buttonGroup_3"/>
-  <buttongroup name="buttonGroup_2"/>
   <buttongroup name="buttonGroup_4"/>
+  <buttongroup name="buttonGroup_2"/>
   <buttongroup name="buttonGroup"/>
+  <buttongroup name="buttonGroup_3"/>
  </buttongroups>
 </ui>
