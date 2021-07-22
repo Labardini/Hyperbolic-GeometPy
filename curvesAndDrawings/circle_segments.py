@@ -16,12 +16,12 @@ from BackgroundControl.background_control import choosingBackground
 
 class circSegment:
     
-    def __init__(self,center_xcoord,center_ycoord,radius,startAngle,endAngle,puntos=500,backgroundColor="Black"):
+    def __init__(self,center_xcoord,center_ycoord,radius,startAngle,endAngle,puntos=500,backgroundColor="Black",circSegmentColor="white"):
         #startAngle -> clockwise -> endAngle
         #startAngle AND endAngle are input in radians
         backgroundColor = choosingBackground(backgroundColor)
-        self.color = backgroundColor.white
-        self.white = backgroundColor.white
+        exec("self.color =backgroundColor." + circSegmentColor) 
+        exec("self.white =backgroundColor." + circSegmentColor) 
         self.black = backgroundColor.black
         self.center_xcoord = center_xcoord
         self.center_ycoord = center_ycoord
@@ -49,14 +49,17 @@ class circSegment:
         self.complementarySegment.setPen(pg.mkPen(color=self.black, width=2))
         self.complementarySegment.setSpanAngle(16*numpy.sign(self.spanAngle)*360-self.spanAngle)
 
-        self.whitePieces = [self.goodSegment]
+
+
         self.blackPieces= [self.complementarySegment]
-        self.bluePieces =[]
-        self.redPieces = []
-        self.cyanPieces = []
-        self.yellowPieces = []
-        self.magentaPieces = []
-        self.greenPieces = []
+        for c in ["white","blue","red","cyan","yellow","magenta","green"]:
+            if c == circSegmentColor:
+                exec("self."+c+"Pieces = [self.goodSegment]")
+            else:
+                exec("self."+c+"Pieces = []")
+            
+            
+
 
 
 
