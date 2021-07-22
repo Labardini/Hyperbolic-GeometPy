@@ -248,8 +248,9 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         
         
         
-        self.segmentoDePrueba = circle_segments.circSegment(50,50,50,numpy.pi/4,-numpy.pi/2)
-        whiteDrawings.append(self.segmentoDePrueba)
+        self.segmentoDePrueba = circle_segments.circSegment(50,50,50,numpy.pi/4,-numpy.pi/2,circSegmentColor="red")
+        redDrawings.append(self.segmentoDePrueba)
+        print(self.segmentoDePrueba.color)
         self.PlotWidgetIn_pageUHP.addItem(self.segmentoDePrueba.goodSegment)
         self.PlotWidgetIn_pageUHP.addItem(self.segmentoDePrueba.complementarySegment)
 
