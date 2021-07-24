@@ -9,7 +9,8 @@ Created on Tue Feb 13 07:54:19 2018
 import numpy
 
 
-#import exception_handling
+
+from exception_handling import myInputError
 from Maths.CP_Maths import extended_complex_plane_CP
 from Maths.CP_Maths import Mobius_CP
 from Maths.HP_Maths import UHP_PD_Hyper_Isometries_HP
@@ -33,9 +34,6 @@ areCollinear = extended_complex_plane_CP.numpyExtendedComplexPlane().areCollinea
 myNumpyCosecant = extended_complex_plane_CP.numpyExtendedComplexPlane().myNumpyCosecant
 myNumpyCotangent = extended_complex_plane_CP.numpyExtendedComplexPlane().myNumpyCotangent
 myarg0To2Pi = extended_complex_plane_CP.numpyExtendedComplexPlane().myarg0To2Pi
-####
-#### Some abbreviations for AngleOfParallelism
-
 ####
 
 
@@ -240,8 +238,6 @@ class PDBasics:
                 unit_vector =  sign*orthogonal_vector/self.PDNorm(P1,orthogonal_vector)
             return unit_vector
 
-
-
     def tangent_unit_Hbar(self,point1,point2):
         P1, P2 = extendedValue(point1), extendedValue(point2)
         if P1 == P2:
@@ -323,6 +319,10 @@ class PDBasics:
 
 
 
+
+
+
+
     def find_verts_of_h_convex_hull(self,points):
         vert = [k for k in points]
         for k in points:
@@ -339,7 +339,6 @@ class PDBasics:
             #print(vertices)
         result = vertices
         return result
-
 
 
 
@@ -387,29 +386,21 @@ class PDBasics:
 
 
 
-# Code 2 added by J. on may 28 2021  # NOTE: Alternatively, area_of_h_polygon could recieve just any list of vertices and apply verts_h_polygon_counter_clockwise, but I think it's unnecessary
 
-    def area_of_h_polygon(self, orderedVertices): # recieves cyclically ordered vertices of a hyp polygon (i.e. output of verts_h_polygon_counter_clockwise )
-        vertices = orderedVertices
-        angleSum = 0
-        n = len(vertices) - 1 # this is because orderedVertices has the same first and last element. For some reason, vertices.pop() was affecting the nonlocal vertex list in orderedVertices
-        for k in range(0, n):
-            t1 = self.tangent_unit_Hbar(vertices[k], vertices[(k-1) % n])
-            t2 = self.tangent_unit_Hbar(vertices[k], vertices[(k+1) % n])
-            a1 = myarg0To2Pi(t1)
-            a2 = myarg0To2Pi(t2)
-            alpha = a1-a2 # in theory, this should be zero when vertices[k] is an ideal vertex
-            if alpha < 0:
-                alpha = -1*alpha
-            possibleAngles = [alpha, 2*numpy.pi - alpha]
-            sortedAngles = numpy.sort(possibleAngles)
-            print(n,k)
-            alpha = sortedAngles[0]
-            angleSum += alpha
-        area = (n-2)*numpy.pi - angleSum
-        return area
 
-        # what to do when we have ideal vertices?
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -515,6 +506,7 @@ class PDGeodesicMotion:
         return paramCurve
 
 
+
 # Code 1 added by J. on may 27 2021
 
 class AngleOfParallelism: # Some methods in this class could be more generally useful, so probably should be in PDBasics
@@ -576,7 +568,7 @@ class PDCircularMotion:
     def __init__(self):
         pass
 
-
+    
 
 
 class PDIsometries:
