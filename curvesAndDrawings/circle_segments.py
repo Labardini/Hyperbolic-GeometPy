@@ -12,8 +12,10 @@ import numpy
 import pyqtgraph as pg
 from pyqtgraph.Qt import QtCore
 
+# Maybe it would be useful to transofrm cicle_segments into a curvesAndDrawings module with some other basic shapes
+
 class circSegment:
-    
+
     def __init__(self,center_xcoord,center_ycoord,radius,startAngle,endAngle):
         #startAngle -> clockwise -> endAngle
         #startAngle AND endAngle are input in radians
@@ -37,9 +39,8 @@ class circSegment:
         self.complementarySegment.setStartAngle(self.endAngle)
         self.complementarySegment.setSpanAngle(16*numpy.sign(self.spanAngle)*360-self.spanAngle)
 
-        
-        
-        
 
-        
-        
+class line():
+
+    def __init__(self, startPoint, endPoint): 
+        self.line = QtGui.QGraphicsLineItem(startPoint.real, startPoint.imag, endPoint.real, endPoint.imag) # Do we need to add "QGraphicsItem *parent = nullptr" as the last parameter ?

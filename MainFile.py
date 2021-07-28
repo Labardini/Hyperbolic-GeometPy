@@ -55,6 +55,8 @@ removeooFromArgs = extended_complex_plane_CP.numpyExtendedComplexPlane().removeo
 removeooFromList = extended_complex_plane_CP.numpyExtendedComplexPlane().removeooFromList
 e_circumcenter_and_radius = extended_complex_plane_CP.numpyExtendedComplexPlane().e_circumcenter_and_radius
 areCollinear = extended_complex_plane_CP.numpyExtendedComplexPlane().areCollinear
+arc = circle_segments.circSegment()
+line = circle_segments.line()
 ####
 
 j = 1j
@@ -1344,7 +1346,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         self.vertLineCrosshairUHPGM.setPos(mousePoint.x())
 
 
-
+    #Changes here by J. on 28/07/21
 
     def UHPBCGeodesicSegmentStatic(self,ev):
         if self.radioButtonUHPBCGeodesicSegments.isChecked() == True and self.stackedWidgetIn_pageUHP.currentIndex() == 0:
@@ -1358,7 +1360,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                 arbManyClicks.append([x,y])
                 if len(arbManyClicks)==1:
                     points = numpy.array([[arbManyClicks[0][0],arbManyClicks[0][1]]],dtype=float)
-                    #initialPoint = pg.GraphItem(pos=[[twoClicks[0][0],twoClicks[0][1]]])
+                    #initialPoint = pg.GraphItem(pos=[
                     self.UHPdraggableDotsStaticGeodSegs.setData(pos=points,  pxMode=True)
                 else:
                     #print(twoClicks)
@@ -1370,14 +1372,28 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                     self.lineEditUHPGMComplexNumber1.setText(str(P))
                     self.lineEditUHPGMComplexNumber2.setText(str(Q))
                     #print(P,Q)
-                    geodesicSegment = UHP_HP.UHPBasics().UHPGeodesicSegment_rcostrsint(P,Q)
-                    x_coord, y_coord = geodesicSegment.real, geodesicSegment.imag
-                    drawing = pg.PlotCurveItem(x_coord,y_coord,pen=self.blackPenWidth2)
-                    self.PlotWidgetIn_pageUHP.addItem(drawing)
+
+#                     geodesicSegment = UHP_HP.UHPBasics().UHPGeodesicSegment_rcostrsint(P,Q)
+#                     x_coord, y_coord = geodesicSegment.real, geodesicSegment.imag
+#                     drawing = pg.PlotCurveItem(x_coord,y_coord,pen=self.blackPenWidth2)
+#                     self.PlotWidgetIn_pageUHP.addItem(drawing)
+#                     auxStorage.append(drawing)
+#                     #print(arbManyClicks)
+# #                    print(auxStorage)
+
+                    geodesicData = UHP_HP.UHPBasics().UHPGeodesicSegment_circleData(P, Q)
+                    if len(geodesicData) == 2:
+                        drawing = line(geodesicData[0].real, geodesicData[0].imag, geodesicData[1].real, geodesicData[1].imag)
+                        self.PlotWidgetIn_pageUHP.addItem(drawing)
+                    else:
+                        drawing = arc(geodesicSegment[0], geodesicSegment[1], geodesicSegment[2], geodesicSegment[3], geodesicSegment[4])
+                        self.PlotWidgetIn_pageUHP.addItem(drawing.goodSegment)
+                        self.PlotWidgetIn_pageUHP.addItem(drawing.complementarySegment)
                     auxStorage.append(drawing)
-                    #print(arbManyClicks)
-#                    print(auxStorage)
+
+
                     self.labelUHPBChdistancenumber.setNum(UHP_HP.UHPBasics().UHPDist(P,Q))
+#
 
 #        if self.checkBoxUHPEnableClickOnCanvas.isChecked() == False:
 #            for clicked in Clicks:
