@@ -42,6 +42,7 @@ from Maths.CP_Maths import Steiner_grids_CP
 from Maths.CP_Maths import Mobius_CP
 from Maths.HP_Maths import UHP_HP
 from Maths.HP_Maths import PD_HP
+from Maths.FG_Maths import Germs_FG
 
 #### SOME FUNCTIONS IMPORTED FROM Maths.CP_Maths.extended_complex_plane_CP
 oo = extended_complex_plane_CP.numpyExtendedComplexPlane().oo
@@ -73,6 +74,7 @@ cyanDrawings = []
 yellowDrawings = []
 magentaDrawings = []
 greenDrawings = []
+AllDrawings = [blackDrawings,whiteDrawings,blueDrawings,redDrawings,cyanDrawings,yellowDrawings,magentaDrawings,greenDrawings]
 
 
 
@@ -140,6 +142,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         self.PlotWidgetIn_pageCP.disableAutoRange()
 #        self.graphicsView_2.setYRange(self.CP_ylim_down,self.CP_ylim_up)
         self.PlotWidgetIn_pageCP.setAspectLocked(1.0)
+        self.PlotWidgetIn_pageCP.setBackgroundBrush(self.background.backgroundBrush)
         self.CPdraggableDotsMobTransFromParameters = dD.draggableDot() # FIXED POINTS AS DRAGGABLE DOTS
         self.PlotWidgetIn_pageCP.addItem(self.CPdraggableDotsMobTransFromParameters)
         
@@ -149,6 +152,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 #        self.graphicsView_2.setYRange(self.CP_ylim_down,self.CP_ylim_up)
         self.PlotWidgetIn_pageCPMobiusTransformations.setAspectLocked(1.0)
         self.PlotWidgetIn_pageCPMobiusTransformations.disableAutoRange()
+        self.PlotWidgetIn_pageCPMobiusTransformations.setBackgroundBrush(self.background.backgroundBrush)
         # self.horLineCrosshairCPMT = pg.InfiniteLine(angle=0, movable = False, pen=pg.mkPen('k', width=1.5))
         # self.vertLineCrosshairCPMT = pg.InfiniteLine(angle=90, movable = False, pen=pg.mkPen('k', width=1.5))
         # self.PlotWidgetIn_pageCPMobiusTransformations.addItem(self.horLineCrosshairCPMT)
@@ -185,13 +189,21 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 #####LAYOUT FOR plotWidgetDomainIn_pageFG AND plotWidgetDomainIn_pageFG
 
         self.plotWidgetDomainIn_pageFG.setXRange(self.CP_xlim_left,self.CP_xlim_right)
+        self.plotWidgetDomainIn_pageFG.setYRange(self.CP_xlim_left,self.CP_xlim_right)
         self.plotWidgetCodomainIn_pageFG.setXRange(self.CP_xlim_left,self.CP_xlim_right)
+        self.plotWidgetCodomainIn_pageFG.setYRange(self.CP_xlim_left,self.CP_xlim_right)
         #self.PlotWidgetIn_pageCP.setLimits(yMin=0.0)
         self.plotWidgetDomainIn_pageFG.disableAutoRange()
         self.plotWidgetCodomainIn_pageFG.disableAutoRange()
+        
+        self.plotWidgetDomainIn_pageFG.setLimits(xMin=2*self.CP_xlim_left,xMax=2*self.CP_xlim_right,yMin=2*self.CP_xlim_left,yMax=2*self.CP_xlim_right)
+        self.plotWidgetCodomainIn_pageFG.setLimits(xMin=2*self.CP_xlim_left,xMax=2*self.CP_xlim_right,yMin=2*self.CP_xlim_left,yMax=2*self.CP_xlim_right)
+
 #        self.graphicsView_2.setYRange(self.CP_ylim_down,self.CP_ylim_up)
         self.plotWidgetDomainIn_pageFG.setAspectLocked(1.0)
         self.plotWidgetCodomainIn_pageFG.setAspectLocked(1.0)
+        self.plotWidgetDomainIn_pageFG.setBackgroundBrush(self.background.backgroundBrush)
+        self.plotWidgetCodomainIn_pageFG.setBackgroundBrush(self.background.backgroundBrush)
         self.CPdraggableDotsDomainIn_pageFG = dD.draggableDot()
         self.CPdraggableDotsCodomainIn_pageFG = dD.draggableDot()
         self.plotWidgetDomainIn_pageFG.addItem(self.CPdraggableDotsDomainIn_pageFG)
@@ -250,7 +262,6 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         
         self.segmentoDePrueba = circle_segments.circSegment(50,50,50,numpy.pi/4,-numpy.pi/2,circSegmentColor="red")
         redDrawings.append(self.segmentoDePrueba)
-        print(self.segmentoDePrueba.color)
         self.PlotWidgetIn_pageUHP.addItem(self.segmentoDePrueba.goodSegment)
         self.PlotWidgetIn_pageUHP.addItem(self.segmentoDePrueba.complementarySegment)
 
@@ -275,6 +286,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         self.PlotWidgetIn_pageUHPGeodesicMotion.showAxis('right')
         self.PlotWidgetIn_pageUHPGeodesicMotion.disableAutoRange()
         self.PlotWidgetIn_pageUHPGeodesicMotion.setAspectLocked(1.0)
+        self.PlotWidgetIn_pageUHPGeodesicMotion.setBackgroundBrush(self.background.backgroundBrush)
         self.widthLinesUHPGM = 2
         self.boundingCircleUHPGM = pg.PlotCurveItem(numpy.cos(numpy.linspace(0,2*numpy.pi,1000)),numpy.sin(numpy.linspace(0,2*numpy.pi,1000)), pen=pg.mkPen('m',width=self.widthLinesUHPGM), clickable=True)
         self.PlotWidgetIn_pageUHPGeodesicMotion.addItem(self.boundingCircleUHPGM)
@@ -306,6 +318,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         self.PlotWidgetIn_pagePD.disableAutoRange()
 #        self.graphicsView_2.setYRange(self.CP_ylim_down,self.CP_ylim_up)
         self.PlotWidgetIn_pagePD.setAspectLocked(1.0)
+        self.PlotWidgetIn_pagePD.setBackgroundBrush(self.background.backgroundBrush)
         self.PlotWidgetIn_pagePD.hideAxis("left")
         self.PlotWidgetIn_pagePD.hideAxis("bottom")
         self.boundingCirclePD = pg.PlotCurveItem(numpy.cos(numpy.linspace(0,2*numpy.pi,1000)),numpy.sin(numpy.linspace(0,2*numpy.pi,1000)), pen=pg.mkPen('k',width=2), clickable=True)
@@ -330,6 +343,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         self.PlotWidgetIn_pagePDGeodesicMotion.showAxis('right')
         self.PlotWidgetIn_pagePDGeodesicMotion.disableAutoRange()
         self.PlotWidgetIn_pagePDGeodesicMotion.setAspectLocked(1.0)
+        self.PlotWidgetIn_pagePDGeodesicMotion.setBackgroundBrush(self.background.backgroundBrush)
         self.widthLinesPDGM = 2
         self.boundingCirclePDGM = pg.PlotCurveItem(numpy.cos(numpy.linspace(0,2*numpy.pi,1000)),numpy.sin(numpy.linspace(0,2*numpy.pi,1000)), pen=pg.mkPen('m',width=self.widthLinesPDGM), clickable=True)
         self.PlotWidgetIn_pagePDGeodesicMotion.addItem(self.boundingCirclePDGM)
@@ -466,8 +480,8 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 
 ############
         
-        self.plotWidgetDomainIn_pageFG.scene().sigMouseClicked.connect(self.drawzsquare)
-        self.CPdraggableDotsDomainIn_pageFG.Dot.moved.connect(self.dragDrawzsquare)
+        self.plotWidgetDomainIn_pageFG.scene().sigMouseClicked.connect(self.drawGermsOfnthRoots)
+        self.CPdraggableDotsDomainIn_pageFG.Dot.moved.connect(self.dragDrawGermsOfnthRoots)
 
 #############
 
@@ -1235,31 +1249,70 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 ### FUNCTIONS AND GERMS
 ### GERMS 
         
-        
-    def drawzsquare(self,ev):
-        global oneClick
-        x = self.plotWidgetDomainIn_pageFG.plotItem.vb.mapSceneToView(ev.scenePos()).x()
-        y = self.plotWidgetDomainIn_pageFG.plotItem.vb.mapSceneToView(ev.scenePos()).y() 
-        oneClick.clear()
-        oneClick.append([x,y])
-        pointsDomain = numpy.array([[x,y]],dtype=float)
-        #initialPoint = pg.GraphItem(pos=[[twoClicks[0][0],twoClicks[0][1]]])
-        self.CPdraggableDotsDomainIn_pageFG.setData(pos=pointsDomain,  pxMode=True)
-        z = x+y*(1j)
-        zSq = z**2
-        pointsCodomain = numpy.array([[zSq.real,zSq.imag]],dtype=float)
-        self.CPdraggableDotsCodomainIn_pageFG.setData(pos=pointsCodomain,  pxMode=True)
+    def drawGermsOfnthRoots(self,ev):
+        if self.tabsIn_pageFG.currentIndex() == 0 and self.radioButtonFGGermsnthRoots.isChecked() == True:
+            n = int(self.spinBoxFGGermsnthRoots.cleanText())
+            global oneClick
+            x = self.plotWidgetDomainIn_pageFG.plotItem.vb.mapSceneToView(ev.scenePos()).x()
+            y = self.plotWidgetDomainIn_pageFG.plotItem.vb.mapSceneToView(ev.scenePos()).y() 
+            oneClick.clear()
+            oneClick.append([x,y])
+            pointsDomain = numpy.array([[x,y]],dtype=float)
+            #initialPoint = pg.GraphItem(pos=[[twoClicks[0][0],twoClicks[0][1]]])
+            self.CPdraggableDotsDomainIn_pageFG.setData(pos=pointsDomain,  pxMode=True)
+            z = x+y*(1j)
+            nthRoots = (Germs_FG.AnalyticContinuation().nthRoots(n))(z)
+            pointsCodomain = numpy.array([[r.real,r.imag] for r in nthRoots],dtype=float)
+            self.CPdraggableDotsCodomainIn_pageFG.setData(pos=pointsCodomain,  pxMode=True)
+            
+            mediatricesBetweennthRoots = ((Germs_FG.AnalyticContinuation().mediatricesBetweenConsecutiventhRoots(n))(z))
+            for dictionary in mediatricesBetweennthRoots:
+                position = dictionary["pgLineInfo"]["pos"]
+                print(position)
+                ang= dictionary["pgLineInfo"]["angle"]
+                print(ang)
+                Line = pg.InfiniteLine(angle=ang)
+                self.plotWidgetCodomainIn_pageFG.addItem(Line)
+                
+            
 
         
-    def dragDrawzsquare(self,pt,ind):
-        global oneClick
-        z = pt[0]+pt[1]*(1j)
-        zSq = z**2
-        print(z)
-        pointsCodomain = numpy.array([[zSq.real,zSq.imag]],dtype=float)
-        self.CPdraggableDotsCodomainIn_pageFG.setData(pos=pointsCodomain,  pxMode=True)
-        oneClick.remove(oneClick[ind])
-        oneClick.insert(ind,pt)        
+    def dragDrawGermsOfnthRoots(self,pt,ind):
+        if self.tabsIn_pageFG.currentIndex() == 0 and self.radioButtonFGGermsnthRoots.isChecked() == True:
+            n = int(self.spinBoxFGGermsnthRoots.cleanText())
+            global oneClick
+            z = pt[0]+pt[1]*(1j)
+            nthRoots = (Germs_FG.AnalyticContinuation().nthRoots(n))(z)
+            pointsCodomain = numpy.array([[r.real,r.imag] for r in nthRoots],dtype=float)
+            self.CPdraggableDotsCodomainIn_pageFG.setData(pos=pointsCodomain,  pxMode=True)
+            oneClick.remove(oneClick[ind])
+            oneClick.insert(ind,pt)        
+        
+        
+    # def drawzsquare(self,ev):
+    #     global oneClick
+    #     x = self.plotWidgetDomainIn_pageFG.plotItem.vb.mapSceneToView(ev.scenePos()).x()
+    #     y = self.plotWidgetDomainIn_pageFG.plotItem.vb.mapSceneToView(ev.scenePos()).y() 
+    #     oneClick.clear()
+    #     oneClick.append([x,y])
+    #     pointsDomain = numpy.array([[x,y]],dtype=float)
+    #     #initialPoint = pg.GraphItem(pos=[[twoClicks[0][0],twoClicks[0][1]]])
+    #     self.CPdraggableDotsDomainIn_pageFG.setData(pos=pointsDomain,  pxMode=True)
+    #     z = x+y*(1j)
+    #     zSq = z**2
+    #     pointsCodomain = numpy.array([[zSq.real,zSq.imag]],dtype=float)
+    #     self.CPdraggableDotsCodomainIn_pageFG.setData(pos=pointsCodomain,  pxMode=True)
+
+        
+    # def dragDrawzsquare(self,pt,ind):
+    #     global oneClick
+    #     z = pt[0]+pt[1]*(1j)
+    #     zSq = z**2
+    #     print(z)
+    #     pointsCodomain = numpy.array([[zSq.real,zSq.imag]],dtype=float)
+    #     self.CPdraggableDotsCodomainIn_pageFG.setData(pos=pointsCodomain,  pxMode=True)
+    #     oneClick.remove(oneClick[ind])
+    #     oneClick.insert(ind,pt)        
         
         
         
@@ -2483,222 +2536,37 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
             newMagenta = newBackground.magenta
             newGreen = newBackground.green
             
-            for objeto in blackDrawings:
-                objeto.color = newBlack
-                objeto.black = newBlack
-                objeto.white = newWhite
-                objeto.blue = newBlue
-                objeto.red = newRed
-                objeto.cyan = newCyan
-                objeto.yellow = newYellow
-                objeto.magenta = newMagenta
-                objeto.green = newGreen
-                for piece in objeto.blackPieces:
-                    piece.setPen(pg.mkPen(color=objeto.black,width=2))
-                for piece in objeto.whitePieces:
-                    piece.setPen(pg.mkPen(color=objeto.white,width=2))
-                for piece in objeto.bluePieces:
-                    piece.setPen(pg.mkPen(color=objeto.blue,width=2))
-                for piece in objeto.redPieces:
-                    piece.setPen(pg.mkPen(color=objeto.red,width=2))
-                for piece in objeto.cyanPieces:
-                    piece.setPen(pg.mkPen(color=objeto.cyan,width=2))
-                for piece in objeto.yellowPieces:
-                    piece.setPen(pg.mkPen(color=objeto.yellow,width=2))
-                for piece in objeto.magentaPieces:
-                    piece.setPen(pg.mkPen(color=objeto.magenta,width=2))
-                for piece in objeto.greenPieces:
-                    piece.setPen(pg.mkPen(color=objeto.green,width=2))            
-                                
-            for objeto in whiteDrawings:
-                objeto.color = newWhite
-                objeto.black = newBlack
-                objeto.white = newWhite
-                objeto.blue = newBlue
-                objeto.red = newRed
-                objeto.cyan = newCyan
-                objeto.yellow = newYellow
-                objeto.magenta = newMagenta
-                objeto.green = newGreen
-                for piece in objeto.blackPieces:
-                    piece.setPen(pg.mkPen(color=objeto.black,width=2))
-                for piece in objeto.whitePieces:
-                    piece.setPen(pg.mkPen(color=objeto.white,width=2))
-                for piece in objeto.bluePieces:
-                    piece.setPen(pg.mkPen(color=objeto.blue,width=2))
-                for piece in objeto.redPieces:
-                    piece.setPen(pg.mkPen(color=objeto.red,width=2))
-                for piece in objeto.cyanPieces:
-                    piece.setPen(pg.mkPen(color=objeto.cyan,width=2))
-                for piece in objeto.yellowPieces:
-                    piece.setPen(pg.mkPen(color=objeto.yellow,width=2))
-                for piece in objeto.magentaPieces:
-                    piece.setPen(pg.mkPen(color=objeto.magenta,width=2))
-                for piece in objeto.greenPieces:
-                    piece.setPen(pg.mkPen(color=objeto.green,width=2))
+            for coloredDrawingsList in AllDrawings:
                 
-            for objeto in blueDrawings:
-                objeto.color = newBlue
-                objeto.black = newBlack
-                objeto.white = newWhite
-                objeto.blue = newBlue
-                objeto.red = newRed
-                objeto.cyan = newCyan
-                objeto.yellow = newYellow
-                objeto.magenta = newMagenta
-                objeto.green = newGreen
-                for piece in objeto.blackPieces:
-                    piece.setPen(pg.mkPen(color=objeto.black,width=2))
-                for piece in objeto.whitePieces:
-                    piece.setPen(pg.mkPen(color=objeto.white,width=2))
-                for piece in objeto.bluePieces:
-                    piece.setPen(pg.mkPen(color=objeto.blue,width=2))
-                for piece in objeto.redPieces:
-                    piece.setPen(pg.mkPen(color=objeto.red,width=2))
-                for piece in objeto.cyanPieces:
-                    piece.setPen(pg.mkPen(color=objeto.cyan,width=2))
-                for piece in objeto.yellowPieces:
-                    piece.setPen(pg.mkPen(color=objeto.yellow,width=2))
-                for piece in objeto.magentaPieces:
-                    piece.setPen(pg.mkPen(color=objeto.magenta,width=2))
-                for piece in objeto.greenPieces:
-                    piece.setPen(pg.mkPen(color=objeto.green,width=2))
-                    
-            for objeto in redDrawings:
-                objeto.color = newRed
-                objeto.black = newBlack
-                objeto.white = newWhite
-                objeto.blue = newBlue
-                objeto.red = newRed
-                objeto.cyan = newCyan
-                objeto.yellow = newYellow
-                objeto.magenta = newMagenta
-                objeto.green = newGreen
-                for piece in objeto.blackPieces:
-                    piece.setPen(pg.mkPen(color=objeto.black,width=2))
-                for piece in objeto.whitePieces:
-                    piece.setPen(pg.mkPen(color=objeto.white,width=2))
-                for piece in objeto.bluePieces:
-                    piece.setPen(pg.mkPen(color=objeto.blue,width=2))
-                for piece in objeto.redPieces:
-                    piece.setPen(pg.mkPen(color=objeto.red,width=2))
-                for piece in objeto.cyanPieces:
-                    piece.setPen(pg.mkPen(color=objeto.cyan,width=2))
-                for piece in objeto.yellowPieces:
-                    piece.setPen(pg.mkPen(color=objeto.yellow,width=2))
-                for piece in objeto.magentaPieces:
-                    piece.setPen(pg.mkPen(color=objeto.magenta,width=2))
-                for piece in objeto.greenPieces:
-                    piece.setPen(pg.mkPen(color=objeto.green,width=2))  
             
-            for objeto in cyanDrawings:
-                objeto.color = newCyan
-                objeto.black = newBlack
-                objeto.white = newWhite
-                objeto.blue = newBlue
-                objeto.red = newRed
-                objeto.cyan = newCyan
-                objeto.yellow = newYellow
-                objeto.magenta = newMagenta
-                objeto.green = newGreen
-                for piece in objeto.blackPieces:
-                    piece.setPen(pg.mkPen(color=objeto.black,width=2))
-                for piece in objeto.whitePieces:
-                    piece.setPen(pg.mkPen(color=objeto.white,width=2))
-                for piece in objeto.bluePieces:
-                    piece.setPen(pg.mkPen(color=objeto.blue,width=2))
-                for piece in objeto.redPieces:
-                    piece.setPen(pg.mkPen(color=objeto.red,width=2))
-                for piece in objeto.cyanPieces:
-                    piece.setPen(pg.mkPen(color=objeto.cyan,width=2))
-                for piece in objeto.yellowPieces:
-                    piece.setPen(pg.mkPen(color=objeto.yellow,width=2))
-                for piece in objeto.magentaPieces:
-                    piece.setPen(pg.mkPen(color=objeto.magenta,width=2))
-                for piece in objeto.greenPieces:
-                    piece.setPen(pg.mkPen(color=objeto.green,width=2))
-                
-            for objeto in yellowDrawings:
-                objeto.color = newYellow
-                objeto.black = newBlack
-                objeto.white = newWhite
-                objeto.blue = newBlue
-                objeto.red = newRed
-                objeto.cyan = newCyan
-                objeto.yellow = newYellow
-                objeto.magenta = newMagenta
-                objeto.green = newGreen
-                for piece in objeto.blackPieces:
-                    piece.setPen(pg.mkPen(color=objeto.black,width=2))
-                for piece in objeto.whitePieces:
-                    piece.setPen(pg.mkPen(color=objeto.white,width=2))
-                for piece in objeto.bluePieces:
-                    piece.setPen(pg.mkPen(color=objeto.blue,width=2))
-                for piece in objeto.redPieces:
-                    piece.setPen(pg.mkPen(color=objeto.red,width=2))
-                for piece in objeto.cyanPieces:
-                    piece.setPen(pg.mkPen(color=objeto.cyan,width=2))
-                for piece in objeto.yellowPieces:
-                    piece.setPen(pg.mkPen(color=objeto.yellow,width=2))
-                for piece in objeto.magentaPieces:
-                    piece.setPen(pg.mkPen(color=objeto.magenta,width=2))
-                for piece in objeto.greenPieces:
-                    piece.setPen(pg.mkPen(color=objeto.green,width=2)) 
-                    
-            for objeto in magentaDrawings:
-                objeto.color = newMagenta
-                objeto.black = newBlack
-                objeto.white = newWhite
-                objeto.blue = newBlue
-                objeto.red = newRed
-                objeto.cyan = newCyan
-                objeto.yellow = newYellow
-                objeto.magenta = newMagenta
-                objeto.green = newGreen
-                for piece in objeto.blackPieces:
-                    piece.setPen(pg.mkPen(color=objeto.black,width=2))
-                for piece in objeto.whitePieces:
-                    piece.setPen(pg.mkPen(color=objeto.white,width=2))
-                for piece in objeto.bluePieces:
-                    piece.setPen(pg.mkPen(color=objeto.blue,width=2))
-                for piece in objeto.redPieces:
-                    piece.setPen(pg.mkPen(color=objeto.red,width=2))
-                for piece in objeto.cyanPieces:
-                    piece.setPen(pg.mkPen(color=objeto.cyan,width=2))
-                for piece in objeto.yellowPieces:
-                    piece.setPen(pg.mkPen(color=objeto.yellow,width=2))
-                for piece in objeto.magentaPieces:
-                    piece.setPen(pg.mkPen(color=objeto.magenta,width=2))
-                for piece in objeto.greenPieces:
-                    piece.setPen(pg.mkPen(color=objeto.green,width=2))
-
-            for objeto in greenDrawings:
-                objeto.color = newGreen
-                objeto.black = newBlack
-                objeto.white = newWhite
-                objeto.blue = newBlue
-                objeto.red = newRed
-                objeto.cyan = newCyan
-                objeto.yellow = newYellow
-                objeto.magenta = newMagenta
-                objeto.green = newGreen
-                for piece in objeto.blackPieces:
-                    piece.setPen(pg.mkPen(color=objeto.black,width=2))
-                for piece in objeto.whitePieces:
-                    piece.setPen(pg.mkPen(color=objeto.white,width=2))
-                for piece in objeto.bluePieces:
-                    piece.setPen(pg.mkPen(color=objeto.blue,width=2))
-                for piece in objeto.redPieces:
-                    piece.setPen(pg.mkPen(color=objeto.red,width=2))
-                for piece in objeto.cyanPieces:
-                    piece.setPen(pg.mkPen(color=objeto.cyan,width=2))
-                for piece in objeto.yellowPieces:
-                    piece.setPen(pg.mkPen(color=objeto.yellow,width=2))
-                for piece in objeto.magentaPieces:
-                    piece.setPen(pg.mkPen(color=objeto.magenta,width=2))
-                for piece in objeto.greenPieces:
-                    piece.setPen(pg.mkPen(color=objeto.green,width=2))                    
-                    
+                for objeto in coloredDrawingsList:
+                    objeto.color = newBlack
+                    objeto.black = newBlack
+                    objeto.white = newWhite
+                    objeto.blue = newBlue
+                    objeto.red = newRed
+                    objeto.cyan = newCyan
+                    objeto.yellow = newYellow
+                    objeto.magenta = newMagenta
+                    objeto.green = newGreen
+                    for piece in objeto.blackPieces:
+                        piece.setPen(pg.mkPen(color=objeto.black,width=2))
+                    for piece in objeto.whitePieces:
+                        piece.setPen(pg.mkPen(color=objeto.white,width=2))
+                    for piece in objeto.bluePieces:
+                        piece.setPen(pg.mkPen(color=objeto.blue,width=2))
+                    for piece in objeto.redPieces:
+                        piece.setPen(pg.mkPen(color=objeto.red,width=2))
+                    for piece in objeto.cyanPieces:
+                        piece.setPen(pg.mkPen(color=objeto.cyan,width=2))
+                    for piece in objeto.yellowPieces:
+                        piece.setPen(pg.mkPen(color=objeto.yellow,width=2))
+                    for piece in objeto.magentaPieces:
+                        piece.setPen(pg.mkPen(color=objeto.magenta,width=2))
+                    for piece in objeto.greenPieces:
+                        piece.setPen(pg.mkPen(color=objeto.green,width=2))            
+                                    
+                        
             
 
 
@@ -2728,7 +2596,15 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 
 
             self.background = newBackground
+            self.PlotWidgetIn_pageCP.setBackgroundBrush(self.background.backgroundBrush)
+            self.PlotWidgetIn_pageCPMobiusTransformations.setBackgroundBrush(self.background.backgroundBrush)
+            self.plotWidgetDomainIn_pageFG.setBackgroundBrush(self.background.backgroundBrush)
+            self.plotWidgetCodomainIn_pageFG.setBackgroundBrush(self.background.backgroundBrush)
             self.PlotWidgetIn_pageUHP.setBackgroundBrush(self.background.backgroundBrush)
+            self.PlotWidgetIn_pageUHPGeodesicMotion.setBackgroundBrush(self.background.backgroundBrush)
+            self.PlotWidgetIn_pagePD.setBackgroundBrush(self.background.backgroundBrush)
+            self.PlotWidgetIn_pagePDGeodesicMotion.setBackgroundBrush(self.background.backgroundBrush)
+            
             
                         
                     
