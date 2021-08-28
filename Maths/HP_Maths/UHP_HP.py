@@ -115,7 +115,6 @@ class UHPBasics:
         euclidean_radius = x1*(numpy.sinh(Hradius))
         return [ numpy.complex(euclidean_center_x + euclidean_center_y*(1j)), numpy.real(euclidean_radius)]
 
-
     def UHPGeodesicSegment_rcostrsint(self,startpoint,endpoint):
         A = extendedValue(startpoint)
         B = extendedValue(endpoint)
@@ -143,7 +142,7 @@ class UHPBasics:
             return parametrization
         return parametrized_curve(interval)
 
-#Method added by J. on 28/07/21
+## Corrected Method added by J. 27/08/21
 
     def UHPGeodesicSegment_circleData(self, startpoint, endpoint):
         A = extendedValue(startpoint)
@@ -154,8 +153,8 @@ class UHPBasics:
             X = self.eCenterAndRadiusNonVertGeodesicThroughPAndQ(A,B)
             translated_A = A - (X[0])
             translated_B = B - (X[0])
-            angles = [numpy.angle(translated_A, numpy.angle(translated_B)]
-            startAngle, endAngle = numpy.sort(angles)[1], numpy.sort(angles[0]) # To acommodate circSegment's clockwise preference
+            angles = [numpy.angle(translated_A), numpy.angle(translated_B)]
+            startAngle, endAngle = numpy.sort(angles)[1], numpy.sort(angles)[0] # To accommodate circSegment's clockwise preference
             data = [X[0].real, X[0].imag, X[1], startAngle, endAngle]
         return data
 
