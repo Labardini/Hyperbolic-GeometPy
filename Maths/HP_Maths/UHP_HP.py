@@ -33,12 +33,12 @@ myarg0To2Pi = extended_complex_plane_CP.numpyExtendedComplexPlane().myarg0To2Pi
 
 
 
-        
+
 class UHPBasics:
-    
+
     def __init__(self):
         pass
-    
+
     def isInUHP(self,complexP):
         P = extendedValue(complexP)
         if P != oo and P.imag > 0:
@@ -46,7 +46,7 @@ class UHPBasics:
         else:
             answer = False
         return answer
-    
+
     def isIdealPoint(self,complexP):
         P = extendedValue(complexP)
         if P == oo or P.imag == 0:
@@ -54,14 +54,14 @@ class UHPBasics:
         else:
             answer = False
         return answer
-    
+
     def isInUHPBar(self,complexP):
         if self.isInUHP(complexP) == True or self.isIdealPoint(complexP) == True:
             answer = True
         else:
             answer = False
         return answer
-        
+
     def areVertAlignedInUHP(self,hPointP,hPointQ):
         P, Q = extendedValue(hPointP), extendedValue(hPointQ)
         if self.isInUHPBar(P) == True and self.isInUHPBar(Q) == True and P != Q:
@@ -91,8 +91,8 @@ class UHPBasics:
         Q2 = numpy.imag(Q)
         dist_expression = numpy.arccosh(  1 + ( ( (Q1-P1)**2 + (Q2-P2)**2 ) / (2*P2*Q2) )  )
         return dist_expression
-    
-            
+
+
     def eCenterAndRadiusNonVertGeodesicThroughPAndQ(self,hpointP,hpointQ):
         P, Q = extendedValue(hpointP), extendedValue(hpointQ)
         if self.areVertAlignedInUHP(P,Q) == False:
@@ -103,10 +103,10 @@ class UHPBasics:
             return [eCenter,eRadius]
         else:
             raise myInputError(str(P)+','+str(Q),"The points must be distinct, belong to the UHP, and not be vertically alligned")
-            
+
     def eCenterAndRadiusH_Circle(self,hcenter,hradius): # IN THE UPPER HALF PLANE
         Hcenter = numpy.complex(hcenter)
-        Hradius = numpy.real(hradius)            
+        Hradius = numpy.real(hradius)
         x0 = Hcenter.real
         x1 = Hcenter.imag
         euclidean_center_x = x0
@@ -141,11 +141,26 @@ class UHPBasics:
                 parametrization = numpy.real(A) + t*(1j)
             return parametrization
         return parametrized_curve(interval)
- 
+
+## Corrected Method added by J. 27/08/21
+
+    def UHPGeodesicSegment_circleData(self, startpoint, endpoint):
+        A = extendedValue(startpoint)
+        B = extendedValue(endpoint)
+        if self.areVertAlignedInUHP(A,B) == True:
+            data = [A,B]   # Maybe a bad solution. We need a way to incorporate the case of lines in circle_segments somehow to avoid writing too much innecesary code
+        else:
+            X = self.eCenterAndRadiusNonVertGeodesicThroughPAndQ(A,B)
+            translated_A = A - (X[0])
+            translated_B = B - (X[0])
+            angles = [numpy.angle(translated_A), numpy.angle(translated_B)]
+            startAngle, endAngle = numpy.sort(angles)[1], numpy.sort(angles)[0] # To accommodate circSegment's clockwise preference
+            data = [X[0].real, X[0].imag, X[1], startAngle, endAngle]
+        return data
 
 ######
 ###### FOR POLYGONS IN UHP:
-       
+
 ###### TANGENT UNIT VECTOR OF A GIVEN DIRECTED GEODESIC AT A GIVEN POINT
 
     def tangent_unit(self,point1,point2):
@@ -185,7 +200,7 @@ class UHPBasics:
                     orthogonal_vector = connecting_vector*(-1j)
                     result =  numpy.sign(w.real-z.real)*orthogonal_vector/self.UHPNorm(point1,orthogonal_vector)
             return result
-    
+
 
 
 #### CYCLIC ORDERING OF THREE POINTS AROUND A FIXED BASEPOINT
@@ -223,10 +238,10 @@ class UHPBasics:
                 vector = self.tangent_unit_Hbar(basepoint,point)
                 difference_of_arguments_in_radians = myarg0To2Pi(vector/reference_vector)#numpy.angle(vector/reference_vector)
                 if t == difference_of_arguments_in_radians:
-                    cyclic_order.append(point)        
+                    cyclic_order.append(point)
         # THIS DOESN'T WORK NICELY IF AN ARGUMENT APPEARS TWICE: cyclic_order = [vertices[list_of_arguments.index(t)] for t in  ordered_list_of_arguments]
         return cyclic_order
-            
+
 
     def is_point_in_h_convex_hull(self,point,points):
         remaining_vertices = [k for k in points]
@@ -274,7 +289,7 @@ class UHPBasics:
         return result
 
 
-        
+
 ###### DECIDING COLINEARITY IN UHP
 
     def are_three_points_collinear(self,point1,point2,point3):
@@ -295,10 +310,10 @@ class UHPBasics:
         elif e_circumcenter_and_radius(point1,point2,point3)[0][1] ==0:
             answer = True
         return answer
-            
-    
-        
-                
+
+
+
+
     def find_verts_of_h_convex_hull(self,points):
     ##    point0=points[0]
     ##    point1=points[1]
@@ -330,7 +345,7 @@ class UHPBasics:
             #print(vertices)
         result = vertices
         return result
-            
+
     def somePointOnGeodesicSegment(self,point1,point2): ## THE OUTPUT POINT IS NOTHING SPECIAL, IT WILL BE USED ONLY TO PROVIDE A BASEPOINT AROUND WHICH TO ORDER CYCLICALLY
         A = extendedValue(point1)
         B = extendedValue(point2)
@@ -345,8 +360,8 @@ class UHPBasics:
         else:
             point = (A+B)/2
         return point
-        
-    
+
+
 
     def verts_h_polygon_counter_clockwise(self,points): ## requires at least two different points in points
         points_no_repetition = [j for j in points]
@@ -378,14 +393,6 @@ class UHPBasics:
             vertices.append(p0)
         return vertices
 
-        
-        
-
-    
-
-
-
-        
 
 
 
@@ -393,13 +400,21 @@ class UHPBasics:
 
 
 
-    
+
+
+
+
+
+
+
+
+
 class UHPGeodesicMotion:
-    
+
     def __init__(self):
         pass
-    
-    def UHPGeodesicSegmentParamByArcLength(self,startpoint,endpoint): 
+
+    def UHPGeodesicSegmentParamByArcLength(self,startpoint,endpoint):
         A = extendedValue(startpoint)
         B = extendedValue(endpoint)
         if UHPBasics().areVertAlignedInUHP(A,B) == False:
@@ -432,7 +447,7 @@ class UHPGeodesicMotion:
                 result = parametrized_curve(-increasing_s)
             return result
         return [reoriented_parametrization, left_to_right_interval_for_s]
-    
+
     def UHPGeodesicSegmentConstantRapidity(self,startpoint,initialvelocityvector):
         P = extendedValue(startpoint)
         V = extendedValue(initialvelocityvector)
@@ -451,42 +466,42 @@ class UHPGeodesicMotion:
         def paramCurve(time):
             return self.UHPGeodesicSegmentParamByArcLength(P,Q)[0](rapidity*time)
         return paramCurve
-             
-            
-            
-        
-        
 
-    
+
+
+
+
+
+
 class UHPCircularMotion:
-    
+
     def __init__(self):
         pass
-    
-    
+
+
     def UHPCircSegmentParamByArcLength(self,center,radius,theta1,theta2):
         x0, y0, r = center.real, center.imag, radius
         if y0 <= 0 or y0 <= r:
             raise myInputError(str(y0)+','+str(r),"Center must have positive imaginary part and euclidean radius must be smaller than imaginary part of center")
         else:
             totalarclength = ( 4*r / numpy.sqrt(y0**2-r**2) ) * numpy.arctan( (y0*numpy.tan( theta2/2 ) + r) / numpy.sqrt(y0**2-r**2) ) - ( 4*r / numpy.sqrt(y0**2-r**2) ) * numpy.arctan( (y0*numpy.tan( theta1/2 ) + r) / numpy.sqrt(y0**2-r**2) )
-            def parametrization(s):    
+            def parametrization(s):
                 theta = 2*numpy.arctan(((numpy.sqrt(y0**2-r**2)*numpy.tan(( s + ( 4*r / numpy.sqrt(y0**2-r**2) ) * numpy.arctan( (y0*numpy.tan( theta1/2 ) + r) / numpy.sqrt(y0**2-r**2) ) ) * numpy.sqrt(y0**2-r**2) / (4*r) )) - r) / y0)
                 return x0+r*numpy.cos(theta) + (y0+r*numpy.sin(theta))*(1j)
             return [parametrization, totalarclength]
-        
-    
+
+
 class UHPIsometries:
-    
+
     def __init__(self):
         pass
 
-    
-    
+
+
 class UHPFuchsianRepresentative: ##NOTE: SO FAR, THIS CLASS CONSTRUCTS
 # A VERY SPECIFIC FUCHSIAN GROUP IN A VERY SPECIFIC SETTING:
 # POSITIVE NUMBER OF PUNCTURES, NO ORBIFOLD POINTS, VERY SPECIFIC SET OF SIDE PAIRING TRANSFORMATIONS
-    
+
     def __init__(self):
         pass
 
@@ -513,7 +528,7 @@ class UHPFuchsianRepresentative: ##NOTE: SO FAR, THIS CLASS CONSTRUCTS
                     result = 4*(g-1)+1 + 4*g+2*(p-1)-1-k
                 return result
             return f
-    
+
     def UHPSidesOfSpecificIdealPolygon(self,genus,numberOfPunctures):
         # NOTE: TRY TO IMPROVE THE WAY THE SIDES ARE COLORED
         g, p = genus, numberOfPunctures
@@ -533,7 +548,7 @@ class UHPFuchsianRepresentative: ##NOTE: SO FAR, THIS CLASS CONSTRUCTS
 #            for k in range(4*(g-1)-2):
 #                if k % l == 0 or k % l == 4  :
 #                    curvesColors[k] = basicColors[int(k/2)%len(basicColors)]
-#                    curvesColors[k+2] = basicColors[int(k/2)%len(basicColors)]  
+#                    curvesColors[k+2] = basicColors[int(k/2)%len(basicColors)]
 #                if  k % l == 3 or k % l == 7 :
 #                    curvesColors[k] = basicColors[int((k-1)/2)%len(basicColors)]
 #                    curvesColors[k+2] = basicColors[int((k-1)/2)%len(basicColors)]
@@ -564,7 +579,7 @@ class UHPFuchsianRepresentative: ##NOTE: SO FAR, THIS CLASS CONSTRUCTS
                     #Elliptic180 = Mobius_CP.MobiusTransitivity().MobiusMatrixz1z2z3Tow1w2w3(f(k)+(1/2)+1j,f(k),f(k)+1,f(k)+(1/2)+1j,f(k)+1,f(k))#Mobius_CP.MobiusFromParameters().MobMatrixFromParams([f(k)+(1/2)+1j,f(k)+(1/2)-1j],-1)
                     SidePairings[k] = Mobius_CP.MobiusTransitivity().MobiusMatrixz1z2z3Tow1w2w3(k+(1/2)+1j,k,k+1,f(k)+(1/2)+1j,f(k)+1,f(k))#Elliptic180*TranslationMatrix
             return SidePairings
-                    
+
     def UHPOrbitOfVertexUnderSpecificCombinatorialSidePairing(self,genus,numberOfPunctures):
         g, p = genus, numberOfPunctures
         if g == 0 and p < 3:
@@ -582,7 +597,7 @@ class UHPFuchsianRepresentative: ##NOTE: SO FAR, THIS CLASS CONSTRUCTS
                     j = (f(j) + 1) % NumOfSides
                 return orbit
             return orbitOfVertex
-        
+
     def UHPVertexOrbitsUnderSpecificCombinatorialSidePairing(self,genus,numberOfPunctures):
         g, p = genus, numberOfPunctures
         if g == 0 and p < 3:
@@ -601,7 +616,7 @@ class UHPFuchsianRepresentative: ##NOTE: SO FAR, THIS CLASS CONSTRUCTS
                 for l in orbit:
                     vertices.remove(l)
             return orbits
-    
+
     def UHPCheckIfTheGroupIsFuchsianForSpecificSidePairing(self,genus,numberOfPunctures):
         g, p = genus, numberOfPunctures
         if g == 0 and p < 3:
@@ -618,15 +633,3 @@ class UHPFuchsianRepresentative: ##NOTE: SO FAR, THIS CLASS CONSTRUCTS
                     transformation = sidePairings[orbit[j]] * transformation
                     j = j+1
                 print(Mobius_CP.MobiusAssocToMatrix().isParEllHypLox(transformation[0,0],transformation[0,1],transformation[1,0],transformation[1,1]))
-                
-        
-                
-            
-            
-           
-            
-            
-            
-        
-    
-    
