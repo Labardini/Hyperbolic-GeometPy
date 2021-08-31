@@ -91,7 +91,6 @@ AllDrawings = [blackDrawings,whiteDrawings,blueDrawings,redDrawings,cyanDrawings
 
 
 
-
 class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 
     def __init__(self, parent=None):
@@ -120,12 +119,13 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         # self.greenPenWidth2 = self.background.greenPenWidth2
 
         self.comboBoxChooseCanvasColor.currentIndexChanged.connect(self.effectOf_comboBoxChooseCanvasColor)
+        
 
 
 
+            
 
-
-
+            
 
 ##################
 ##################
@@ -195,7 +195,6 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         #self.PlotWidgetIn_pageCP.setLimits(yMin=0.0)
         self.plotWidgetDomainIn_pageFG.disableAutoRange()
         self.plotWidgetCodomainIn_pageFG.disableAutoRange()
-
         self.plotWidgetDomainIn_pageFG.setLimits(xMin=2*self.CP_xlim_left,xMax=2*self.CP_xlim_right,yMin=2*self.CP_xlim_left,yMax=2*self.CP_xlim_right)
         self.plotWidgetCodomainIn_pageFG.setLimits(xMin=2*self.CP_xlim_left,xMax=2*self.CP_xlim_right,yMin=2*self.CP_xlim_left,yMax=2*self.CP_xlim_right)
 
@@ -255,6 +254,24 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         self.PlotWidgetIn_pageUHP.addItem(self.UHPdraggableDotsStaticGeodSegs)
         self.UHPdraggableDotsConvexHull = dD.UHPdraggableDot()
         self.PlotWidgetIn_pageUHP.addItem(self.UHPdraggableDotsConvexHull)
+        
+
+        
+        
+        
+        self.segmentoDePrueba = circle_segments.circSegment(50,50,50,numpy.pi/4,-numpy.pi/2,circSegmentColor="red")
+        redDrawings.append(self.segmentoDePrueba)
+        self.PlotWidgetIn_pageUHP.addItem(self.segmentoDePrueba.goodSegment)
+        self.PlotWidgetIn_pageUHP.addItem(self.segmentoDePrueba.complementarySegment)
+
+
+
+# #         self.whitebrush = QtGui.QBrush(QtGui.QColor(191, 191, 191))
+# # #            #brush.setStyle(QtCore.Qt.NoBrush)
+# #         self.PlotWidgetIn_pageUHP.setBackgroundBrush(self.whitebrush)
+        
+        
+        
 
 
 
@@ -477,6 +494,13 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 
 
 
+############
+        
+        self.plotWidgetDomainIn_pageFG.scene().sigMouseClicked.connect(self.drawGermsOfnthRoots)
+        self.CPdraggableDotsDomainIn_pageFG.Dot.moved.connect(self.dragDrawGermsOfnthRoots)
+
+#############
+
 
 ############
 
@@ -546,14 +570,16 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
     def effectOf_toolButtonHP(self):
         self.stackedWidgetAllPages.setCurrentIndex(3)
 
+    
     def effectOf_toolButtonTS(self):
         self.stackedWidgetAllPages.setCurrentIndex(4)
-
+    
     def effectOf_toolButtonMS(self):
         self.stackedWidgetAllPages.setCurrentIndex(5)
-
+    
     def effectOf_toolButtonArt(self):
         self.stackedWidgetAllPages.setCurrentIndex(6)
+        
 
     def deleteClicks(self):
         for clicked in Clicks:
@@ -1220,41 +1246,21 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
             self.timer.timeout.connect(update)
             self.timer.start(500)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #################################
 #################################
 #################################
 ### FUNCTIONS AND GERMS
-### GERMS
+
+### GERMS 
 
     def drawGermsOfnthRoots(self,ev):
         if self.tabsIn_pageFG.currentIndex() == 0 and self.radioButtonFGGermsnthRoots.isChecked() == True:
             n = int(self.spinBoxFGGermsnthRoots.cleanText())
             global oneClick
             x = self.plotWidgetDomainIn_pageFG.plotItem.vb.mapSceneToView(ev.scenePos()).x()
-            y = self.plotWidgetDomainIn_pageFG.plotItem.vb.mapSceneToView(ev.scenePos()).y()
+
+            y = self.plotWidgetDomainIn_pageFG.plotItem.vb.mapSceneToView(ev.scenePos()).y() 
+
             oneClick.clear()
             oneClick.append([x,y])
             pointsDomain = numpy.array([[x,y]],dtype=float)
@@ -1274,9 +1280,6 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                 Line = pg.InfiniteLine(angle=ang)
                 self.plotWidgetCodomainIn_pageFG.addItem(Line)
 
-
-
-
     def dragDrawGermsOfnthRoots(self,pt,ind):
         if self.tabsIn_pageFG.currentIndex() == 0 and self.radioButtonFGGermsnthRoots.isChecked() == True:
             n = int(self.spinBoxFGGermsnthRoots.cleanText())
@@ -1286,13 +1289,15 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
             pointsCodomain = numpy.array([[r.real,r.imag] for r in nthRoots],dtype=float)
             self.CPdraggableDotsCodomainIn_pageFG.setData(pos=pointsCodomain,  pxMode=True)
             oneClick.remove(oneClick[ind])
-            oneClick.insert(ind,pt)
 
-
+            oneClick.insert(ind,pt)        
+        
+        
     # def drawzsquare(self,ev):
     #     global oneClick
     #     x = self.plotWidgetDomainIn_pageFG.plotItem.vb.mapSceneToView(ev.scenePos()).x()
-    #     y = self.plotWidgetDomainIn_pageFG.plotItem.vb.mapSceneToView(ev.scenePos()).y()
+    #     y = self.plotWidgetDomainIn_pageFG.plotItem.vb.mapSceneToView(ev.scenePos()).y() 
+
     #     oneClick.clear()
     #     oneClick.append([x,y])
     #     pointsDomain = numpy.array([[x,y]],dtype=float)
@@ -1312,20 +1317,22 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
     #     pointsCodomain = numpy.array([[zSq.real,zSq.imag]],dtype=float)
     #     self.CPdraggableDotsCodomainIn_pageFG.setData(pos=pointsCodomain,  pxMode=True)
     #     oneClick.remove(oneClick[ind])
-    #     oneClick.insert(ind,pt)
 
-
-
-
-
-
-
-
-
-
-
-
-
+    #     oneClick.insert(ind,pt)        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 
 #################################
 #################################
@@ -2468,6 +2475,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
             curvesToSidePairingDict = {}
             faceColors = ['c','m']
             firstFace = []
+            
 
 
             for k in range(NumOfSides):
@@ -2495,10 +2503,11 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                 curvesToSidePairingDict[theDrawing]=[matrix,colour,[kthTriple[0],kthTriple[2]],Mobius_CP.MobiusAssocToMatrix().EvaluationAtConcretePoint(alpha,beta,gamma,delta)(0)]
                 firstFace.append(theDrawing)
 
-            firstFaceAsDictCurvesAndColor = {"curvas":firstFace,"color":faceColors[0]}
+
+            firstFaceAsDictCurvesAndColor = {"curvas":firstFace,"color":faceColors[0]}    
             Faces = [firstFace]
             coloredFaces = [firstFaceAsDictCurvesAndColor]
-
+                
 
 
 #            points = numpy.array([[(curvesAndColors["midpoints"])[k][0].real,(curvesAndColors["midpoints"])[k][0].imag] for k in range(NumOfSides)],dtype=float)
@@ -2554,12 +2563,14 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                                 # for f in fills:
                                 #     self.PlotWidgetIn_pagePD.addItem(f)
 
-
-
-
+                                
+                                
+                            
+                            
                             newcFaceAsDictCurvesAndColor = {"curvas":newcFace,"color":lastColor}
                             Faces.append(newcFace)
                             coloredFaces.append(newcFaceAsDictCurvesAndColor)
+                            
 
                     else:
                         c.setPen(pg.mkPen(color=(curvesToSidePairingDict[c])[1], width=2))
@@ -2567,14 +2578,16 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
             for curve in drawnCurvesList:
                 curve.sigClicked.connect(plotClicked)
 
-
-
+    
+                    
+                    
     def effectOf_comboBoxChooseCanvasColor(self):
         if str(self.comboBoxChooseCanvasColor.currentText()) != "Choose canvas color":
-            backgroundColorAsText = str(self.comboBoxChooseCanvasColor.currentText())
+            backgroundColorAsText = str(self.comboBoxChooseCanvasColor.currentText())     
             newBackground = background_control.choosingBackground(backgroundColorAsText)
 
     # # #            #brush.setStyle(QtCore.Qt.NoBrush)
+            
 
             newBlack = newBackground.black
             newWhite = newBackground.white
@@ -2585,8 +2598,10 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
             newMagenta = newBackground.magenta
             newGreen = newBackground.green
 
+            
             for coloredDrawingsList in AllDrawings:
-
+                
+            
 
                 for objeto in coloredDrawingsList:
                     objeto.color = newBlack
@@ -2613,13 +2628,14 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                     for piece in objeto.magentaPieces:
                         piece.setPen(pg.mkPen(color=objeto.magenta,width=2))
                     for piece in objeto.greenPieces:
-                        piece.setPen(pg.mkPen(color=objeto.green,width=2))
+                        piece.setPen(pg.mkPen(color=objeto.green,width=2))            
+                                    
+                        
+            
 
 
-
-
-
-
+                
+                
 
 # black Drawings = []
 # blueDrawings = []
@@ -2628,7 +2644,6 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 # yellowDrawings = []
 # magentaDrawings = []
 # greenDrawings = []
-
 
             # self.childrenOfPlotWidgetIn_pageUHP = self.PlotWidgetIn_pageUHP.allChildItems()
             # for x in self.childrenOfPlotWidgetIn_pageUHP:
@@ -2641,9 +2656,6 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 
 
 
-
-
-
             self.background = newBackground
             self.PlotWidgetIn_pageCP.setBackgroundBrush(self.background.backgroundBrush)
             self.PlotWidgetIn_pageCPMobiusTransformations.setBackgroundBrush(self.background.backgroundBrush)
@@ -2653,14 +2665,6 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
             self.PlotWidgetIn_pageUHPGeodesicMotion.setBackgroundBrush(self.background.backgroundBrush)
             self.PlotWidgetIn_pagePD.setBackgroundBrush(self.background.backgroundBrush)
             self.PlotWidgetIn_pagePDGeodesicMotion.setBackgroundBrush(self.background.backgroundBrush)
-
-
-
-
-
-
-
-
 
 app = QtWidgets.QApplication(sys.argv)
 form = appMainWindow()
