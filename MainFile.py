@@ -65,7 +65,9 @@ threeClicks = []
 arbManyClicks = []
 auxStorage = []
 auxStorage2 = []
-Clicks = [oneClick,twoClicks,threeClicks,arbManyClicks,auxStorage,auxStorage2]
+auxStorage3 = []
+auxStorage4 = []
+Clicks = [oneClick,twoClicks,threeClicks,arbManyClicks,auxStorage,auxStorage2,auxStorage3,auxStorage4]
 blackDrawings = []
 whiteDrawings = []
 blueDrawings = []
@@ -80,8 +82,9 @@ AllDrawings = [blackDrawings,whiteDrawings,blueDrawings,redDrawings,cyanDrawings
 
 
 
+        
 
-
+       
 
 
 
@@ -92,13 +95,13 @@ AllDrawings = [blackDrawings,whiteDrawings,blueDrawings,redDrawings,cyanDrawings
 
 
 class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
-
+    
     def __init__(self, parent=None):
         super(appMainWindow,self).__init__(parent)
         self.setupUi(self)
-
+        
         self.timer = None # in some animations it will become QtCore.QTimer(self)
-
+        
 
         self.background = background_control.choosingBackground('Black')
         # self.black = self.background.black
@@ -109,18 +112,18 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         # self.yellow = self.background.yellow
         # self.magenta = self.background.magenta
         # self.green = self.background.green
-        # self.blackPenWidth2 = self.background.blackPenWidth2
+        self.blackPenWidth2 = self.background.blackPenWidth2
         # self.whitePenWidth2 = self.background.whitePenWidth2
         # self.bluePenWidth2 = self.background.bluePenWidth2
-        # self.redPenWidth2 = self.background.redPenWidth2
-        # self.cyanPenWidth2 = self.background.cyanPenWidth2
+        self.redPenWidth2 = self.background.redPenWidth2
+        self.cyanPenWidth2 = self.background.cyanPenWidth2
         # self.yellowPenWidth2 = self.background.yellowPenWidth2
         # self.magentaPenWidth2 = self.background.magentaPenWidth2
         # self.greenPenWidth2 = self.background.greenPenWidth2
-
+        self.blackPenWidth2 = pg.mkPen(color='k', width=2)
+        
         self.comboBoxChooseCanvasColor.currentIndexChanged.connect(self.effectOf_comboBoxChooseCanvasColor)
         
-
 
 
             
@@ -136,7 +139,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         self.CP_xlim_right = self.CP_absolute_lim
         self.CP_ylim_down = -self.CP_absolute_lim
         self.CP_ylim_up = self.CP_absolute_lim
-
+        
         self.PlotWidgetIn_pageCP.setXRange(self.CP_xlim_left,self.CP_xlim_right)
         #self.PlotWidgetIn_pageCP.setLimits(yMin=0.0)
         self.PlotWidgetIn_pageCP.disableAutoRange()
@@ -145,7 +148,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         self.PlotWidgetIn_pageCP.setBackgroundBrush(self.background.backgroundBrush)
         self.CPdraggableDotsMobTransFromParameters = dD.draggableDot() # FIXED POINTS AS DRAGGABLE DOTS
         self.PlotWidgetIn_pageCP.addItem(self.CPdraggableDotsMobTransFromParameters)
-
+        
         self.PlotWidgetIn_pageCPMobiusTransformations.setYRange(-2,2)
         #self.PlotWidgetIn_pageCPMobiusTransformations.setLimits(yMin=-2)
         #self.PlotWidgetIn_pageCPMobiusTransformations.disableAutoRange()
@@ -156,7 +159,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         # self.horLineCrosshairCPMT = pg.InfiniteLine(angle=0, movable = False, pen=pg.mkPen('k', width=1.5))
         # self.vertLineCrosshairCPMT = pg.InfiniteLine(angle=90, movable = False, pen=pg.mkPen('k', width=1.5))
         # self.PlotWidgetIn_pageCPMobiusTransformations.addItem(self.horLineCrosshairCPMT)
-        # self.PlotWidgetIn_pageCPMobiusTransformations.addItem(self.vertLineCrosshairCPMT)
+        # self.PlotWidgetIn_pageCPMobiusTransformations.addItem(self.vertLineCrosshairCPMT)        
         self.widthunitCircleCPMobTransFromParameters = 3
         self.unitCircleCPMobTransFromParameters = pg.PlotCurveItem(numpy.cos(numpy.linspace(0,2*numpy.pi,1000)),numpy.sin(numpy.linspace(0,2*numpy.pi,1000)), pen=pg.mkPen('b',width=self.widthunitCircleCPMobTransFromParameters), clickable=True)
         self.PlotWidgetIn_pageCPMobiusTransformations.addItem(self.unitCircleCPMobTransFromParameters)
@@ -183,7 +186,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 
 
 
-
+  
 ##################
 ##################
 #####LAYOUT FOR plotWidgetDomainIn_pageFG AND plotWidgetDomainIn_pageFG
@@ -195,6 +198,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         #self.PlotWidgetIn_pageCP.setLimits(yMin=0.0)
         self.plotWidgetDomainIn_pageFG.disableAutoRange()
         self.plotWidgetCodomainIn_pageFG.disableAutoRange()
+        
         self.plotWidgetDomainIn_pageFG.setLimits(xMin=2*self.CP_xlim_left,xMax=2*self.CP_xlim_right,yMin=2*self.CP_xlim_left,yMax=2*self.CP_xlim_right)
         self.plotWidgetCodomainIn_pageFG.setLimits(xMin=2*self.CP_xlim_left,xMax=2*self.CP_xlim_right,yMin=2*self.CP_xlim_left,yMax=2*self.CP_xlim_right)
 
@@ -207,7 +211,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         self.CPdraggableDotsCodomainIn_pageFG = dD.draggableDot()
         self.plotWidgetDomainIn_pageFG.addItem(self.CPdraggableDotsDomainIn_pageFG)
         self.plotWidgetCodomainIn_pageFG.addItem(self.CPdraggableDotsCodomainIn_pageFG)
-
+        
 
         self.widthAxes = 3
         self.plotWidgetDomainIn_pageFG.addItem(pg.InfiniteLine(pos=0, angle=0, pen=pg.mkPen('w', width=self.widthAxes)))
@@ -240,7 +244,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         self.UHP_xlim_right = self.UHP_absolute_lim
         #self.UHP_ylim_down = -self.CP_absolute_lim
         self.UHP_ylim_up = self.UHP_absolute_lim
-
+        
         self.PlotWidgetIn_pageUHP.setXRange(self.UHP_xlim_left,self.UHP_xlim_right)
         self.PlotWidgetIn_pageUHP.setLimits(yMin=0)
         self.PlotWidgetIn_pageUHP.disableAutoRange()
@@ -274,29 +278,11 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         
 
 
+        
+        
 
-
-
-        self.segmentoDePrueba = circle_segments.circSegment(50,50,50,numpy.pi/4,-numpy.pi/2,circSegmentColor="red")
-        redDrawings.append(self.segmentoDePrueba)
-        self.PlotWidgetIn_pageUHP.addItem(self.segmentoDePrueba.goodSegment)
-        self.PlotWidgetIn_pageUHP.addItem(self.segmentoDePrueba.complementarySegment)
-
-
-
-# #         self.whitebrush = QtGui.QBrush(QtGui.QColor(191, 191, 191))
-# # #            #brush.setStyle(QtCore.Qt.NoBrush)
-# #         self.PlotWidgetIn_pageUHP.setBackgroundBrush(self.whitebrush)
-
-
-
-
-
-
-
-
-
-
+        
+  
         self.PlotWidgetIn_pageUHPGeodesicMotion.setXRange(-2,2)
         self.PlotWidgetIn_pageUHPGeodesicMotion.setYRange(-2,2)
         self.PlotWidgetIn_pageUHPGeodesicMotion.hideAxis('left')
@@ -315,7 +301,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         self.PlotWidgetIn_pageUHPGeodesicMotion.addItem(self.vertLineCrosshairUHPGM, ignoreBounds = True)
         self.PlotWidgetIn_pageUHPGeodesicMotion.addItem(self.horLineUHPGM, ignoreBounds = True)
         self.PlotWidgetIn_pageUHPGeodesicMotion.addItem(self.vertLineUHPGM, ignoreBounds = True)
-
+        
 #        self.PlotWidgetIn_pageUHPGeodesicMotion.hide()
 
 
@@ -328,7 +314,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         self.PD_xlim_right = self.PD_absolute_lim
         self.PD_ylim_down = -self.PD_absolute_lim
         self.PD_ylim_up = self.PD_absolute_lim
-
+        
         self.PlotWidgetIn_pagePD.setXRange(self.PD_xlim_left,self.PD_xlim_right)
         self.PlotWidgetIn_pagePD.setYRange(self.PD_ylim_down,self.PD_ylim_up)
         self.PlotWidgetIn_pagePD.setLimits(xMin=-2,xMax=2,yMin=-2,yMax=2)
@@ -346,8 +332,13 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         self.PlotWidgetIn_pagePD.addItem(self.PDdraggableDotsConvexHull)
         self.PDdraggableDotsMidPtForSidePairing = dD.PDdraggableDot()
         self.PlotWidgetIn_pagePD.addItem(self.PDdraggableDotsMidPtForSidePairing)
-
-
+        self.PDdraggableDotsAngleOfParallelism = dD.unitCircledraggableDot()
+        self.PDdraggableDotsAngleOfParallelismFinitePt = dD.PDdraggableDot()
+        self.PlotWidgetIn_pagePD.addItem(self.PDdraggableDotsAngleOfParallelism)
+        self.PlotWidgetIn_pagePD.addItem(self.PDdraggableDotsAngleOfParallelismFinitePt)
+        
+        
+        
 #        self.PlotWidgetIn_pagePD.plot(numpy.cos(numpy.linspace(0,2*numpy.pi,1000)),numpy.sin(numpy.linspace(0,2*numpy.pi,1000)),pen='k')
 #        self.circROIPD = pg.CircleROI([-1, -1], [2, 2], pen=(4,100), maxBounds=[2,2])
 #        self.PlotWidgetIn_pagePD.addItem(self.circROIPD)
@@ -396,8 +387,8 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 #        self.openGLWidget.opts['viewport'] =  (0, 0, 1100, 900)
 #        #self.openGLWidget.showMaximized()
 #        self.openGLWidget.setCameraPosition(distance=50)
-#
-#
+#        
+#        
 #
 #        ## Add a grid to the view
 #        g = gl.GLGridItem()
@@ -406,8 +397,8 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 #        g.setSize(50,50,50)
 #        g.translate(20,0,-30)
 #        self.openGLWidget.addItem(g)
-#
-#
+#        
+#                
 #        x = numpy.linspace(-20, 20, 100)
 #        y = numpy.linspace(-20, 20, 100)
 #        z = numpy.sqrt((x.reshape(100,1) ** 2) + (y.reshape(1,100) ** 2) + 1)
@@ -449,8 +440,8 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 ##### SEE BELOW FOR THE DEFINITIONS OF THE SIGNALS
 
 
-
-
+        
+        
         self.toolButtonHome.clicked.connect(self.effectOf_toolButtonHome)
         self.toolButtonCP.clicked.connect(self.effectOf_toolButtonCP)
         self.toolButtonFG.clicked.connect(self.effectOf_toolButtonFG)
@@ -458,12 +449,12 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 #        self.toolButtonTS.clicked.connect(self.effectOf_toolButtonTS)
 #        self.toolButtonMS.clicked.connect(self.effectOf_toolButtonMS)
 #        self.toolButtonArt.clicked.connect(self.effectOf_toolButtonArt)
-
-
+        
+        
 #        self.comboBox.currentIndexChanged.connect(self.chooseBackgroundColor)
-
-
-
+        
+        
+        
 #####
 ##### Daniel's own configuration of some buttons and signals that are supposed
 ##### to have a mathematical effect or an effect inside a specific page
@@ -476,7 +467,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         self.pushButtonCPSGApollonius.clicked.connect(self.effectOf_pushButtonCPSGApollonius)
         self.pushButtonCPSGSteiner.clicked.connect(self.effectOf_pushButtonCPSGSteiner)
         self.horizontalSliderCPSGLoxodromesAngleTheta.sliderMoved.connect(self.effectOf_horizontalSliderCPSGLoxodromesAngleTheta)
-
+        
         self.pushButtonCPMTFixedPoints.clicked.connect(self.effectOf_pushButtonCPMTFixedPoints)
         self.pushButtonCPMTStaticOrbitSinglePoint.clicked.connect(self.effectOf_pushButtonCPMTStaticOrbitSinglePoint)
 #        self.pushButtonCPMTOrbitsRandomCircle.clicked.connect(self.effectOf_pushButtonCPMTOrbitsRandomCircle)
@@ -491,19 +482,12 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         self.CPdraggableDotsMobTransFromParametersParEllAlphaParameter.Dot.moved.connect(self.CPMTAlphaParameter)
         self.CPdraggableDotsMobTransFromParametersParHypAlphaParameter.Dot.moved.connect(self.CPMTAlphaParameter)
         self.CPdraggableDotsMobTransFromParametersParLoxAlphaParameter.Dot.moved.connect(self.CPMTAlphaParameter)
+        
 
 
 
 ############
         
-        self.plotWidgetDomainIn_pageFG.scene().sigMouseClicked.connect(self.drawGermsOfnthRoots)
-        self.CPdraggableDotsDomainIn_pageFG.Dot.moved.connect(self.dragDrawGermsOfnthRoots)
-
-#############
-
-
-############
-
         self.plotWidgetDomainIn_pageFG.scene().sigMouseClicked.connect(self.drawGermsOfnthRoots)
         self.CPdraggableDotsDomainIn_pageFG.Dot.moved.connect(self.dragDrawGermsOfnthRoots)
 
@@ -531,12 +515,18 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         self.pushButtonPDClearCanvas.clicked.connect(self.effectOf_pushButtonPDClearCanvas)
         self.radioButtonPDBCGeodesicSegments.clicked.connect(self.deleteClicks)
         self.radioButtonPDBCConvexHull.clicked.connect(self.deleteClicks)
+        self.radioButtonPDBCAngleOfParallelism.clicked.connect(self.deleteClicks)        
 #        self.proxyPD = pg.SignalProxy(self.circROIPD.sigHoverEvent, rateLimit=60, slot=self.PDmouseMoved)
         self.proxyPD = pg.SignalProxy(self.PlotWidgetIn_pagePD.scene().sigMouseMoved, rateLimit=100, slot=self.PDmouseMoved)
         self.PDdraggableDotsStaticGeodSegs.Dot.moved.connect(self.PDBCDragGeodesicSegment)
         self.PlotWidgetIn_pagePD.scene().sigMouseClicked.connect(self.PDBCGeodesicSegmentStatic)
         self.PDdraggableDotsConvexHull.Dot.moved.connect(self.PDBCDragConvexHull)
+        self.DrawingOfParallelThroughZ3AndZ4 = pg.PlotCurveItem(numpy.array([z for z in [-10,-9]],dtype=float),numpy.array([z for z in [-10,-10]],dtype=float),pen=self.cyanPenWidth2)
+        self.PlotWidgetIn_pagePD.addItem(self.DrawingOfParallelThroughZ3AndZ4)
         self.PlotWidgetIn_pagePD.scene().sigMouseClicked.connect(self.PDBCConvexHull)
+        self.PlotWidgetIn_pagePD.scene().sigMouseClicked.connect(self.PDBCAngleOfParallelism)
+        self.PDdraggableDotsAngleOfParallelism.Dot.moved.connect(self.PDBCDragAngleOfParallelism_PtsAtInf)
+        self.PDdraggableDotsAngleOfParallelismFinitePt.Dot.moved.connect(self.PDBCDragAngleOfParallelism_FinitePt)
         self.proxyPDGM = pg.SignalProxy(self.PlotWidgetIn_pagePDGeodesicMotion.scene().sigMouseMoved, rateLimit=60, slot=self.PDGMmouseMoved)
         self.PlotWidgetIn_pagePD.scene().sigMouseClicked.connect(self.PDGMGeodesicSegmentAnimated)
         self.PlotWidgetIn_pagePD.scene().sigMouseClicked.connect(self.PDGMGeodesicRayConstantRapidityAnimated)
@@ -553,23 +543,22 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 
 #####
 ##### Daniel's own configuration of some buttons, signals and slots,
-##### for navigation through the app's pages
+##### for navigation through the app's pages 
 ##### DEFINITIONS OF SIGNALS
 
 
-
+        
     def effectOf_toolButtonHome(self):
         self.stackedWidgetAllPages.setCurrentIndex(0)
-
+    
     def effectOf_toolButtonCP(self):
         self.stackedWidgetAllPages.setCurrentIndex(1)
-
+    
     def effectOf_toolButtonFG(self):
         self.stackedWidgetAllPages.setCurrentIndex(2)
 
     def effectOf_toolButtonHP(self):
         self.stackedWidgetAllPages.setCurrentIndex(3)
-
     
     def effectOf_toolButtonTS(self):
         self.stackedWidgetAllPages.setCurrentIndex(4)
@@ -580,19 +569,18 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
     def effectOf_toolButtonArt(self):
         self.stackedWidgetAllPages.setCurrentIndex(6)
         
-
     def deleteClicks(self):
         for clicked in Clicks:
             clicked.clear()
-
-
+        
+        
 #    def chooseBackgroundColor(self):
 #        text = self.comboBox.currentText()
 #        if text == "White":
 #            brush = QtGui.QBrush(QtGui.QColor(255, 255, 255))
 #            #brush.setStyle(QtCore.Qt.NoBrush)
 #            self.PlotWidgetIn_pageUHP.setBackgroundBrush(brush)
-
+        
 #######################
 ##### Function for plotting any point of the extended complex plane
 
@@ -603,9 +591,9 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
             self.PlotWidgetIn_pageCP.addItem(pointForPlot)
         else:
             self.radioButtonCPoo.setChecked(True)
-
-
-#######################
+        
+        
+#######################        
 ##### Function for plotting a line or circle through three points
 ##### without having to worry about collinearity or about one of the points being oo
 ##### Notice that it plots only in PlotWidgetIn_pageCP
@@ -628,12 +616,12 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                 angleWithHorizontalLines = 180*numpy.angle(finitePoints[1]-finitePoints[0])/numpy.pi
                 line = pg.InfiniteLine(pos = [finitePoints[0].real,finitePoints[0].imag], angle = angleWithHorizontalLines, pen=color)
                 self.PlotWidgetIn_pageCP.addItem(line)
-
-
-
-
-
-
+                
+        
+                
+        
+        
+        
 #####
 ##### Daniel's own configuration of some buttons and signals that are supposed
 ##### to have a mathematical effect
@@ -652,12 +640,12 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         self.PlotWidgetIn_pageCP.addItem(self.CPdraggableDotsMobTransFromParameters)
         for clicked in Clicks:
             clicked.clear()
-
-
+        
+      
 
 ##############
-##############
-#############################################
+############## 
+#############################################        
 
     def effectOf_pushButtonCPSGCommon(self):
         #### PERSONAL: should I move the bulk of operations to Steiner_grids_CP.py?
@@ -684,9 +672,9 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
             pass
 
 ##############
-##############
+############## 
 #############################################
-
+            
     def effectOf_pushButtonCPSGApollonius(self): ## WARNING(?): THE EXACT SAME CODE APPEARS TWICE, EXCEPT FOR importing.Apollonius_e_circles1 AND importing.Apollonius_e_circles2
         try:
             P = extendedValue(self.lineEditCPSGComplexNumber1.text())
@@ -718,18 +706,18 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
             pass
 
 ##############
-##############
+############## 
 #############################################
-
+                
     def effectOf_pushButtonCPSGSteiner(self):
         self.effectOf_pushButtonCPSGCommon()
         self.effectOf_pushButtonCPSGApollonius()
-
-
+        
+        
 ##############
-##############
-#############################################
-
+############## 
+#############################################          
+    
     def effectOf_horizontalSliderCPSGLoxodromesAngleTheta(self):
         try:
             self.PlotWidgetIn_pageCP.clear()
@@ -742,19 +730,19 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                 self.PlotWidgetIn_pageCP.plot(coord[0],coord[1],pen=self.blackPenWidth2)
         except:
             pass
-
+        
 #############################################
 ##############
 ############## MOBIUS TRANSFORMATIONS FROM PARAMETERS
-
-
-
+            
+        
+        
 
     def CPMTAlphaParameter(self,pt):
         self.lineEditCPMTMobFromParam.setText(str(pt[0]+pt[1]*(1j)))
         self.labelCPMTxNumber.setText("<span style='font-size: 12pt'><span style='color: black'>x=%0.100f" % (pt[0]))
-        self.labelCPMTyNumber.setText("<span style='font-size: 12pt'><span style='color: black'>y=%0.100f" % (pt[1]))
-        self.labelCPMTNormNumber.setText("<span style='font-size: 12pt'><span style='color: black'>Norm=%0.100f" % (numpy.sqrt(((pt[0])**2) + ((pt[1])**2))))
+        self.labelCPMTyNumber.setText("<span style='font-size: 12pt'><span style='color: black'>y=%0.100f" % (pt[1]))   
+        self.labelCPMTNormNumber.setText("<span style='font-size: 12pt'><span style='color: black'>Norm=%0.100f" % (numpy.sqrt(((pt[0])**2) + ((pt[1])**2)))) 
 
 
 
@@ -785,7 +773,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                 auxStorage.clear()
                 auxStorage.append(z0)
                 auxStorage.append(z1)
-
+                
 
 
 
@@ -805,10 +793,10 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                     self.lineEditCPMTOrbitsComplexNumberbeta.setText(str(b))
                     self.lineEditCPMTOrbitsComplexNumbergamma.setText(str(c))
                     self.lineEditCPMTOrbitsComplexNumberdelta.setText(str(d))
-
-            self.pushButtonCPMTMobFromParam.clicked.connect(effectOf_pushButtonCPMTMobFromParam)
-
-
+                        
+            self.pushButtonCPMTMobFromParam.clicked.connect(effectOf_pushButtonCPMTMobFromParam)                    
+                
+            
             def effectOf_pushButtonCPMTAnimOrbitSinglePoint():#1,100,1j,1 is a nice loxodromic Mobius transformation for examples
                 complexalpha = numpy.complex(str(self.lineEditCPMTMobFromParam.text()))
                 a = self.lineEditCPMTOrbitsComplexNumberalpha.text()
@@ -825,17 +813,17 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                 #Dots.Dot.moved.connect(CPMTMobiusOrbitDrag)
                 self.PlotWidgetIn_pageCP.addItem(PartialOrbit)
                 self.PlotWidgetIn_pageCP.addItem(CurrentPoint)
-                self.labelCPMTTypeOfMobius.setText(str(Mobius_CP.MobiusAssocToMatrix().isParEllHypLox(a,b,c,d)[0]))
-
-
-
+                #self.labelCPMTTypeOfMobius.setText(str(Mobius_CP.MobiusAssocToMatrix().isParEllHypLox(a,b,c,d)[0]))
+                
+                
+        
                 if z_0 != oo:
                     self.radioButtonCPoo.setChecked(False)
                     points = numpy.array([[z_0.real,z_0.imag]],dtype=float)
                     PartialOrbit.setData(pos=points,  pxMode=True)
                 else:
                     self.radioButtonCPoo.setChecked(True)
-
+                    
                 if self.checkBoxCPMTInvariantCurve.isChecked() == True:
                         curves = Mobius_CP.MobiusAssocToMatrix().invariantCurveThroughPt(a,b,c,d,z_0)
                         drawings = []
@@ -844,10 +832,10 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                                 drawing = pg.PlotCurveItem(curve[0],curve[1],pen=self.blackPenWidth2)
                                 drawings.append(drawing)
                                 self.PlotWidgetIn_pageCP.addItem(drawing)
-
+                
                 OrbitFinitePtsForCircles = [OrbitFinitePts[numpy.sign(numberOfIterations)*i] for i in range(abs(numberOfIterations)) if numpy.sign(numberOfIterations)*i in OrbitFinitePts]
                 # ApolloniusCircles = []
-                # CommonCircles = []
+                # CommonCircles = []        
                 # for i in range(len(OrbitFinitePtsForCircles)):
                 #     if len(auxStorage)==1:
                 #         z_i = OrbitFinitePtsForCircles[numpy.sign(numberOfIterations)*i]
@@ -890,7 +878,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                 #         commonCircleThroughz_i = pg.PlotCurveItem(Commonx_coord,Commony_coord,pen=self.bluePenWidth2)
                 #         CommonCircles.append(commonCircleThroughz_i)
                 #         #self.PlotWidgetIn_pageCP.addItem(commonCircleThroughz_i)
-
+                
                 # conjMatrix = Mobius_CP.MobiusTransitivity().MobiusMatrix0oo1Toz1z2z3(auxStorage[0],auxStorage[1],z_0) # THIS ASSUMES THAT z_0 IS NOT A FIXED POINT!!!!!
                 # conjTrans = Mobius_CP.MobiusAssocToMatrix().EvaluationAtConcretePoint(conjMatrix[0,0],conjMatrix[0,1],conjMatrix[1,0],conjMatrix[1,1])
                 # auxPt1, auxPt2, auxPt3 = z_0, conjTrans(1j), conjTrans(-1)
@@ -910,17 +898,17 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                 # commonCircleThroughCurrent_z = pg.PlotCurveItem(pen=self.bluePenWidth2)
                 # self.PlotWidgetIn_pageCP.addItem(commonCircleThroughCurrent_z)
                 # #commonCircleThroughCurrent_z.setData(x_coord,y_coord)
+                               
 
-
-
+                
                 k=0
                 def update():
                     self.radioButtonCPoo.setChecked(False)
                     nonlocal k
                     points = numpy.array([[OrbitFinitePts[numpy.sign(numberOfIterations)*i].real,OrbitFinitePts[numpy.sign(numberOfIterations)*i].imag] for i in range(k+1) if numpy.sign(numberOfIterations)*i in OrbitFinitePts],dtype=float)
                     if len(points) > 0:
-                        PartialOrbit.setData(pos=points, pxMode=True)
-
+                        PartialOrbit.setData(pos=points, pxMode=True)                            
+  
                     current_z = OrbitAllPts[numpy.sign(numberOfIterations)*(k)%numberOfIterations]
                     if current_z !=oo:
                         current = numpy.array([[current_z.real,current_z.imag]],dtype=float)
@@ -943,11 +931,11 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                         #     t = numpy.linspace(0, 2*numpy.pi,100)
                         #     x_coord, y_coord = eCenter[0]+eRadius*numpy.cos(t), eCenter[1]+eRadius*numpy.sin(t)
                         #     commonCircleThroughCurrent_z.setData(x_coord,y_coord)
-
+                            
                         # for i in range(k+1):
                         #     self.PlotWidgetIn_pageCP.addItem(ApolloniusCircles[i])
                         #     self.PlotWidgetIn_pageCP.addItem(CommonCircles[i])
-
+                            
                     else:
                         self.radioButtonCPoo.setChecked(True)
                         CurrentPoint.setData(symbolBrush=(0,0,200))
@@ -958,16 +946,16 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                         self.PlotWidgetIn_pageCP.addItem(PartialOrbit)
                         self.PlotWidgetIn_pageCP.addItem(CurrentPoint)
                     k = (k+1)%abs(numberOfIterations)
-
+        
                 if self.timer:
                     self.timer.stop()
                     self.timer.deleteLater()
                 self.timer = QtCore.QTimer(self)
                 self.timer.timeout.connect(update)
                 self.timer.start(250)
-
-            self.pushButtonCPMTAnimOrbitSinglePoint.clicked.connect(effectOf_pushButtonCPMTAnimOrbitSinglePoint)
-
+                
+            self.pushButtonCPMTAnimOrbitSinglePoint.clicked.connect(effectOf_pushButtonCPMTAnimOrbitSinglePoint) 
+        
 
 
 
@@ -991,11 +979,11 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         self.radioButtonCPoo.setChecked(False)
         if oo in FixedPts:
             self.radioButtonCPoo.setChecked(True)
+            
 
-
-
-
-
+        
+        
+        
     def effectOf_pushButtonCPMTStaticOrbitSinglePoint(self): ## PERSONAL NOTE: Check the code for curves...
         #1+100j, 200, 2j, 1+100j
         try:
@@ -1010,24 +998,24 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
             Dots = dD.draggableDot()
             self.PlotWidgetIn_pageCP.addItem(Dots)
             self.labelCPMTTypeOfMobius.setText(str(Mobius_CP.MobiusAssocToMatrix().isParEllHypLox(a,b,c,d)[0]))
-
+            
             drawings = []
             if self.checkBoxCPMTInvariantCurve.isChecked() == True:
                 curves = Mobius_CP.MobiusAssocToMatrix().invariantCurveThroughPt(a,b,c,d,z_0)
-
+                
                 if len(curves)>0:
                     for curve in curves:
                         drawing = pg.PlotCurveItem(curve[0],curve[1],pen=self.blackPenWidth2)
                         drawings.append(drawing)
                         self.PlotWidgetIn_pageCP.addItem(drawing)
-
+                    
             points = numpy.array([[OrbitFinitePts[numpy.sign(numberOfIterations)*i].real,OrbitFinitePts[numpy.sign(numberOfIterations)*i].imag] for i in range(abs(numberOfIterations)+1) if numpy.sign(numberOfIterations)*i in OrbitFinitePts],dtype=float)
             if len(points) > 0:
                 Dots.setData(pos=points,  pxMode=True)
             self.radioButtonCPoo.setChecked(False)
             if len(OrbitFinitePts) < len(OrbitAllPts):
                 self.radioButtonCPoo.setChecked(True)
-
+                
             def CPMTMobiusOrbitDrag(pt,ind):
                 nonlocal drawings
                 try:
@@ -1036,15 +1024,15 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                     z_0 = Mobius_CP.MobiusAssocToMatrix().MobTrans_nthPowerEvalAtConcretePoint(a,b,c,d,-k)(P)
                     OrbitAllPts = Mobius_CP.MobiusAssocToMatrix().MobTransOrbit(a,b,c,d,numberOfIterations)(z_0)[0]
                     OrbitFinitePts = Mobius_CP.MobiusAssocToMatrix().MobTransOrbit(a,b,c,d,numberOfIterations)(z_0)[1]
-
+                    
                     if self.checkBoxCPMTInvariantCurve.isChecked() == True:
                         currentCurves = Mobius_CP.MobiusAssocToMatrix().invariantCurveThroughPt(a,b,c,d,z_0)
-
+                        
                         if len(drawings)>0 and len(currentCurves)>0:
                             for i in range(0,len(drawings),1):
                                 drawings[i].setData(currentCurves[i][0],currentCurves[i][1])
-
-
+                    
+                    
                     points = numpy.array([[OrbitFinitePts[numpy.sign(numberOfIterations)*i].real,OrbitFinitePts[numpy.sign(numberOfIterations)*i].imag] for i in range(abs(numberOfIterations)+1) if numpy.sign(numberOfIterations)*i in OrbitFinitePts],dtype=float)
                     if len(points) > 0:
                         Dots.setData(pos=points,  pxMode=True)
@@ -1052,21 +1040,21 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                         self.radioButtonCPoo.setChecked(True)
                     if len(OrbitFinitePts) == len(OrbitAllPts):
                         self.radioButtonCPoo.setChecked(False)
-
+                        
                     self.lineEditCPMTOrbitsComplexNumberz_0.setText(str(z_0))
                 except:
                     pass
             Dots.Dot.moved.connect(CPMTMobiusOrbitDrag)
-
+        
         except:
             pass
 ##############
-##############
+############## 
 #############################################
-
-
+ 
+        
     def effectOf_pushButtonCPMTOrbitsRandomCircle(self):
-        alpha = self.lineEditCPMTOrbitsComplexNumberalpha.text()
+        alpha = self.lineEditCPMTOrbitsComplexNumberalpha.text() 
         beta = self.lineEditCPMTOrbitsComplexNumberbeta.text()
         gamma = self.lineEditCPMTOrbitsComplexNumbergamma.text()
         delta = self.lineEditCPMTOrbitsComplexNumberdelta.text()
@@ -1103,7 +1091,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
             k = (k+1)%numberOfPointsInOrbit
         #    QtCore.QTimer.singleShot(1000, update)
         #update()
-
+        
         if self.timer:
             self.timer.stop()
             self.timer.deleteLater()
@@ -1112,12 +1100,12 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         self.timer.start(100)
 
 ##############
-##############
-#############################################
-
+############## 
+#############################################        
+            
     def effectOf_pushButtonCPMTOrbitsSteinerGrid(self):
         nIterations = int(self.spinBoxCPMTOrbits.cleanText())
-        alpha = self.lineEditCPMTOrbitsComplexNumberalpha.text()
+        alpha = self.lineEditCPMTOrbitsComplexNumberalpha.text() 
         beta = self.lineEditCPMTOrbitsComplexNumberbeta.text()
         gamma = self.lineEditCPMTOrbitsComplexNumbergamma.text()
         delta = self.lineEditCPMTOrbitsComplexNumberdelta.text()
@@ -1125,17 +1113,17 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         fixedPoints = MobiusTrans.fixedPoints()
         P = fixedPoints[0]
         Q = fixedPoints[1]
-
-
+        
+        
         if MobiusTrans.isParEllHypLox() == 'PARABOLIC':
             ThreePoints = MobiusTrans.frameOfParabolic()[0]
             Orbit1 = MobiusTrans.Mob_trans_iterable(ThreePoints[0],nIterations)
             Orbit2 = MobiusTrans.Mob_trans_iterable(ThreePoints[1],nIterations)
             Orbit3 = MobiusTrans.Mob_trans_iterable(ThreePoints[2],nIterations)
-
+            
             for p in ThreePoints:
                 self.plottingPointInExtendedPlane(p,'y','y')
-
+            
             k=0
             def update():
                 nonlocal k
@@ -1154,31 +1142,31 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                 current_points = pg.ScatterPlotItem([current_Pt1.real,current_Pt2.real,current_Pt3.real],[current_Pt1.imag,current_Pt2.imag,current_Pt3.imag],pen='y')
                 self.PlotWidgetIn_pageCP.addItem(current_points)
                 k = (k+1)%nIterations
-
+            
             self.timer = QtCore.QTimer(self)
             self.timer.timeout.connect(update)
             self.timer.start(500)
+            
+        
 
-
-
-
-
-
-
+        
+        
+        
+        
         if isooInArgs(P,Q) == False and P != Q:
             ThreePointsOnMediatrix = Steiner_grids_CP.commonCircles().pointsOnMediatrix(P,Q,3)
-            Pt1OnMdx = ThreePointsOnMediatrix[0]
+            Pt1OnMdx = ThreePointsOnMediatrix[0] 
             Pt2OnMdx = ThreePointsOnMediatrix[1]
             Pt3OnMdx = ThreePointsOnMediatrix[2]
             Orbit1 = MobiusTrans.Mob_trans_iterable(Pt1OnMdx,nIterations)
             Orbit2 = MobiusTrans.Mob_trans_iterable(Pt2OnMdx,nIterations)
             Orbit3 = MobiusTrans.Mob_trans_iterable(Pt3OnMdx,nIterations)
-
+            
             self.PlottingCircleOrLineThrough3Points(Pt1OnMdx,Pt2OnMdx,Pt3OnMdx,'k')
             self.PlottingCircleOrLineThrough3Points(P,Pt2OnMdx,Q,'y')
             point = pg.ScatterPlotItem([Pt2OnMdx.real],[Pt2OnMdx.imag],pen='y')
             self.PlotWidgetIn_pageCP.addItem(point)
-
+            
             k=0
             def update():
                 nonlocal k
@@ -1199,25 +1187,25 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                 k = (k+1)%nIterations
             #    QtCore.QTimer.singleShot(1000, update)
             #update()
-
+            
     #        timer = QtCore.QTimer(self)
     #        timer.timeout.connect(update)
     #        timer.start(250)
             self.timer = QtCore.QTimer(self)
             self.timer.timeout.connect(update)
             self.timer.start(500)
-
+            
         if isooInArgs(P,Q) == True and P != Q:
             finitePoint = removeooFromArgs(P,Q)[0]
             Orbit1 = MobiusTrans.Mob_trans_iterable(finitePoint+1,nIterations)
             Orbit2 = MobiusTrans.Mob_trans_iterable(finitePoint+1j,nIterations)
             Orbit3 = MobiusTrans.Mob_trans_iterable(finitePoint-1,nIterations)
-
+            
             self.PlottingCircleOrLineThrough3Points(finitePoint+1,finitePoint+1j,finitePoint-1,'k')
             self.PlottingCircleOrLineThrough3Points(P,finitePoint+1j,Q,'y')
             point = pg.ScatterPlotItem([(finitePoint+1j).real],[(finitePoint+1j).imag])
             self.PlotWidgetIn_pageCP.addItem(point)
-
+            
             k=0
             def update():
                 nonlocal k
@@ -1238,29 +1226,49 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                 k = (k+1)%nIterations
             #    QtCore.QTimer.singleShot(1000, update)
             #update()
-
+            
     #        timer = QtCore.QTimer(self)
     #        timer.timeout.connect(update)
     #        timer.start(250)
             self.timer = QtCore.QTimer(self)
             self.timer.timeout.connect(update)
             self.timer.start(500)
+                
+            
+            
+            
 
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 #################################
 #################################
 #################################
 ### FUNCTIONS AND GERMS
-
 ### GERMS 
-
+        
     def drawGermsOfnthRoots(self,ev):
         if self.tabsIn_pageFG.currentIndex() == 0 and self.radioButtonFGGermsnthRoots.isChecked() == True:
             n = int(self.spinBoxFGGermsnthRoots.cleanText())
             global oneClick
             x = self.plotWidgetDomainIn_pageFG.plotItem.vb.mapSceneToView(ev.scenePos()).x()
-
             y = self.plotWidgetDomainIn_pageFG.plotItem.vb.mapSceneToView(ev.scenePos()).y() 
-
             oneClick.clear()
             oneClick.append([x,y])
             pointsDomain = numpy.array([[x,y]],dtype=float)
@@ -1270,16 +1278,23 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
             nthRoots = (Germs_FG.AnalyticContinuation().nthRoots(n))(z)
             pointsCodomain = numpy.array([[r.real,r.imag] for r in nthRoots],dtype=float)
             self.CPdraggableDotsCodomainIn_pageFG.setData(pos=pointsCodomain,  pxMode=True)
-
+            
+            ptOnSlitRay = (Germs_FG.AnalyticContinuation().slitRayForGermOfnthRoot(n))(z)
+            x_coord = [0,1000*ptOnSlitRay.real]
+            y_coord = [0,1000*ptOnSlitRay.imag]
+            drawing = pg.PlotCurveItem(x_coord,y_coord)
+            self.plotWidgetDomainIn_pageFG.addItem(drawing)
+            
             mediatricesBetweennthRoots = ((Germs_FG.AnalyticContinuation().mediatricesBetweenConsecutiventhRoots(n))(z))
-            for dictionary in mediatricesBetweennthRoots:
-                position = dictionary["pgLineInfo"]["pos"]
-                print(position)
-                ang= dictionary["pgLineInfo"]["angle"]
-                print(ang)
-                Line = pg.InfiniteLine(angle=ang)
-                self.plotWidgetCodomainIn_pageFG.addItem(Line)
+            for midPt in mediatricesBetweennthRoots:
+                x_coord = [0,1000*midPt.real]
+                y_coord = [0,1000*midPt.imag]
+                drawing = pg.PlotCurveItem(x_coord,y_coord)
+                self.plotWidgetCodomainIn_pageFG.addItem(drawing)
+                
+            
 
+        
     def dragDrawGermsOfnthRoots(self,pt,ind):
         if self.tabsIn_pageFG.currentIndex() == 0 and self.radioButtonFGGermsnthRoots.isChecked() == True:
             n = int(self.spinBoxFGGermsnthRoots.cleanText())
@@ -1289,7 +1304,6 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
             pointsCodomain = numpy.array([[r.real,r.imag] for r in nthRoots],dtype=float)
             self.CPdraggableDotsCodomainIn_pageFG.setData(pos=pointsCodomain,  pxMode=True)
             oneClick.remove(oneClick[ind])
-
             oneClick.insert(ind,pt)        
         
         
@@ -1297,7 +1311,6 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
     #     global oneClick
     #     x = self.plotWidgetDomainIn_pageFG.plotItem.vb.mapSceneToView(ev.scenePos()).x()
     #     y = self.plotWidgetDomainIn_pageFG.plotItem.vb.mapSceneToView(ev.scenePos()).y() 
-
     #     oneClick.clear()
     #     oneClick.append([x,y])
     #     pointsDomain = numpy.array([[x,y]],dtype=float)
@@ -1308,7 +1321,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
     #     pointsCodomain = numpy.array([[zSq.real,zSq.imag]],dtype=float)
     #     self.CPdraggableDotsCodomainIn_pageFG.setData(pos=pointsCodomain,  pxMode=True)
 
-
+        
     # def dragDrawzsquare(self,pt,ind):
     #     global oneClick
     #     z = pt[0]+pt[1]*(1j)
@@ -1317,7 +1330,6 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
     #     pointsCodomain = numpy.array([[zSq.real,zSq.imag]],dtype=float)
     #     self.CPdraggableDotsCodomainIn_pageFG.setData(pos=pointsCodomain,  pxMode=True)
     #     oneClick.remove(oneClick[ind])
-
     #     oneClick.insert(ind,pt)        
         
         
@@ -1333,7 +1345,6 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         
         
         
-
 #################################
 #################################
 #################################
@@ -1355,24 +1366,24 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         self.boundingLineUHP.setPen(pg.mkPen('k', width=self.widthBoundingLineUHP))
         for clicked in Clicks:
             clicked.clear()
+            
+
+        
 
 
 
-
-
-
-#
+#    
 #    def effectOf_UHPsigMouseClicked_Coords(self,ev): ## ev is the clicked point
 #        global twoClicks
 #        x = self.PlotWidgetIn_pageUHP.plotItem.vb.mapSceneToView(ev.scenePos()).x()
 #        y = self.PlotWidgetIn_pageUHP.plotItem.vb.mapSceneToView(ev.scenePos()).y()
-#        while len(twoClicks) < 3:
+#        while len(twoClicks) < 3:  
 #            twoClicks.append([x,y])
-#        if len(twoClicks) == 3:
+#        if len(twoClicks) == 3:  
 #            del twoClicks[0]
 #        print(twoClicks)
 #        return twoClicks
-#
+#    
 #
 
     def UHPmouseMoved(self,evt):
@@ -1399,10 +1410,10 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         mousePoint = self.PlotWidgetIn_pageUHPGeodesicMotion.plotItem.vb.mapSceneToView(pos)
         self.horLineCrosshairUHPGM.setPos(mousePoint.y())
         self.vertLineCrosshairUHPGM.setPos(mousePoint.x())
+        
 
-
-    ##Corrected changes by J- on 27/08/21
-
+    
+    
     def UHPBCGeodesicSegmentStatic(self,ev):
         if self.radioButtonUHPBCGeodesicSegments.isChecked() == True and self.stackedWidgetIn_pageUHP.currentIndex() == 0:
             global arbManyClicks
@@ -1415,7 +1426,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                 arbManyClicks.append([x,y])
                 if len(arbManyClicks)==1:
                     points = numpy.array([[arbManyClicks[0][0],arbManyClicks[0][1]]],dtype=float)
-                    #initialPoint = pg.GraphItem(pos=[
+                    #initialPoint = pg.GraphItem(pos=[[twoClicks[0][0],twoClicks[0][1]]])
                     self.UHPdraggableDotsStaticGeodSegs.setData(pos=points,  pxMode=True)
                 else:
                     #print(twoClicks)
@@ -1427,69 +1438,20 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                     self.lineEditUHPGMComplexNumber1.setText(str(P))
                     self.lineEditUHPGMComplexNumber2.setText(str(Q))
                     #print(P,Q)
-
-#                     geodesicSegment = UHP_HP.UHPBasics().UHPGeodesicSegment_rcostrsint(P,Q)
-#                     x_coord, y_coord = geodesicSegment.real, geodesicSegment.imag
-#                     drawing = pg.PlotCurveItem(x_coord,y_coord,pen=self.blackPenWidth2)
-#                     self.PlotWidgetIn_pageUHP.addItem(drawing)
-#                     auxStorage.append(drawing)
-#                     #print(arbManyClicks)
-# #                    print(auxStorage)
-
-                    geodesicData = UHP_HP.UHPBasics().UHPGeodesicSegment_circleData(P, Q)
-                    if len(geodesicData) == 2:
-                        drawing = (geodesicData[0].real, geodesicData[0].imag, geodesicData[1].real, geodesicData[1].imag)
-                        drawing = QtGui.QGraphicsLineItem(geodesicData[0].real, geodesicData[0].imag, geodesicData[1].real, geodesicData[1].imag)
-                        self.PlotWidgetIn_pageUHP.addItem(drawing)
-                    else:
-                        drawing = circle_segments.circSegment(geodesicData[0], geodesicData[1], geodesicData[2], geodesicData[3], geodesicData[4])
-                        self.PlotWidgetIn_pageUHP.addItem(drawing.goodSegment)
-                        self.PlotWidgetIn_pageUHP.addItem(drawing.complementarySegment)
+                    geodesicSegment = UHP_HP.UHPBasics().UHPGeodesicSegment_rcostrsint(P,Q)
+                    x_coord, y_coord = geodesicSegment.real, geodesicSegment.imag
+                    drawing = pg.PlotCurveItem(x_coord,y_coord,pen=self.blackPenWidth2)
+                    self.PlotWidgetIn_pageUHP.addItem(drawing)
                     auxStorage.append(drawing)
+                    #print(arbManyClicks)
+#                    print(auxStorage)
                     self.labelUHPBChdistancenumber.setNum(UHP_HP.UHPBasics().UHPDist(P,Q))
-#
-
-#     def UHPBCGeodesicSegmentStatic(self,ev):
-#         if self.radioButtonUHPBCGeodesicSegments.isChecked() == True and self.stackedWidgetIn_pageUHP.currentIndex() == 0:
-#             global arbManyClicks
-#             global auxStorage
-#             x = self.PlotWidgetIn_pageUHP.plotItem.vb.mapSceneToView(ev.scenePos()).x()
-#             y = self.PlotWidgetIn_pageUHP.plotItem.vb.mapSceneToView(ev.scenePos()).y()
-#             if y < 0:
-#                 pass
-#             else:
-#                 arbManyClicks.append([x,y])
-#                 if len(arbManyClicks)==1:
-#                     points = numpy.array([[arbManyClicks[0][0],arbManyClicks[0][1]]],dtype=float)
-#                     #initialPoint = pg.GraphItem(pos=[[twoClicks[0][0],twoClicks[0][1]]])
-#                     self.UHPdraggableDotsStaticGeodSegs.setData(pos=points,  pxMode=True)
-#                 else:
-#                     #print(twoClicks)
-#                     points = numpy.array([[arbManyClicks[k][0],arbManyClicks[k][1]] for k in range(len(arbManyClicks))],dtype=float)
-#                     self.UHPdraggableDotsStaticGeodSegs.setData(pos=points,  pxMode=True)
-#                     #self.PlotWidgetIn_pageUHP.addItem(finalPoint)
-#                     P = arbManyClicks[-2][0]+arbManyClicks[-2][1]*(1j)
-#                     Q = arbManyClicks[-1][0]+arbManyClicks[-1][1]*(1j)
-#                     self.lineEditUHPGMComplexNumber1.setText(str(P))
-#                     self.lineEditUHPGMComplexNumber2.setText(str(Q))
-#                     #print(P,Q)
-#                     geodesicSegment = UHP_HP.UHPBasics().UHPGeodesicSegment_rcostrsint(P,Q)
-#                     x_coord, y_coord = geodesicSegment.real, geodesicSegment.imag
-#                     drawing = pg.PlotCurveItem(x_coord,y_coord,pen=self.blackPenWidth2)
-#                     self.PlotWidgetIn_pageUHP.addItem(drawing)
-#                     auxStorage.append(drawing)
-#                     #print(arbManyClicks)
-# #                    print(auxStorage)
-#                     self.labelUHPBChdistancenumber.setNum(UHP_HP.UHPBasics().UHPDist(P,Q))
-
+                    
 #        if self.checkBoxUHPEnableClickOnCanvas.isChecked() == False:
 #            for clicked in Clicks:
 #                clicked.clear()
-            #print("as expected")
+            #print("as expected")        
 #    @QtCore.pyqtSlot(object,int)
-
-
-
     def UHPBCDragGeodesicSegment(self,pt,ind):
         global arbManyClicks
         global auxStorage
@@ -1500,7 +1462,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
             if ind == 0:
                 neighbour = arbManyClicks[1]
                 Q = neighbour[0]+neighbour[1]*(1j)
-                curve = auxStorage[0]
+                curve = auxStorage[0]   
                 geodesicSegment = UHP_HP.UHPBasics().UHPGeodesicSegment_rcostrsint(P,Q)
                 x_coord, y_coord = geodesicSegment.real, geodesicSegment.imag
                 curve.setData(x_coord,y_coord)
@@ -1529,18 +1491,18 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                 #self.labelUHPBChdistancenumber.setNum(UHP_HP.UHPBasics().UHPDist(P,Q1))
             arbManyClicks.remove(arbManyClicks[ind])
             arbManyClicks.insert(ind,[pt[0],pt[1]])
+                
 
 
 
 
-
-
-
-
-
-
-
-
+                
+                
+            
+                
+            
+                
+    
     def UHPBCConvexHull(self,ev):
         if self.radioButtonUHPBCConvexHull.isChecked() == True and self.stackedWidgetIn_pageUHP.currentIndex() == 0:
             global arbManyClicks
@@ -1595,7 +1557,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                     auxStorage2.clear()
                     #numpy.union1d(numpyLeftInterval,numpyRightInterval)
                     geodesicSegment = UHP_HP.UHPBasics().UHPGeodesicSegment_rcostrsint(vertices[0],vertices[1])
-                    x_coord, y_coord = geodesicSegment.real, geodesicSegment.imag
+                    x_coord, y_coord = geodesicSegment.real, geodesicSegment.imag                  
                     for i in range(1,len(vertices)-1,1):
                         geodesicSegment = UHP_HP.UHPBasics().UHPGeodesicSegment_rcostrsint(vertices[i],vertices[i+1])
                         x_coord = numpy.concatenate((x_coord,geodesicSegment.real))
@@ -1610,7 +1572,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 #        if self.checkBoxUHPEnableClickOnCanvas.isChecked() == False:
 #            for clicked in Clicks:
 #                clicked.clear()
-
+                
     def UHPBCDragConvexHull(self,pt,ind):
         global arbManyClicks
         global auxStorage
@@ -1621,7 +1583,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
             P = pt[0]+pt[1]*(1j)
             if len(arbManyClicks) == 2:
                 Q = arbManyClicks[(ind+1)%2]
-                curve = auxStorage2[0]
+                curve = auxStorage2[0]   
                 geodesicSegment = UHP_HP.UHPBasics().UHPGeodesicSegment_rcostrsint(P,Q)
                 x_coord, y_coord = geodesicSegment.real, geodesicSegment.imag
                 curve.setData(x_coord,y_coord)
@@ -1634,7 +1596,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                 arbManyClicks.insert(ind,P)
                 vertices = UHP_HP.UHPBasics().verts_h_polygon_counter_clockwise(arbManyClicks)
                 geodesicSegment = UHP_HP.UHPBasics().UHPGeodesicSegment_rcostrsint(vertices[0],vertices[1])
-                x_coord, y_coord = geodesicSegment.real, geodesicSegment.imag
+                x_coord, y_coord = geodesicSegment.real, geodesicSegment.imag                  
                 for i in range(1,len(vertices)-1,1):
                     geodesicSegment = UHP_HP.UHPBasics().UHPGeodesicSegment_rcostrsint(vertices[i],vertices[i+1])
                     x_coord = numpy.concatenate((x_coord,geodesicSegment.real))
@@ -1649,21 +1611,21 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 
 
 
+            
+        
+                        
+                
+            
+            
+    
 
 
+        
+            
+        
+            
 
-
-
-
-
-
-
-
-
-
-
-
-
+        
     def UHPGMGeodesicSegmentAnimated(self,ev): # point-point
         if self.radioButtonUHPGMGeoParamByArcLength.isChecked() == True and self.radioButtonUHPGMPointPoint.isChecked() == True and self.stackedWidgetIn_pageUHP.currentIndex() == 1:
             global twoClicks
@@ -1672,9 +1634,9 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
             if y <= 0:
                 pass
             else:
-                while len(twoClicks) < 3:
+                while len(twoClicks) < 3:  
                     twoClicks.append([x,y])
-                if len(twoClicks) == 3:
+                if len(twoClicks) == 3:  
                     del twoClicks[0]
                 if twoClicks[0] == twoClicks[1]:
                     initialPoint = pg.ScatterPlotItem([twoClicks[0][0]],[twoClicks[0][1]],pen='r',brush='r')
@@ -1705,7 +1667,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 #                            x_coord = geodesicParametrization(partialInterval).real
 #                            y_coord = geodesicParametrization(partialInterval).imag
 #                            plottedCurve.setData(x_coord,y_coord)
-#                            #self.PlotWidgetIn_pageUHP.plot(x_coord,y_coord,pen='k')
+#                            #self.PlotWidgetIn_pageUHP.plot(x_coord,y_coord,pen='k')   
 #                            now = time()
 #                            dt = now - lastTime
 #                            lastTime = now
@@ -1723,7 +1685,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                             plottedCurve.setData(x_coord,y_coord)
                             print("d = " + str(t[k+1]))
                             print("t = " + str(time()-initialTime))
-                            #self.PlotWidgetIn_pageUHP.plot(x_coord,y_coord,pen='k')
+                            #self.PlotWidgetIn_pageUHP.plot(x_coord,y_coord,pen='k')   
 #                            pos = numpy.empty((k+1,3))
 #                            for i in range(0,k+1):
 #                                pos[i]=(x_coord[i],y_coord[i],0)
@@ -1744,22 +1706,22 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                     self.timer.timeout.connect(update)
                     self.timer.start(1000*s/numberOfSteps)
                     #print(numpy.ceil(s))
-
+                
         #        timer = QtCore.QTimer(self)
         #        timer.timeout.connect(update)
         #        timer.start(250)
 #                self.timer = QtCore.QTimer(self)
 #                self.timer.timeout.connect(update)
 #                self.timer.start(1)
-
+                
 #        if self.checkBoxUHPEnableClickOnCanvas.isChecked() == False:
 #            twoClicks.clear()
             #print("as expected")
-
-            #self.PlotWidgetIn_pageUHP.scene().sigMouseClicked.disconnect(onClick)
-
-
-
+                
+            #self.PlotWidgetIn_pageUHP.scene().sigMouseClicked.disconnect(onClick) 
+        
+        
+    
 #        #p = self.PlotWidgetIn_pageCP
 #        print(self.checkBoxUHPGMShowGeodesicSegments.isChecked())
 #        def fuck(sl):
@@ -1774,27 +1736,27 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 #                print(type(P.x()))
 #                print(P.y())
 #                #print (self.PlotWidgetIn_pageCP.plotItem.vb.mapSceneToView(sl))
-#
+#            
 #        if self.checkBoxUHPGMShowGeodesicSegments.isChecked():
 #            self.PlotWidgetIn_pageUHP.setEnabled(True)
+#            
 #
 #
-#
-#
+#    
 #            self.PlotWidgetIn_pageUHP.scene().sigMouseClicked.connect(fuck)
 #        else:
-#
+#            
 
 
 
-
-#
+        
+#            
 #            #self.PlotWidgetIn_pageUHP.scene().sigMouseMoved.connect(mouseMoved)
 #            self.PlotWidgetIn_pageUHP.setEnabled(False)
 #            #self.PlotWidgetIn_pageUHP.setEnabled(True)
 #            print('yeah')
-#
-#
+#            
+#            
 
 
 
@@ -1863,11 +1825,11 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 #                else:
 #                    pass
 
+                
 
-
-
-
-
+                            
+                
+            
 
     def UHPCMCircMotionAntiClockwise(self,ev):
         if self.stackedWidgetIn_pageUHP.currentIndex() == 2:
@@ -1917,9 +1879,9 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 
 
                 self.pushButtonUHPCMCircMotionAntiClockwise.clicked.connect(effectOf_pushButtonUHPCMCircMotionAntiClockwise)
-
-
-
+            
+        
+            
 #    def effectOf_pushButtonUHPCMCircMotionAntiClockwise(self):
 #        curve = UHP_HP.UHPCircularMotion().UHPCircSegmentParamByArcLength(200j,150,-numpy.pi,numpy.pi)[0]
 #        length = UHP_HP.UHPCircularMotion().UHPCircSegmentParamByArcLength(200j,150,-numpy.pi,numpy.pi)[1]
@@ -1952,9 +1914,9 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 #        self.timer.timeout.connect(update)
 #        self.timer.start(1000*numpy.ceil(numpy.abs(length))/numberOfSteps)
 #
-#
-#
-
+#        
+#            
+            
 #####
 #####
 
@@ -1971,7 +1933,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                 color = (curvesAndColors["curvesColors"])[k]
                 theDrawing = pg.PlotCurveItem(x_coord,y_coord,pen=pg.mkPen(str(color), width=2))
                 self.PlotWidgetIn_pageUHP.addItem(theDrawing)
-
+        
 
 
 
@@ -2009,14 +1971,20 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         if self.timer:
             self.timer.stop()
             self.timer.deleteLater()
-            self.timer = None
+            self.timer = None        
         self.PlotWidgetIn_pagePD.clear()
         self.PDdraggableDotsStaticGeodSegs.setData(pos=numpy.array([[0,-100]]))
         self.PDdraggableDotsConvexHull.setData(pos=numpy.array([[0,-100]]))
         self.PDdraggableDotsMidPtForSidePairing.setData(pos=numpy.array([[0,-100]]))
+        self.PDdraggableDotsAngleOfParallelism.setData(pos=numpy.array([[0,-100]]))
+        self.PDdraggableDotsAngleOfParallelismFinitePt.setData(pos=numpy.array([[0,-100]]))
         self.PlotWidgetIn_pagePD.addItem(self.PDdraggableDotsStaticGeodSegs)
         self.PlotWidgetIn_pagePD.addItem(self.PDdraggableDotsConvexHull)
         self.PlotWidgetIn_pagePD.addItem(self.PDdraggableDotsMidPtForSidePairing)
+        self.PlotWidgetIn_pagePD.addItem(self.PDdraggableDotsAngleOfParallelism)
+        self.PlotWidgetIn_pagePD.addItem(self.PDdraggableDotsAngleOfParallelismFinitePt)
+        self.PlotWidgetIn_pagePD.addItem(self.DrawingOfParallelThroughZ3AndZ4)
+        self.DrawingOfParallelThroughZ3AndZ4.setData(numpy.array([z for z in [-10,-9]],dtype=float),numpy.array([z for z in [-10,-10]],dtype=float))
         self.PlotWidgetIn_pagePD.addItem(self.boundingCirclePD)
         self.boundingCirclePD.setPen(pg.mkPen('k',width=2))
         for clicked in Clicks:
@@ -2026,7 +1994,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 
 
 
-
+        
 
     def PDmouseMoved(self,evt):
         pos = evt[0]  ## using signal proxy turns original arguments into a tuple
@@ -2100,10 +2068,10 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 #            if x**2 + y**2 > 1:
 #                pass
 #            else:
-#                while len(twoClicks) < 3:
+#                while len(twoClicks) < 3:  
 #                    twoClicks.append([x,y])
 #                #print(twoClicks)
-#                if len(twoClicks) == 3:
+#                if len(twoClicks) == 3:  
 #                    del twoClicks[0]
 #                #print(twoClicks)
 #                if twoClicks[0] == twoClicks[1]:
@@ -2124,7 +2092,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 #                    self.labelPDBChdistancenumber.setNum(PD_HP.PDBasics().PDDist(P,Q))
 #        if self.checkBoxPDEnableClickOnCanvas.isChecked() == False:
 #            twoClicks.clear()
-#            print("as expected")
+#            print("as expected")        
 
     def PDBCGeodesicSegmentStatic(self,ev):
         if self.radioButtonPDBCGeodesicSegments.isChecked() == True and self.stackedWidgetIn_pagePD.currentIndex() == 0:
@@ -2150,7 +2118,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                     self.PlotWidgetIn_pagePD.addItem(drawing)
                     auxStorage.append(drawing)
 #                    self.labelPDBChdistancenumber.setNum(UHP_HP.UHPBasics().UHPDist(P,Q))
-
+                    
 #    @QtCore.pyqtSlot(object,int)
     def PDBCDragGeodesicSegment(self,pt,ind): # PERSONAL NOTE: there is a bad math/programming practice in draggableDots.PDdraggableDot().mouseDragEvent
         global arbManyClicks
@@ -2163,7 +2131,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
             if ind == 0:
                 neighbour = arbManyClicks[1]
                 Q = neighbour[0]+neighbour[1]*(1j)
-                curve = auxStorage[0]
+                curve = auxStorage[0]   
                 geodesicSegment = PD_HP.PDBasics().PDGeodesicSegment_rcostrsint(P,Q)
                 x_coord, y_coord = geodesicSegment.real, geodesicSegment.imag
                 curve.setData(x_coord,y_coord)
@@ -2193,7 +2161,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
             arbManyClicks[ind] = [pt[0],pt[1]]
 #            arbManyClicks.remove(arbManyClicks[ind])
 #            arbManyClicks.insert(ind,[pt[0],pt[1]])
-
+                
 
 
 
@@ -2243,7 +2211,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 #                        self.PlotWidgetIn_pagePD.addItem(f)
                     auxStorage.clear()
                     auxStorage.extend(vertices)
-
+                
     def PDBCDragConvexHull(self,pt,ind):
         global arbManyClicks
         global auxStorage
@@ -2256,7 +2224,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                 print(numpy.absolute(P))
                 if len(arbManyClicks) == 2:
                     Q = arbManyClicks[(ind+1)%2]
-                    curve = auxStorage2[0]
+                    curve = auxStorage2[0]   
                     geodesicSegment = PD_HP.PDBasics().PDGeodesicSegment_rcostrsint(P,Q)
                     x_coord, y_coord = geodesicSegment.real, geodesicSegment.imag
                     curve.setData(x_coord,y_coord)
@@ -2270,14 +2238,14 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                     vertices = PD_HP.PDBasics().verts_h_polygon_counter_clockwise(arbManyClicks)
                     for Drawing in auxStorage2:
                         self.PlotWidgetIn_pagePD.removeItem(Drawing)
-                    auxStorage2.clear()
+                    auxStorage2.clear()                    
                     for i in range(0,len(vertices)-1,1):
                         geodesicSegment = PD_HP.PDBasics().PDGeodesicSegment_rcostrsint(vertices[i],vertices[i+1])
                         x_coord = geodesicSegment.real
                         y_coord = geodesicSegment.imag
                         theDrawing = pg.PlotCurveItem(x_coord,y_coord,pen=self.blackPenWidth2)
                         self.PlotWidgetIn_pagePD.addItem(theDrawing)
-                        auxStorage2.append(theDrawing)
+                        auxStorage2.append(theDrawing)                
                     auxStorage.clear()
                     auxStorage.extend(vertices)
             except:
@@ -2290,12 +2258,298 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 
 
 
+    def PDBCAngleOfParallelism(self, ev):
+        if self.radioButtonPDBCAngleOfParallelism.isChecked() == True and self.stackedWidgetIn_pagePD.currentIndex() == 0:
+            global arbManyClicks
+            global auxStorage
+            global auxStorage2
+            global auxStorage3
+            global auxStorage4
+            x = self.PlotWidgetIn_pagePD.plotItem.vb.mapSceneToView(ev.scenePos()).x()
+            y = self.PlotWidgetIn_pagePD.plotItem.vb.mapSceneToView(ev.scenePos()).y()
+            if x**2+y**2 > 1:
+                pass # better yet, place a point at (x,y)/abs(x,y)
+            else:
+                if len(auxStorage2) == 6:
+                    auxStorage2.pop()
+                    auxStorage2.pop()
+                arbManyClicks.append([x,y])
+                if len(arbManyClicks) == 1:
+                    points = numpy.array([[arbManyClicks[0][0],arbManyClicks[0][1]]],dtype=float)
+                    self.PDdraggableDotsAngleOfParallelismFinitePt.setData(pos=points,  pxMode=True)
+                    auxStorage.append(arbManyClicks[0][0]+arbManyClicks[0][1]*(1j))
+                if len(arbManyClicks) == 2:
+                    z2 = arbManyClicks[1][0]+arbManyClicks[1][1]*(1j)
+                    if auxStorage[-1] == z2:
+                        pass
+                    else:
+                        z1 = auxStorage[-1]
+                        EdgesOfZ1Z2 = PD_HP.AngleOfParallelism().endpointsOfGeodesic(z1, z2)
+                        e1 = EdgesOfZ1Z2[0]
+                        e2 = EdgesOfZ1Z2[1]
+                        auxStorage[-1] = e1
+                        auxStorage.append(e2)
+                        points = numpy.array([[z.real,z.imag] for z in [e1,e2]],dtype=float)
+                        self.PDdraggableDotsAngleOfParallelismFinitePt.setData(pos=numpy.array([[0,100]],dtype=float),  pxMode=True)
+                        self.PDdraggableDotsAngleOfParallelism.setData(pos=points,  pxMode=True)
+                        CompleteGeodesicZ1Z2 = PD_HP.PDBasics().PDGeodesicSegment_rcostrsint(e1, e2)
+                        CGZ1Z2Drawing = pg.PlotCurveItem(CompleteGeodesicZ1Z2.real, CompleteGeodesicZ1Z2.imag, pen = self.blackPenWidth2)
+                        self.PlotWidgetIn_pagePD.addItem(CGZ1Z2Drawing)
+                        auxStorage2.append(CGZ1Z2Drawing)
+                if len(arbManyClicks) == 3:
+                    z3 = arbManyClicks[2][0] +arbManyClicks[2][1]*(1j)
+                    auxStorage4.append(z3)
+                    e1 = auxStorage[-2]
+                    e2 = auxStorage[-1]
+                    self.PDdraggableDotsAngleOfParallelismFinitePt.setData(pos=numpy.array([[z3.real,z3.imag]],dtype=float),  pxMode=True)
+                    ProyectionToGeod_AndAngleOfParallelism = PD_HP.AngleOfParallelism().HypPerpendicularFromPoint(z3, e1, e2)
+                    ProyectionFromZ3 = ProyectionToGeod_AndAngleOfParallelism[0]
+                    distFromZ3ToGeod = PD_HP.PDBasics().PDDist(z3,ProyectionFromZ3)
+                    angleOfParallelism = ProyectionToGeod_AndAngleOfParallelism[1]
+                    auxStorage3.append(ProyectionFromZ3)
+                    auxStorage3.append(angleOfParallelism)
+                    self.AngleLabel = pg.TextItem("Angle="+str(angleOfParallelism))
+                    self.AngleLabel.setPos(z3.real, z3.imag)
+                    self.PlotWidgetIn_pagePD.addItem(self.AngleLabel)
+                    self.DistLabel = pg.TextItem("Dist="+str(distFromZ3ToGeod))
+                    self.DistLabel.setPos(ProyectionFromZ3.real, ProyectionFromZ3.imag)
+                    self.PlotWidgetIn_pagePD.addItem(self.DistLabel)
+                    EdgesOfDelimitingCurve1 = PD_HP.AngleOfParallelism().endpointsOfGeodesic(z3, e1)
+                    EdgesOfDelimitingCurve2 = PD_HP.AngleOfParallelism().endpointsOfGeodesic(z3, e2)
+
+                    e1ofD1 = EdgesOfDelimitingCurve1[0]
+                    e2ofD1 = EdgesOfDelimitingCurve1[1]
+                    e1ofD2 = EdgesOfDelimitingCurve2[0]
+                    e2ofD2 = EdgesOfDelimitingCurve2[1]
+
+                    Perpendicular = PD_HP.PDBasics().PDGeodesicSegment_rcostrsint(z3,ProyectionFromZ3)
+                    DelimitingCurve1 = PD_HP.PDBasics().PDGeodesicSegment_rcostrsint(e1ofD1,e2ofD1)
+                    DelimitingCurve2 = PD_HP.PDBasics().PDGeodesicSegment_rcostrsint(e1ofD2,e2ofD2)
+                    
+
+                    PerpendicularX, PerpendicularY = Perpendicular.real, Perpendicular.imag
+                    DC1X, DC1Y = DelimitingCurve1.real, DelimitingCurve1.imag
+                    DC2X, DC2Y = DelimitingCurve2.real, DelimitingCurve2.imag
+                    
+                    PerpendicularDrawing = pg.PlotCurveItem(PerpendicularX,PerpendicularY,pen=self.blackPenWidth2)
+                    DC1Drawing = pg.PlotCurveItem(DC1X,DC1Y,pen=self.redPenWidth2)
+                    DC2Drawing = pg.PlotCurveItem(DC2X,DC2Y,pen=self.redPenWidth2)
+                    
+
+                    self.PlotWidgetIn_pagePD.addItem(PerpendicularDrawing)
+                    self.PlotWidgetIn_pagePD.addItem(DC1Drawing)
+                    self.PlotWidgetIn_pagePD.addItem(DC2Drawing)
+                    
+
+                    auxStorage2.append(PerpendicularDrawing)
+                    auxStorage2.append(DC1Drawing)
+                    auxStorage2.append(DC2Drawing)
+                    
+                if len(arbManyClicks) == 4:
+                    z3 = auxStorage4[-1]
+                    z4 = arbManyClicks[3][0] +arbManyClicks[3][1]*(1j)
+                    tangentAtz3ToGeodFromz3Toz4 = PD_HP.PDBasics().tangent_unit(z3,z4)
+                    ProyectionFromZ3 = auxStorage3[0]
+                    angleOfParallelism = auxStorage3[1]
+                    tangentAtz3ToProjOntoVeryFirstGeod = PD_HP.PDBasics().tangent_unit(z3,ProyectionFromZ3)
+                    Angle_z4z3ProyectionFroZ3 = extended_complex_plane_CP.numpyExtendedComplexPlane().myarg0To2Pi(tangentAtz3ToGeodFromz3Toz4*(numpy.conj(tangentAtz3ToProjOntoVeryFirstGeod)))
+                    if Angle_z4z3ProyectionFroZ3 > angleOfParallelism and Angle_z4z3ProyectionFroZ3 < numpy.pi-angleOfParallelism:
+                        endPointsOfParallel = PD_HP.AngleOfParallelism().endpointsOfGeodesic(z3,z4) # list of two points in unit circle
+                        endPoint1, endPoint2 = endPointsOfParallel[0], endPointsOfParallel[1]
+                        ParallelThroughZ3AndZ4 = PD_HP.PDBasics().PDGeodesicSegment_rcostrsint(endPoint1,endPoint2)
+                        x_coord, y_coord = ParallelThroughZ3AndZ4.real, ParallelThroughZ3AndZ4.imag
+                        self.DrawingOfParallelThroughZ3AndZ4.setData(x_coord,y_coord)
+                        #auxStorage2.append(DrawingOfParallelThroughZ3AndZ4)
+                        e1 = auxStorage[-2]
+                        e2 = auxStorage[-1]
+                        auxStorage.append(endPoint1)
+                        auxStorage.append(endPoint2)
+                        points = numpy.array([[z.real,z.imag] for z in [e1,e2,endPoint1,endPoint2]],dtype=float)
+                        self.PDdraggableDotsAngleOfParallelism.setData(pos=points,  pxMode=True)
+                    elif Angle_z4z3ProyectionFroZ3 < (2*numpy.pi)-angleOfParallelism and Angle_z4z3ProyectionFroZ3 > numpy.pi+angleOfParallelism:
+                        endPointsOfParallel = PD_HP.AngleOfParallelism().endpointsOfGeodesic(z3,z4) # list of two points in unit circle
+                        endPoint1, endPoint2 = endPointsOfParallel[0], endPointsOfParallel[1]
+                        ParallelThroughZ3AndZ4 = PD_HP.PDBasics().PDGeodesicSegment_rcostrsint(endPoint1,endPoint2)
+                        x_coord, y_coord = ParallelThroughZ3AndZ4.real, ParallelThroughZ3AndZ4.imag
+                        self.DrawingOfParallelThroughZ3AndZ4.setData(x_coord,y_coord)
+                        #auxStorage2.append(DrawingOfParallelThroughZ3AndZ4)
+                        e1 = auxStorage[-2]
+                        e2 = auxStorage[-1]
+                        auxStorage.append(endPoint1)
+                        auxStorage.append(endPoint2)
+                        points = numpy.array([[z.real,z.imag] for z in [e1,e2,endPoint1,endPoint2]],dtype=float)
+                        self.PDdraggableDotsAngleOfParallelism.setData(pos=points,  pxMode=True)
+                    else:
+                        arbManyClicks.pop()
+                        
+                else:
+                    pass 
+
+
+
+    def PDBCDragAngleOfParallelism_PtsAtInf(self,pt,ind):
+        global arbManyClicks
+        global auxStorage
+        global auxStorage2
+        global auxStorage3
+        global auxStorage4
+        P = pt[0]+pt[1]*(1j)
+        if P.real**2+P.imag**2<0.9999999999:# BEWARE OF THE BAD PRACTICE! IT SHOULD BE A 1
+            auxStorage4[0] = P
+        else:
+            auxStorage[ind] = pt[0]+pt[1]*(1j)
+        e1,e2,z3,endPoint1,endPoint2 = auxStorage[0],auxStorage[1],auxStorage4[0],auxStorage[2],auxStorage[3]
+        if len(auxStorage) != 4:
+            pass
+        else:
+            
+            CompleteGeodesicZ1Z2 = PD_HP.PDBasics().PDGeodesicSegment_rcostrsint(e1, e2)
+            CGZ1Z2Drawing = auxStorage2[0]
+            PerpendicularDrawing = auxStorage2[1]
+            DC1Drawing = auxStorage2[2]
+            DC2Drawing = auxStorage2[3]
+            
+            
+            ProyectionToGeod_AndAngleOfParallelism = PD_HP.AngleOfParallelism().HypPerpendicularFromPoint(z3, e1, e2)
+            ProyectionFromZ3 = ProyectionToGeod_AndAngleOfParallelism[0]
+            distFromZ3ToGeod = PD_HP.PDBasics().PDDist(z3,ProyectionFromZ3)
+            angleOfParallelism = ProyectionToGeod_AndAngleOfParallelism[1]
+            auxStorage3[0] = ProyectionFromZ3
+            auxStorage3[1] = angleOfParallelism
+            
+            
+            tangentAtz3ToGeodFromz3Toz4 = PD_HP.PDBasics().tangent_unit(z3,endPoint2)
+            tangentAtz3ToProjOntoVeryFirstGeod = PD_HP.PDBasics().tangent_unit(z3,ProyectionFromZ3)
+            Angle_z4z3ProyectionFroZ3 = extended_complex_plane_CP.numpyExtendedComplexPlane().myarg0To2Pi(tangentAtz3ToGeodFromz3Toz4*(numpy.conj(tangentAtz3ToProjOntoVeryFirstGeod)))
+            if ind <= 1 and not(Angle_z4z3ProyectionFroZ3 > angleOfParallelism and Angle_z4z3ProyectionFroZ3 < numpy.pi-angleOfParallelism) and not (Angle_z4z3ProyectionFroZ3 < (2*numpy.pi)-angleOfParallelism and Angle_z4z3ProyectionFroZ3 > numpy.pi+angleOfParallelism):
+                    return
+            
+            self.AngleLabel.setText("Angle="+str(angleOfParallelism))
+            self.AngleLabel.setPos(z3.real, z3.imag)
+            self.DistLabel.setText("Dist="+str(distFromZ3ToGeod))
+            self.DistLabel.setPos(ProyectionFromZ3.real, ProyectionFromZ3.imag)
+            EdgesOfDelimitingCurve1 = PD_HP.AngleOfParallelism().endpointsOfGeodesic(z3, e1)
+            EdgesOfDelimitingCurve2 = PD_HP.AngleOfParallelism().endpointsOfGeodesic(z3, e2)
+            e1ofD1 = EdgesOfDelimitingCurve1[0]
+            e2ofD1 = EdgesOfDelimitingCurve1[1]
+            e1ofD2 = EdgesOfDelimitingCurve2[0]
+            e2ofD2 = EdgesOfDelimitingCurve2[1]
+            CGZ1Z2Drawing.setData(CompleteGeodesicZ1Z2.real, CompleteGeodesicZ1Z2.imag)
+            Perpendicular = PD_HP.PDBasics().PDGeodesicSegment_rcostrsint(z3,ProyectionFromZ3)
+            PerpendicularX, PerpendicularY = Perpendicular.real, Perpendicular.imag
+            PerpendicularDrawing.setData(PerpendicularX, PerpendicularY)
+            
+            
+
+            if ind > 1:
+                if Angle_z4z3ProyectionFroZ3 > angleOfParallelism and Angle_z4z3ProyectionFroZ3 < numpy.pi-angleOfParallelism:
+                    endPointsOfParallel = PD_HP.AngleOfParallelism().endpointsOfGeodesic(z3,auxStorage[ind]) # list of two points in unit circle
+                    endPoint1, endPoint2 = endPointsOfParallel[0], endPointsOfParallel[1]
+                    auxStorage[2], auxStorage[3] = endPoint1, endPoint2
+                    ParallelThroughZ3AndZ4 = PD_HP.PDBasics().PDGeodesicSegment_rcostrsint(endPoint1,endPoint2)
+                    x_coord, y_coord = ParallelThroughZ3AndZ4.real, ParallelThroughZ3AndZ4.imag
+                    self.DrawingOfParallelThroughZ3AndZ4.setData(x_coord,y_coord)
+                elif Angle_z4z3ProyectionFroZ3 < (2*numpy.pi)-angleOfParallelism and Angle_z4z3ProyectionFroZ3 > numpy.pi+angleOfParallelism:
+                    endPointsOfParallel = PD_HP.AngleOfParallelism().endpointsOfGeodesic(z3,auxStorage[ind]) # list of two points in unit circle
+                    endPoint1, endPoint2 = endPointsOfParallel[0], endPointsOfParallel[1]
+                    auxStorage[2], auxStorage[3] = endPoint1, endPoint2
+                    ParallelThroughZ3AndZ4 = PD_HP.PDBasics().PDGeodesicSegment_rcostrsint(endPoint1,endPoint2)
+                    x_coord, y_coord = ParallelThroughZ3AndZ4.real, ParallelThroughZ3AndZ4.imag
+                    self.DrawingOfParallelThroughZ3AndZ4.setData(x_coord,y_coord)
+
+
+
+            
+            points = numpy.array([[z.real,z.imag] for z in [e1,e2,endPoint1,endPoint2]],dtype=float)
+            self.PDdraggableDotsAngleOfParallelism.setData(pos=points,  pxMode=True)
+            DelimitingCurve1 = PD_HP.PDBasics().PDGeodesicSegment_rcostrsint(e1ofD1,e2ofD1)
+            DelimitingCurve2 = PD_HP.PDBasics().PDGeodesicSegment_rcostrsint(e1ofD2,e2ofD2)
+            DC1Drawing.setData(DelimitingCurve1.real,DelimitingCurve1.imag)
+            DC2Drawing.setData(DelimitingCurve2.real,DelimitingCurve2.imag)
+                    
+
+            
+            
+            
+            
+            
+            
+            
+        
+
+    def PDBCDragAngleOfParallelism_FinitePt(self,pt,ind):
+        global arbManyClicks
+        global auxStorage
+        global auxStorage2
+        global auxStorage3
+        global auxStorage4
+        P = pt[0]+pt[1]*(1j)
+        if P.real**2+P.imag**2<0.9999999999:# BEWARE OF THE BAD PRACTICE! IT SHOULD BE A 1
+            if len(auxStorage) > 2:
+                auxStorage.pop()
+            if len(arbManyClicks) > 3:
+                arbManyClicks.pop()
+            auxStorage4[0] = P
+            e1,e2,z3 = auxStorage[0],auxStorage[1],auxStorage4[0]
+            PerpendicularDrawing = auxStorage2[1]
+            DC1Drawing = auxStorage2[2]
+            DC2Drawing = auxStorage2[3]
+            
+            x = numpy.array([z for z in [-10,-9]],dtype=float)
+            y = numpy.array([z for z in [-10,-10]],dtype=float)
+            self.DrawingOfParallelThroughZ3AndZ4.setData(x,y)
+            
+            ProyectionToGeod_AndAngleOfParallelism = PD_HP.AngleOfParallelism().HypPerpendicularFromPoint(z3, e1, e2)
+            ProyectionFromZ3 = ProyectionToGeod_AndAngleOfParallelism[0]
+            distFromZ3ToGeod = PD_HP.PDBasics().PDDist(z3,ProyectionFromZ3)
+            angleOfParallelism = ProyectionToGeod_AndAngleOfParallelism[1]
+            auxStorage3[0] = ProyectionFromZ3
+            auxStorage3[1] = angleOfParallelism
+            self.AngleLabel.setText("Angle="+str(angleOfParallelism))
+            self.AngleLabel.setPos(z3.real, z3.imag)
+            self.DistLabel.setText("Dist="+str(distFromZ3ToGeod))
+            self.DistLabel.setPos(ProyectionFromZ3.real, ProyectionFromZ3.imag)
+            
+            
+            
+            EdgesOfDelimitingCurve1 = PD_HP.AngleOfParallelism().endpointsOfGeodesic(z3, e1)
+            EdgesOfDelimitingCurve2 = PD_HP.AngleOfParallelism().endpointsOfGeodesic(z3, e2)
+            e1ofD1 = EdgesOfDelimitingCurve1[0]
+            e2ofD1 = EdgesOfDelimitingCurve1[1]
+            e1ofD2 = EdgesOfDelimitingCurve2[0]
+            e2ofD2 = EdgesOfDelimitingCurve2[1]
+            DelimitingCurve1 = PD_HP.PDBasics().PDGeodesicSegment_rcostrsint(e1ofD1,e2ofD1)
+            DelimitingCurve2 = PD_HP.PDBasics().PDGeodesicSegment_rcostrsint(e1ofD2,e2ofD2)
+            
+            Perpendicular = PD_HP.PDBasics().PDGeodesicSegment_rcostrsint(z3,ProyectionFromZ3)
+            PerpendicularX, PerpendicularY = Perpendicular.real, Perpendicular.imag
+            DC1X, DC1Y = DelimitingCurve1.real, DelimitingCurve1.imag
+            DC2X, DC2Y = DelimitingCurve2.real, DelimitingCurve2.imag
+            DC1Drawing.setData(DC1X,DC1Y)
+            DC2Drawing.setData(DC2X,DC2Y)
+            
+            PerpendicularDrawing.setData(PerpendicularX, PerpendicularY)
+        else:
+            pass
+        
+        
+ 
 
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+    
     def PDGMGeodesicSegmentAnimated(self,ev): # point-point
         if self.radioButtonPDGMGeoParamByArcLength.isChecked() == True and self.radioButtonPDGMPointPoint.isChecked() == True and self.stackedWidgetIn_pagePD.currentIndex() == 1:
             global twoClicks
@@ -2304,9 +2558,9 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
             if x**2 + y**2 > 1:
                 pass
             else:
-                while len(twoClicks) < 3:
+                while len(twoClicks) < 3:  
                     twoClicks.append([x,y])
-                if len(twoClicks) == 3:
+                if len(twoClicks) == 3:  
                     del twoClicks[0]
                 #print(twoClicks)
                 if twoClicks[0] == twoClicks[1]:
@@ -2341,8 +2595,8 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                             finalPointRed = pg.ScatterPlotItem([Q.real],[Q.imag],pen='r',brush = 'r')
                             self.PlotWidgetIn_pagePD.addItem(finalPointRed)
                             self.timer.stop()
-
-
+                            
+                    
                     if self.timer:
                         self.timer.stop()
                         self.timer.deleteLater()
@@ -2352,13 +2606,13 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 
 
 
-
-
-
-
-
-
-
+        
+        
+        
+        
+        
+        
+        
     def PDGMGeodesicRayConstantRapidityAnimated(self,ev):# point-vector
         if self.radioButtonPDGMGeoParamByArcLength.isChecked() == True and self.radioButtonPDGMPointVector.isChecked() == True and self.stackedWidgetIn_pagePD.currentIndex() == 1:
             global arbManyClicks
@@ -2411,29 +2665,29 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                                     finalPointRed = pg.ScatterPlotItem([x_coord],[y_coord],pen='r',brush = 'r')
                                     self.PlotWidgetIn_pagePD.addItem(finalPointRed)
                                     self.timer.stop()
-
+    
                             if self.timer:
                                 self.timer.stop()
                                 self.timer.deleteLater()
                             self.timer = QtCore.QTimer(self)
                             self.timer.timeout.connect(update)
                             self.timer.start(50)
-
+    
                     if len(arbManyClicks) == 1:
-                        self.PlotWidgetIn_pagePDGeodesicMotion.scene().sigMouseClicked.connect(PDGMGetVector)
-
+                        self.PlotWidgetIn_pagePDGeodesicMotion.scene().sigMouseClicked.connect(PDGMGetVector) 
+                        
                 except:
                     pass
-
-
-
-
-
-
-
-
+                        
+                    
+                    
+                    
+                    
+                    
+                    
+                    
     def PDIsomsSpecificIdealPolygon(self):
-        if self.stackedWidgetIn_pagePD.currentIndex() == 3:
+        if self.stackedWidgetIn_pagePD.currentIndex() == 3 and self.radioButtonPDIsomTessellateD.isChecked() == True:
             g = int(self.spinBoxPDIsomsGenus.cleanText())
             p = int(self.spinBoxPDIsomsNumOfPuncts.cleanText())
             ordersText = self.lineEditPDIsomsOrdersOfOrbPts.text()
@@ -2449,7 +2703,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                 orders.append(int(string))
             for s in range(len(commaPositions)):
                 if s == 0 and commaPositions[s] != 0:
-                    string = ""
+                    string = ""                    
                     for l in range(commaPositions[s]):
                         string = string + str(ordersText[l])
                     orders.append(int(string))
@@ -2462,8 +2716,8 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                     string = ""
                     for l in range(commaPositions[s]+1,len(ordersText)):
                         string = string + str(ordersText[l])
-                    orders.append(int(string))
-            orders = [j for j in orders if j > 1]
+                    orders.append(int(string))         
+            orders = [j for j in orders if j > 1]        
             #print(orders)
             triplesOfPtsAndColors = PD_HP.PDFuchsianRepresentative().PDSidesOfSpecificIdealPolygon(g,p,orders)
             NumOfSides = (4*g) + (2*(p-1)) + (2*len(orders))#2g-1+4g+2(p-1)=6g+2p-3
@@ -2473,10 +2727,17 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
             #self.PDdraggableDotsMidPtForSidePairing.setData(pos=points, brush = 'k',  pxMode=True)
 
             curvesToSidePairingDict = {}
+            goingBackDict = {}
             faceColors = ['c','m']
             firstFace = []
             
+            #### WE PLACE A HOVERABLE, CLICKABLE, NON-DRAGGABLE DOT IN THE INTERIOR OF THE FIRST POLYGON
+            #### THE IMAGE OF THIS DOT WILL BE COMPUTED EVERY TIME WE COMPUTE A NEW FUNDAMENTAL DOMAIN BY CLICKING A CURVE
+            firstClickableDotDict = {'pos': (0,0), 'size' : 0.05, 'pen' : self.blackPenWidth2, 'brush' : 'k', 'symbol' : 'o'}
+            clickableDots = pg.ScatterPlotItem([firstClickableDotDict], pxMode = False, hoverable=True,)
+            self.PlotWidgetIn_pagePD.addItem(clickableDots)
 
+    
 
             for k in range(NumOfSides):
                 kthTriple = (triplesOfPtsAndColors["triplesOfPtsOnCurves"][k])[0]
@@ -2487,8 +2748,8 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                 theDrawing = pg.PlotCurveItem(x_coord,y_coord,pen=pg.mkPen(color=colour, width=2),clickable=True)
                 self.PlotWidgetIn_pagePD.addItem(theDrawing)
                 drawnCurvesList.append(theDrawing)
-
-
+                
+                
                 # THE NEXT FEW LINES ADD GEODESIC SEGMENTS THAT INDICATE THE SIDE PAIRINGS
                 kthMidPt = kthTriple[1]
                 a, b, c, d = (sidePairings[k][0]**(-1))[0,0], (sidePairings[k][0]**(-1))[0,1], (sidePairings[k][0]**(-1))[1,0], (sidePairings[k][0]**(-1))[1,1]
@@ -2497,22 +2758,21 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                 x_coord, y_coord = geodesicSegment.real, geodesicSegment.imag
                 drawing = pg.PlotCurveItem(x_coord,y_coord,pen=pg.mkPen(color=colour, width=1))
                 self.PlotWidgetIn_pagePD.addItem(drawing)
-
+                
                 matrix = numpy.matrix([[a,b],[c,d]])**(-1)
                 alpha, beta, gamma, delta = matrix[0,0], matrix[0,1], matrix[1,0], matrix[1,1]
-                curvesToSidePairingDict[theDrawing]=[matrix,colour,[kthTriple[0],kthTriple[2]],Mobius_CP.MobiusAssocToMatrix().EvaluationAtConcretePoint(alpha,beta,gamma,delta)(0)]
+                curvesToSidePairingDict[theDrawing]=[matrix,colour,[kthTriple[0],kthTriple[2]],Mobius_CP.MobiusAssocToMatrix().EvaluationAtConcretePoint(alpha,beta,gamma,delta)(0),0]
                 firstFace.append(theDrawing)
-
 
             firstFaceAsDictCurvesAndColor = {"curvas":firstFace,"color":faceColors[0]}    
             Faces = [firstFace]
             coloredFaces = [firstFaceAsDictCurvesAndColor]
                 
 
-
+                
 #            points = numpy.array([[(curvesAndColors["midpoints"])[k][0].real,(curvesAndColors["midpoints"])[k][0].imag] for k in range(NumOfSides)],dtype=float)
 #            self.PDdraggableDotsConvexHull.setData(pos=points, brush = 'k',  pxMode=True)
-
+            
 #            brushes = ["r", (100, 100, 255), "b"]
 #            fills = [pg.FillBetweenItem(drawnCurvesList[k][0], drawnCurvesList[k+1][0], brushes[k%3]) for k in range(NumOfSides-1)]
 #            for f in fills:
@@ -2523,8 +2783,8 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
             for f in fills:
                 self.PlotWidgetIn_pagePD.addItem(f)
 
-
-
+            
+            
             def plotClicked(curve):####
                 #nonlocal drawnCurvesList
                 for c in drawnCurvesList:
@@ -2555,15 +2815,22 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                                 B = (curvesToSidePairingDict[side])[0]
                                 newMatrix = matrix*B*(matrix**(-1))
                                 newAlpha,newBeta,newGamma,newDelta = newMatrix[0,0], newMatrix[0,1], newMatrix[1,0], newMatrix[1,1]
-                                curvesToSidePairingDict[newDrawing]=[newMatrix,(curvesToSidePairingDict[side])[1],[point1,point2],Mobius_CP.MobiusAssocToMatrix().EvaluationAtConcretePoint(newAlpha,newBeta,newGamma,newDelta)((curvesToSidePairingDict[c])[3])]
+                                curvesToSidePairingDict[newDrawing]=[newMatrix,(curvesToSidePairingDict[side])[1],[point1,point2],Mobius_CP.MobiusAssocToMatrix().EvaluationAtConcretePoint(newAlpha,newBeta,newGamma,newDelta)((curvesToSidePairingDict[c])[3]),(curvesToSidePairingDict[c])[3]]
                                 newDrawing.sigClicked.connect(plotClicked)
-
+                                
                                 # x, y = numpy.array([[starPointForColoringNewFace.real,starPointForColoringNewFace.imag],[starPointForColoringNewFace.real,starPointForColoringNewFace.imag]])
                                 # fills = [pg.FillBetweenItem(pg.PlotCurveItem(x,y,pen=pg.mkPen(width=1)), c, newColor)]
                                 # for f in fills:
                                 #     self.PlotWidgetIn_pagePD.addItem(f)
-
                                 
+                                
+                            ### HERE WE ADD A HOVERABLE, NON-DRAGGABLE DOT IN THE NEW FUNDAMENTAL DOMAIN
+                            size = 1-numpy.absolute((curvesToSidePairingDict[c])[3])
+                            newClickableDotDict = {'pos': ((curvesToSidePairingDict[c])[3].real,(curvesToSidePairingDict[c])[3].imag), 'size' : 0.05*size, 'pen' : self.blackPenWidth2, 'brush' : 'k', 'symbol' : 'o'}
+                            #clickableDotsList.append(newClickableDotDict)
+                            clickableDots.addPoints([newClickableDotDict])
+                            goingBackDict[(curvesToSidePairingDict[c])[3]] = [matrix**(-1),(curvesToSidePairingDict[c])[4]]
+                            
                                 
                             
                             
@@ -2571,13 +2838,100 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                             Faces.append(newcFace)
                             coloredFaces.append(newcFaceAsDictCurvesAndColor)
                             
-
                     else:
                         c.setPen(pg.mkPen(color=(curvesToSidePairingDict[c])[1], width=2))
-
+                        
             for curve in drawnCurvesList:
                 curve.sigClicked.connect(plotClicked)
+                
+                
+            def PDIsomsIsotopeToIdentity(points,ev):
+                x_coord, y_coord = ev[0].pos()[0], ev[0].pos()[1]
+                z = x_coord+y_coord*(1j)
+                goingBackMatrices = []
+                while z!=0+0j:
+                    goingBackMatrices.append(goingBackDict[z][0])
+                    z = goingBackDict[z][1]
+                for mat in goingBackMatrices:
+                    standardForm = Mobius_CP.MobiusAssocToMatrix().standardForm(mat[0,0],mat[0,1],mat[1,0],mat[1,1])
+                    conjugatingMatrix = standardForm[1]
+                    tipo = Mobius_CP.MobiusAssocToMatrix().isParEllHypLox(mat[0,0],mat[0,1],mat[1,0],mat[1,1])
+                    # THIS ASSUMES THAT DUE TO FLOATING POINT ERROR, THE SIDE-PAIRING
+                    # TRANSFORMATIONS THAT SHOULD BE PARABOLIC, ELLIPTIC AND HYPERBOLIC CAN 
+                    # ACTUALLY BE LOXODROMIC MANY TIMES
+                    multiplier = tipo[1]
+                    logOfMultiplier = numpy.log(multiplier)
+                    numberOfSteps = 500
+                    t = numpy.linspace(1,0,numberOfSteps+1)
+                    plottedCurve = self.PlotWidgetIn_pagePD.plot(pen = self.blackPenWidth2)
+                    k=0
+                    def update():
+                        nonlocal k
+                        if k < len(t)-1:
+                            kthMultiplier = numpy.exp((t[k+1])*logOfMultiplier)
+                            kthMatrix = conjugatingMatrix**(-1)*numpy.matrix([[kthMultiplier.real,-kthMultiplier.imag],[kthMultiplier.imag,kthMultiplier.real]])*conjugatingMatrix
+                            s = numpy.linspace(0,1,100)
+                            w = x_coord + y_coord*(1j)
+                            curva = (1-s)*w+s*(Mobius_CP.MobiusAssocToMatrix().EvaluationAtConcretePoint(kthMatrix[0,0],kthMatrix[0,1],kthMatrix[1,0],kthMatrix[1,1])(w))
+                            x = curva.real
+                            y = curva.imag
+                            plottedCurve.setData(x,y)
+                        k = (k+1)
+                        if k == len(t)-2:
+                            # finalPointRed = pg.ScatterPlotItem([Q.real],[Q.imag],pen='r',brush = 'r')
+                            # self.PlotWidgetIn_pagePD.addItem(finalPointRed)
+                            self.timer.stop()
+                            
+                    
+                    if self.timer:
+                        self.timer.stop()
+                        self.timer.deleteLater()
+                    self.timer = QtCore.QTimer(self)
+                    self.timer.timeout.connect(update)
+                    self.timer.start(1)
 
+                    
+
+                
+                
+                
+            clickableDots.sigClicked.connect(PDIsomsIsotopeToIdentity)
+                
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
     
                     
                     
@@ -2588,7 +2942,6 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 
     # # #            #brush.setStyle(QtCore.Qt.NoBrush)
             
-
             newBlack = newBackground.black
             newWhite = newBackground.white
             newBlue = newBackground.blue
@@ -2597,12 +2950,10 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
             newYellow = newBackground.yellow
             newMagenta = newBackground.magenta
             newGreen = newBackground.green
-
             
             for coloredDrawingsList in AllDrawings:
                 
             
-
                 for objeto in coloredDrawingsList:
                     objeto.color = newBlack
                     objeto.black = newBlack
@@ -2636,7 +2987,6 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 
                 
                 
-
 # black Drawings = []
 # blueDrawings = []
 # redDrawings = []
@@ -2644,7 +2994,8 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 # yellowDrawings = []
 # magentaDrawings = []
 # greenDrawings = []
-
+            
+            
             # self.childrenOfPlotWidgetIn_pageUHP = self.PlotWidgetIn_pageUHP.allChildItems()
             # for x in self.childrenOfPlotWidgetIn_pageUHP:
             #     if type(x) == QtWidgets.QGraphicsEllipseItem:
@@ -2653,7 +3004,10 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
             #             x.setPen(pg.mkPen(color=self.newBackground.black, width=2))
             #         if color == self.background.white:
             #             x.setPen(pg.mkPen(color=self.newBackground.white, width=2))
-
+                        
+                    
+                    
+                        
 
 
             self.background = newBackground
@@ -2665,13 +3019,21 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
             self.PlotWidgetIn_pageUHPGeodesicMotion.setBackgroundBrush(self.background.backgroundBrush)
             self.PlotWidgetIn_pagePD.setBackgroundBrush(self.background.backgroundBrush)
             self.PlotWidgetIn_pagePDGeodesicMotion.setBackgroundBrush(self.background.backgroundBrush)
-
+            
+            
+                        
+                    
+                    
+                    
+                    
+                    
+        
 app = QtWidgets.QApplication(sys.argv)
 form = appMainWindow()
 form.show()
 app.exec_()
 
-#if __name__ == "__main__":
+#if __name__ == "__main__":            
 #    app = QtWidgets.QApplication(sys.argv)
 #    form = appMainWindow()
 #    form.show()
