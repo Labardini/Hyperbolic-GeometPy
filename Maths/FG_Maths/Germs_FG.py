@@ -8,7 +8,7 @@ Created on Mon Jul 17 17:07:25 2017
 
 import numpy
 
-
+import pyqtgraph as pg
 
 from exception_handling import myInputError
 from Maths.CP_Maths import extended_complex_plane_CP
@@ -37,3 +37,46 @@ class AnalyticContinuation:
     
     def __init__(self):
         pass
+    
+    def nthRoots(self,n):
+        def allnthRoots(z):
+            float1 = float(1)
+            floatn = float(n)
+            specificnthRoot = numpy.power(z, (float1/floatn))
+            nthRootOfUnity = numpy.cos(float(2)*float(numpy.pi)/floatn) + (numpy.sin(float(2)*float(numpy.pi)/floatn))*(1j)
+            listOfAllnthRoots = [(nthRootOfUnity**float(k))*specificnthRoot for k in range(n)]
+            return listOfAllnthRoots
+        return allnthRoots
+    
+
+                
+    def mediatricesBetweenConsecutiventhRoots(self,n):
+        def mediatricesBetweennthRoots(z):
+            listOfAllnthRoots = self.nthRoots(n)(z)
+            mediatrices = []
+            floatn = float(n)
+            for k in range(n):
+                mediatrix = listOfAllnthRoots[k]*(numpy.cos(float(numpy.pi)/floatn) + (numpy.sin(float(numpy.pi)/floatn))*(1j))
+                mediatrices.append(mediatrix)
+            return mediatrices
+        return mediatricesBetweennthRoots
+    
+    def slitRayForGermOfnthRoot(self,n):
+        def slitRay(z):
+            float1 = float(1)
+            floatn = float(n)
+            specificnthRoot = numpy.power(z, (float1/floatn))
+            
+            ptOnSlitRay = (specificnthRoot*(numpy.cos(float(numpy.pi)/floatn) + (numpy.sin(float(numpy.pi)/floatn))*(1j)))**n
+            #angleInDegrees = (180*(numpy.angle(ptOnSlitRay)/numpy.pi))+90
+            #pgLineInfo = {"pos" : position, "angle" : angleInDegrees}
+            #dictionary = {"ptOnSlitRay" : ptOnSlitRay}#, "pgLineInfo" : pgLineInfo}
+            return ptOnSlitRay#dictionary
+        return slitRay
+            
+            
+            
+        
+        
+            
+            
