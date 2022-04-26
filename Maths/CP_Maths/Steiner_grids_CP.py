@@ -160,7 +160,7 @@ class loxodromes:
         coordList = []
         complexZ = (1.1)*(numpy.cos(theta)+(numpy.sin(theta)*(1j)))
         #complexZ = numpy.exp(numpy.sin(theta))*(numpy.cos(-numpy.cos(theta))+(numpy.sin(-numpy.cos(theta))*(1j)))
-        t = numpy.linspace(0,25,10000)
+        t = numpy.linspace(0,10,500)
         if isooInArgs(P,Q) == True:
             for k in range(0,n,1):
                 rotation = numpy.cos(k*2*numpy.pi/n)+(numpy.sin(k*2*numpy.pi/n)*(1j))

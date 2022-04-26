@@ -161,9 +161,7 @@ class MobiusAssocToMatrix:
         if a*d-b*c == 0:
             pass
         else:
-            traza0 = (a+d) / (numpy.sqrt(a*d-b*c)) 
-            traza1 = -(traza0)
-            traza = [ traza0 , traza1 ]
+            traza = (a+d)**2 / (a*d-b*c) 
         return traza
     
 #    def isParEllHypLox(self,complexa,complexb,complexc,complexd):
@@ -200,11 +198,12 @@ class MobiusAssocToMatrix:
                 normalForm = self.standardForm(a,b,c,d)[0]
                 alpha,beta,gamma,delta = normalForm[0,0],normalForm[0,1],normalForm[1,0],normalForm[1,1]
                 mu = self.EvaluationAtConcretePoint(alpha,beta,gamma,delta)(1)
-                if (d - a)**2 + (4 * b * c) == 0:
+                trace = self.MobiusTrace(alpha,beta,gamma,delta)
+                if trace == 4:#(d - a)**2 + (4 * b * c) == 0:
                     TheTypeIs = ['Parabolic',self.EvaluationAtConcretePoint(alpha,beta,gamma,delta)(0)]
-                elif numpy.absolute(mu) == 1:
+                elif trace.imag == 0 and 0<=trace.real<4:#numpy.absolute(mu) == 1:
                     TheTypeIs = ['Elliptic', mu]
-                elif mu.imag == 0 and mu.real > 0:
+                elif trace.imag == 0 and trace.real > 4:
                     TheTypeIs = ['Hyperbolic',mu]
                 else:
                     TheTypeIs = ['Loxodromic',mu]
