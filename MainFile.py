@@ -21,7 +21,7 @@ from pyqtgraph.Qt import QtCore
 from pyqtgraph.ptime import time
 
 #### FOR HYPERBOLOID
-#import pyqtgraph.opengl as gl
+import pyqtgraph.opengl as gl
 ####
 
 
@@ -383,32 +383,32 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
 #####################
 ######## DISPLAY HYPERBOLOID
 #
-#
-#        self.openGLWidget.opts['viewport'] =  (0, 0, 1100, 900)
-#        #self.openGLWidget.showMaximized()
-#        self.openGLWidget.setCameraPosition(distance=50)
-#        
-#        
-#
-#        ## Add a grid to the view
-#        g = gl.GLGridItem()
-#        #g.scale(2,2,1)
-#        #g.setDepthValue(10)  # draw grid after surfaces since they may be translucent
-#        g.setSize(50,50,50)
-#        g.translate(20,0,-30)
-#        self.openGLWidget.addItem(g)
-#        
-#                
-#        x = numpy.linspace(-20, 20, 100)
-#        y = numpy.linspace(-20, 20, 100)
+
+        #self.openGLWidgetIn_pageMHyper.opts['viewport'] =  (0, 0, 1100, 900)
+        self.openGLWidgetIn_pageMHyper.showMaximized()
+        self.openGLWidgetIn_pageMHyper.setCameraPosition(distance=50)
+        
+        
+
+        ## Add a grid to the view
+        g = gl.GLGridItem()
+        #g.scale(2,2,1)
+        #g.setDepthValue(10)  # draw grid after surfaces since they may be translucent
+        g.setSize(50,50,50)
+        #g.translate(20,0,-30)
+        self.openGLWidgetIn_pageMHyper.addItem(g)
+        
+                
+        x = numpy.linspace(-20, 20, 100)
+        y = numpy.linspace(-20, 20, 100)
+        z = numpy.sqrt((x.reshape(100,1) ** 2) + (y.reshape(1,100) ** 2) + 1)
+#        x = numpy.linspace(-50, 50, 100)
+#        y = numpy.linspace(-50, 50, 100)
 #        z = numpy.sqrt((x.reshape(100,1) ** 2) + (y.reshape(1,100) ** 2) + 1)
-##        x = numpy.linspace(-50, 50, 100)
-##        y = numpy.linspace(-50, 50, 100)
-##        z = numpy.sqrt((x.reshape(100,1) ** 2) + (y.reshape(1,100) ** 2) + 1)
-#        p2 = gl.GLSurfacePlotItem(x=x, y=y, z=z, shader='shaded', color=(0.5, 0.5, 1, 1))
-#        p2.translate(20,0,-30)
-#        self.openGLWidget.addItem(p2)
-#
+        p2 = gl.GLSurfacePlotItem(x=x, y=y, z=z, shader='balloon', glOptions = 'additive', color=(1, 0, 0, 0.2))
+        #p2.translate(20,0,-30)
+        self.openGLWidgetIn_pageMHyper.addItem(p2)
+
 
 
 
