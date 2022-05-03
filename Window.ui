@@ -88,7 +88,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>3</number>
     </property>
     <widget class="QWidget" name="pageWelcomeHome">
      <widget class="QTextBrowser" name="textWelcome">
@@ -205,7 +205,7 @@ p, li { white-space: pre-wrap; }
        </rect>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tabCPSteinerGrids">
        <attribute name="title">
@@ -1290,7 +1290,7 @@ p, li { white-space: pre-wrap; }
        <string/>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="tabUHP">
        <attribute name="title">
@@ -2305,7 +2305,7 @@ p, li { white-space: pre-wrap; }
          </rect>
         </property>
         <property name="currentIndex">
-         <number>3</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tabPDBasicConstructions">
          <attribute name="title">
@@ -2363,9 +2363,9 @@ p, li { white-space: pre-wrap; }
          </rect>
         </property>
         <property name="currentIndex">
-         <number>3</number>
+         <number>0</number>
         </property>
-        <widget class="QWidget" name="pageUHPBasicConstructions_2">
+        <widget class="QWidget" name="pagePDBasicConstructions">
          <widget class="QLabel" name="labelPDBChdistance">
           <property name="geometry">
            <rect>
@@ -2485,9 +2485,28 @@ p, li { white-space: pre-wrap; }
           <property name="text">
            <string>Convex hull</string>
           </property>
+          <property name="autoExclusive">
+           <bool>true</bool>
+          </property>
+         </widget>
+         <widget class="QRadioButton" name="radioButtonPDBCAngleOfParallelism">
+          <property name="geometry">
+           <rect>
+            <x>5</x>
+            <y>140</y>
+            <width>141</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Angle of parallelism</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
          </widget>
         </widget>
-        <widget class="QWidget" name="pageUHPGeodesicMotion_2">
+        <widget class="QWidget" name="pagePDGeodesicMotion">
          <widget class="QPushButton" name="pushButtonPDGMShowGeodesic">
           <property name="geometry">
            <rect>
@@ -2660,7 +2679,7 @@ p, li { white-space: pre-wrap; }
           </property>
          </widget>
         </widget>
-        <widget class="QWidget" name="pageUHPCircularMotion_2">
+        <widget class="QWidget" name="pagePDCircularMotion">
          <widget class="QPushButton" name="pushButtonPDCMCircMotionAntiClockwise">
           <property name="geometry">
            <rect>
@@ -2675,12 +2694,12 @@ p, li { white-space: pre-wrap; }
           </property>
          </widget>
         </widget>
-        <widget class="QWidget" name="pageUHPIsometries_2">
+        <widget class="QWidget" name="pagePDIsometries">
          <widget class="QSpinBox" name="spinBoxPDIsomsGenus">
           <property name="geometry">
            <rect>
-            <x>40</x>
-            <y>20</y>
+            <x>45</x>
+            <y>35</y>
             <width>48</width>
             <height>24</height>
            </rect>
@@ -2695,8 +2714,8 @@ p, li { white-space: pre-wrap; }
          <widget class="QLabel" name="labelPDIsomsGenus">
           <property name="geometry">
            <rect>
-            <x>15</x>
-            <y>25</y>
+            <x>20</x>
+            <y>40</y>
             <width>21</width>
             <height>16</height>
            </rect>
@@ -2708,8 +2727,8 @@ p, li { white-space: pre-wrap; }
          <widget class="QPushButton" name="pushButtonPDIsomsComputePolygonAndFuchsianGroup">
           <property name="geometry">
            <rect>
-            <x>95</x>
-            <y>30</y>
+            <x>100</x>
+            <y>45</y>
             <width>113</width>
             <height>32</height>
            </rect>
@@ -2721,8 +2740,8 @@ p, li { white-space: pre-wrap; }
          <widget class="QLabel" name="labelPDIsomsNumOfPuncts">
           <property name="geometry">
            <rect>
-            <x>15</x>
-            <y>55</y>
+            <x>20</x>
+            <y>60</y>
             <width>21</width>
             <height>16</height>
            </rect>
@@ -2734,8 +2753,8 @@ p, li { white-space: pre-wrap; }
          <widget class="QSpinBox" name="spinBoxPDIsomsNumOfPuncts">
           <property name="geometry">
            <rect>
-            <x>40</x>
-            <y>50</y>
+            <x>45</x>
+            <y>65</y>
             <width>48</width>
             <height>24</height>
            </rect>
@@ -2747,8 +2766,8 @@ p, li { white-space: pre-wrap; }
          <widget class="QLineEdit" name="lineEditPDIsomsOrdersOfOrbPts">
           <property name="geometry">
            <rect>
-            <x>15</x>
-            <y>150</y>
+            <x>20</x>
+            <y>165</y>
             <width>250</width>
             <height>21</height>
            </rect>
@@ -2757,8 +2776,8 @@ p, li { white-space: pre-wrap; }
          <widget class="QTextBrowser" name="textBrowserPDIsomsOrdersOfOrbPts">
           <property name="geometry">
            <rect>
-            <x>15</x>
-            <y>80</y>
+            <x>20</x>
+            <y>95</y>
             <width>250</width>
             <height>71</height>
            </rect>
@@ -2774,8 +2793,8 @@ p, li { white-space: pre-wrap; }
          <widget class="QCheckBox" name="checkBox">
           <property name="geometry">
            <rect>
-            <x>100</x>
-            <y>58</y>
+            <x>105</x>
+            <y>73</y>
             <width>87</width>
             <height>20</height>
            </rect>
@@ -2783,6 +2802,38 @@ p, li { white-space: pre-wrap; }
           <property name="text">
            <string>Make GIF</string>
           </property>
+         </widget>
+         <widget class="QRadioButton" name="radioButtonPDIsomTessellateD">
+          <property name="geometry">
+           <rect>
+            <x>5</x>
+            <y>10</y>
+            <width>100</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string> Tessellate D</string>
+          </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup_6</string>
+          </attribute>
+         </widget>
+         <widget class="QRadioButton" name="radioButtonPDIsomIsotopeToId">
+          <property name="geometry">
+           <rect>
+            <x>5</x>
+            <y>200</y>
+            <width>141</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Isotope to identity</string>
+          </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup_6</string>
+          </attribute>
          </widget>
         </widget>
        </widget>
@@ -2836,6 +2887,509 @@ p, li { white-space: pre-wrap; }
         </property>
         <property name="text">
          <string>Clear Canvas</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="tabMHyper">
+       <attribute name="title">
+        <string>Minkowski's Hyperboloid</string>
+       </attribute>
+       <widget class="QTabWidget" name="tabsIn_tabMHyper">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>901</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="currentIndex">
+         <number>1</number>
+        </property>
+        <widget class="QWidget" name="tabMHyperBasicConstructions">
+         <attribute name="title">
+          <string>Basic Constructions</string>
+         </attribute>
+        </widget>
+        <widget class="QWidget" name="tabMHyperGeodesicMotion">
+         <attribute name="title">
+          <string>Geodesic Motion</string>
+         </attribute>
+        </widget>
+        <widget class="QWidget" name="tabMHyperCircularMotion">
+         <attribute name="title">
+          <string>Circular Motion</string>
+         </attribute>
+        </widget>
+        <widget class="QWidget" name="tabMHyperIsometries">
+         <attribute name="title">
+          <string>Isometries</string>
+         </attribute>
+        </widget>
+       </widget>
+       <widget class="QStackedWidget" name="stackedWidgetIn_pageMHyper">
+        <property name="geometry">
+         <rect>
+          <x>616</x>
+          <y>23</y>
+          <width>282</width>
+          <height>461</height>
+         </rect>
+        </property>
+        <property name="currentIndex">
+         <number>1</number>
+        </property>
+        <widget class="QWidget" name="pageMHyperBasicConstructions">
+         <widget class="QLabel" name="labelMHyperBChdistance">
+          <property name="geometry">
+           <rect>
+            <x>17</x>
+            <y>75</y>
+            <width>71</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>h Distance:</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButtonMHyperBCShowGeodesicSegment">
+          <property name="geometry">
+           <rect>
+            <x>199</x>
+            <y>45</y>
+            <width>78</width>
+            <height>32</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Show!</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelMHyperBCto">
+          <property name="geometry">
+           <rect>
+            <x>107</x>
+            <y>30</y>
+            <width>23</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>To:</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelMHyperBCfrom">
+          <property name="geometry">
+           <rect>
+            <x>17</x>
+            <y>30</y>
+            <width>39</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>From:</string>
+          </property>
+         </widget>
+         <widget class="QLineEdit" name="lineEditMHyperBCComplexNumber1">
+          <property name="geometry">
+           <rect>
+            <x>16</x>
+            <y>49</y>
+            <width>71</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="placeholderText">
+           <string>a+bj</string>
+          </property>
+         </widget>
+         <widget class="QLineEdit" name="lineEditMHyperBCComplexNumber2">
+          <property name="geometry">
+           <rect>
+            <x>106</x>
+            <y>49</y>
+            <width>71</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="placeholderText">
+           <string>c+dj</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelMHyperBChdistancenumber">
+          <property name="geometry">
+           <rect>
+            <x>90</x>
+            <y>75</y>
+            <width>79</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>--</string>
+          </property>
+         </widget>
+         <widget class="QRadioButton" name="radioButtonMHyperBCGeodesicSegments">
+          <property name="geometry">
+           <rect>
+            <x>5</x>
+            <y>10</y>
+            <width>141</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Geodesic segments</string>
+          </property>
+         </widget>
+         <widget class="QRadioButton" name="radioButtonMHyperBCConvexHull">
+          <property name="geometry">
+           <rect>
+            <x>5</x>
+            <y>100</y>
+            <width>100</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Convex hull</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QWidget" name="pageMHyperGeodesicMotion">
+         <widget class="QPushButton" name="pushButtonMHyperGMShowGeodesic">
+          <property name="geometry">
+           <rect>
+            <x>199</x>
+            <y>45</y>
+            <width>78</width>
+            <height>32</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Show!</string>
+          </property>
+         </widget>
+         <widget class="QLineEdit" name="lineEditMHyperGMComplexNumber1">
+          <property name="geometry">
+           <rect>
+            <x>16</x>
+            <y>49</y>
+            <width>71</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="placeholderText">
+           <string>a+bj</string>
+          </property>
+         </widget>
+         <widget class="QLineEdit" name="lineEditMHyperGMComplexNumber2">
+          <property name="geometry">
+           <rect>
+            <x>106</x>
+            <y>49</y>
+            <width>71</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="placeholderText">
+           <string>c+dj</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelMHyperGMhdistance">
+          <property name="geometry">
+           <rect>
+            <x>17</x>
+            <y>75</y>
+            <width>71</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>h Distance:</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelMHyperGMhdistancenumber">
+          <property name="geometry">
+           <rect>
+            <x>90</x>
+            <y>75</y>
+            <width>79</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>--</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelMHyperGMfrom">
+          <property name="geometry">
+           <rect>
+            <x>17</x>
+            <y>30</y>
+            <width>39</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>From:</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelMHyperGMto">
+          <property name="geometry">
+           <rect>
+            <x>107</x>
+            <y>30</y>
+            <width>23</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>To:</string>
+          </property>
+         </widget>
+         <widget class="PlotWidget" name="PlotWidgetIn_pageMHyperGeodesicMotion">
+          <property name="geometry">
+           <rect>
+            <x>2</x>
+            <y>310</y>
+            <width>150</width>
+            <height>150</height>
+           </rect>
+          </property>
+          <property name="backgroundBrush">
+           <brush brushstyle="NoBrush">
+            <color alpha="255">
+             <red>255</red>
+             <green>255</green>
+             <blue>255</blue>
+            </color>
+           </brush>
+          </property>
+         </widget>
+         <widget class="QRadioButton" name="radioButtonMHyperGMPointPoint">
+          <property name="geometry">
+           <rect>
+            <x>17</x>
+            <y>95</y>
+            <width>111</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Point to Point</string>
+          </property>
+         </widget>
+         <widget class="QRadioButton" name="radioButtonMHyperGMPointVector">
+          <property name="geometry">
+           <rect>
+            <x>17</x>
+            <y>115</y>
+            <width>100</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Point Vector</string>
+          </property>
+         </widget>
+         <widget class="QRadioButton" name="radioButtonMHyperGMGeoParamByArcLength">
+          <property name="geometry">
+           <rect>
+            <x>5</x>
+            <y>10</y>
+            <width>221</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Geodesics param. by arc length</string>
+          </property>
+         </widget>
+         <widget class="QCheckBox" name="checkBoxMHyperGMwave">
+          <property name="geometry">
+           <rect>
+            <x>120</x>
+            <y>115</y>
+            <width>61</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Wave</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QWidget" name="pageMHyperCircularMotion">
+         <widget class="QPushButton" name="pushButtonMHyperCMCircMotionAntiClockwise">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>70</y>
+            <width>113</width>
+            <height>32</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Start!</string>
+          </property>
+         </widget>
+         <widget class="QSlider" name="horizontalSliderMHyperCMhRadius">
+          <property name="geometry">
+           <rect>
+            <x>110</x>
+            <y>10</y>
+            <width>160</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="maximum">
+           <number>5</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+         <widget class="QSlider" name="horizontalSliderMHyperCMangularSpeed">
+          <property name="geometry">
+           <rect>
+            <x>110</x>
+            <y>40</y>
+            <width>160</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="maximum">
+           <number>360</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelMHyperCMhRadius">
+          <property name="geometry">
+           <rect>
+            <x>40</x>
+            <y>10</y>
+            <width>60</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>h Radius:</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelMHyperCMangularSpeed">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>40</y>
+            <width>91</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>angular speed:</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QWidget" name="pageMHyperIsometries">
+         <widget class="QSpinBox" name="spinBoxMHyperIsomsGenus">
+          <property name="geometry">
+           <rect>
+            <x>40</x>
+            <y>20</y>
+            <width>48</width>
+            <height>24</height>
+           </rect>
+          </property>
+          <property name="minimum">
+           <number>1</number>
+          </property>
+         </widget>
+         <widget class="QSpinBox" name="spinBoxMHyperIsomsNumOfPuncts">
+          <property name="geometry">
+           <rect>
+            <x>40</x>
+            <y>50</y>
+            <width>48</width>
+            <height>24</height>
+           </rect>
+          </property>
+          <property name="minimum">
+           <number>1</number>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelMHyperIsomsGenus">
+          <property name="geometry">
+           <rect>
+            <x>15</x>
+            <y>25</y>
+            <width>21</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>g = </string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="labelMHyperIsomsNumOfPuncts">
+          <property name="geometry">
+           <rect>
+            <x>15</x>
+            <y>55</y>
+            <width>21</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>p = </string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButtonMHyperIsomsComputePolygonAndFuchsianGroup">
+          <property name="geometry">
+           <rect>
+            <x>95</x>
+            <y>30</y>
+            <width>113</width>
+            <height>32</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>PushButton</string>
+          </property>
+         </widget>
+        </widget>
+       </widget>
+       <widget class="QPushButton" name="pushButtonMHyperClearCanvas">
+        <property name="geometry">
+         <rect>
+          <x>175</x>
+          <y>485</y>
+          <width>113</width>
+          <height>32</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Clear Canvas</string>
+        </property>
+       </widget>
+       <widget class="GLViewWidget" name="openGLWidgetIn_pageMHyper">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>20</y>
+          <width>464</width>
+          <height>464</height>
+         </rect>
         </property>
        </widget>
       </widget>
@@ -2904,6 +3458,11 @@ p, li { white-space: pre-wrap; }
    <class>PlotWidget</class>
    <extends>QGraphicsView</extends>
    <header>pyqtgraph</header>
+  </customwidget>
+  <customwidget>
+   <class>GLViewWidget</class>
+   <extends>QOpenGLWidget</extends>
+   <header>pyqtgraph.opengl</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -3036,6 +3595,22 @@ p, li { white-space: pre-wrap; }
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>tabsIn_tabMHyper</sender>
+   <signal>currentChanged(int)</signal>
+   <receiver>stackedWidgetIn_pageMHyper</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>452</x>
+     <y>107</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>758</x>
+     <y>350</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <designerdata>
   <property name="gridDeltaX">
@@ -3055,10 +3630,11 @@ p, li { white-space: pre-wrap; }
   </property>
  </designerdata>
  <buttongroups>
-  <buttongroup name="buttonGroup_4"/>
-  <buttongroup name="buttonGroup"/>
   <buttongroup name="buttonGroup_2"/>
-  <buttongroup name="buttonGroup_5"/>
+  <buttongroup name="buttonGroup"/>
   <buttongroup name="buttonGroup_3"/>
+  <buttongroup name="buttonGroup_5"/>
+  <buttongroup name="buttonGroup_4"/>
+  <buttongroup name="buttonGroup_6"/>
  </buttongroups>
 </ui>
