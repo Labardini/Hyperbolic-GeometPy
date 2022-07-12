@@ -103,7 +103,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         self.timer = None # in some animations it will become QtCore.QTimer(self)
         
 
-        self.background = background_control.choosingBackground('Black')
+        self.background = background_control.choosingBackground('White')
         # self.black = self.background.black
         # self.white = self.background.white
         # self.blue = self.background.blue
@@ -408,6 +408,99 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         p2 = gl.GLSurfacePlotItem(x=x, y=y, z=z, shader='balloon', glOptions = 'additive', color=(1, 0, 0, 0.2))
         #p2.translate(20,0,-30)
         self.openGLWidgetIn_pageMHyper.addItem(p2)
+
+########Poincaré Disc embedded in R^3
+        D = numpy.linspace(0, 2*numpy.pi, 100)
+
+        circPts = numpy.array([[numpy.cos(t), numpy.sin(t), 0] for t in D])
+        Disk = gl.GLLinePlotItem(pos=circPts, color=(1, 1, 1, 1))
+        self.openGLWidgetIn_pageMHyper.addItem(Disk)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+##################
+##################
+##### 
+        self.PD_absolute_lim = 1
+        self.PD_xlim_left = -self.PD_absolute_lim
+        self.PD_xlim_right = self.PD_absolute_lim
+        self.PD_ylim_down = -self.PD_absolute_lim
+        self.PD_ylim_up = self.PD_absolute_lim
+        
+        self.PlotWidgetIn_pageMHyper_PoincareDisc.setXRange(self.PD_xlim_left,self.PD_xlim_right)
+        self.PlotWidgetIn_pageMHyper_PoincareDisc.setYRange(self.PD_ylim_down,self.PD_ylim_up)
+        self.PlotWidgetIn_pageMHyper_PoincareDisc.setLimits(xMin=-2,xMax=2,yMin=-2,yMax=2)
+        self.PlotWidgetIn_pageMHyper_PoincareDisc.disableAutoRange()
+        self.PlotWidgetIn_pageMHyper_PoincareDisc.setAspectLocked(1.0)
+        self.PlotWidgetIn_pageMHyper_PoincareDisc.setBackgroundBrush(self.background.backgroundBrush)
+        self.PlotWidgetIn_pageMHyper_PoincareDisc.hideAxis("left")
+        self.PlotWidgetIn_pageMHyper_PoincareDisc.hideAxis("bottom")
+        self.boundingCirclePD = pg.PlotCurveItem(numpy.cos(numpy.linspace(0,2*numpy.pi,1000)),numpy.sin(numpy.linspace(0,2*numpy.pi,1000)), pen=pg.mkPen('k',width=2), clickable=True)
+        self.PlotWidgetIn_pageMHyper_PoincareDisc.addItem(self.boundingCirclePD)
+        self.PDdraggableDotsStaticGeodSegs = dD.PDdraggableDot()
+        self.PlotWidgetIn_pageMHyper_PoincareDisc.addItem(self.PDdraggableDotsStaticGeodSegs)
+        self.PDdraggableDotsConvexHull = dD.PDdraggableDot()
+        self.PlotWidgetIn_pageMHyper_PoincareDisc.addItem(self.PDdraggableDotsConvexHull)
+        self.PDdraggableDotsMidPtForSidePairing = dD.PDdraggableDot()
+        self.PlotWidgetIn_pageMHyper_PoincareDisc.addItem(self.PDdraggableDotsMidPtForSidePairing)
+        self.PDdraggableDotsAngleOfParallelism = dD.unitCircledraggableDot()
+        self.PDdraggableDotsAngleOfParallelismFinitePt = dD.PDdraggableDot()
+        self.PlotWidgetIn_pageMHyper_PoincareDisc.addItem(self.PDdraggableDotsAngleOfParallelism)
+        self.PlotWidgetIn_pageMHyper_PoincareDisc.addItem(self.PDdraggableDotsAngleOfParallelismFinitePt)
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+
+        self.PlotWidgetIn_pageMHyperGeodesicMotion_TangentPlane.setXRange(-2,2)
+        self.PlotWidgetIn_pageMHyperGeodesicMotion_TangentPlane.setYRange(-2,2)
+        self.PlotWidgetIn_pageMHyperGeodesicMotion_TangentPlane.hideAxis('left')
+        self.PlotWidgetIn_pageMHyperGeodesicMotion_TangentPlane.showAxis('right')
+        self.PlotWidgetIn_pageMHyperGeodesicMotion_TangentPlane.disableAutoRange()
+        self.PlotWidgetIn_pageMHyperGeodesicMotion_TangentPlane.setAspectLocked(1.0)
+        self.PlotWidgetIn_pageMHyperGeodesicMotion_TangentPlane.setBackgroundBrush(self.background.backgroundBrush)
+        self.widthLinesPDGM = 2
+        self.boundingCirclePDGM = pg.PlotCurveItem(numpy.cos(numpy.linspace(0,2*numpy.pi,1000)),numpy.sin(numpy.linspace(0,2*numpy.pi,1000)), pen=pg.mkPen('m',width=self.widthLinesPDGM), clickable=True)
+        self.PlotWidgetIn_pageMHyperGeodesicMotion_TangentPlane.addItem(self.boundingCirclePDGM)
+        self.horLineCrosshairPDGM = pg.InfiniteLine(angle=0, movable = False, pen=pg.mkPen('k', width=self.widthLinesPDGM))
+        self.vertLineCrosshairPDGM = pg.InfiniteLine(angle=90, movable = False, pen=pg.mkPen('k', width=self.widthLinesPDGM))
+        self.horLinePDGM = pg.InfiniteLine(angle=0, movable = False, pen=pg.mkPen('m',width=self.widthLinesPDGM))
+        self.vertLinePDGM = pg.InfiniteLine(angle=90, movable = False, pen=pg.mkPen('m',width=self.widthLinesPDGM))
+        self.PlotWidgetIn_pageMHyperGeodesicMotion_TangentPlane.addItem(self.horLineCrosshairPDGM, ignoreBounds = True)
+        self.PlotWidgetIn_pageMHyperGeodesicMotion_TangentPlane.addItem(self.vertLineCrosshairPDGM, ignoreBounds = True)
+        self.PlotWidgetIn_pageMHyperGeodesicMotion_TangentPlane.addItem(self.horLinePDGM, ignoreBounds = True)
+        self.PlotWidgetIn_pageMHyperGeodesicMotion_TangentPlane.addItem(self.vertLinePDGM, ignoreBounds = True)
+        
+        self.PlotWidgetIn_pageMHyper_PoincareDisc.scene().sigMouseClicked.connect(self.MHyperGeodesicMotion)
+        self.PlotWidgetIn_pageMHyperGeodesicMotion_TangentPlane.scene().sigMouseClicked.connect(self.MHyperGeodesicMotion)
+
+
+
+
+
+
 
 
 
@@ -1853,8 +1946,8 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                     theSegment = self.PlotWidgetIn_pageUHP.plot(pen=self.blackPenWidth2)
                     movingDot = pg.ScatterPlotItem([curve(0).real],[curve(0).imag])
                     self.PlotWidgetIn_pageUHP.addItem(movingDot)
-                    numberOfSteps = 50
-                    t = numpy.linspace(0,5*length,numberOfSteps+1)
+                    numberOfSteps = 500
+                    t = numpy.linspace(0,25*length,numberOfSteps+1)
                     k = 0
                     def update():
                         nonlocal hCenter
@@ -1875,7 +1968,7 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
                         self.timer.deleteLater()
                     self.timer = QtCore.QTimer(self)
                     self.timer.timeout.connect(update)
-                    self.timer.start(10)
+                    self.timer.start(25)
 
 
                 self.pushButtonUHPCMCircMotionAntiClockwise.clicked.connect(effectOf_pushButtonUHPCMCircMotionAntiClockwise)
@@ -2903,7 +2996,111 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
         
         
         
-        
+  
+
+
+
+
+
+
+
+    ##################
+            ############# HYPERBOLOID ANIMATIONS AND INTERACTIONS -START
+    ###################
+
+
+
+    def MHyperGeodesicMotion(self, ev):
+        #nonlocal pointSize
+        pointSize = 0.2
+#        if debugVariable:
+
+        if self.radioButtonMHyperGMPointVector.isChecked() == True and self.stackedWidgetIn_pageMHyper.currentIndex() == 1:
+            global twoClicks
+
+            # if len(twoClicks) == 0:
+            #     x = self.PlotWidgetIn_pageMHyperGeodesicMotion.plotItem.vb.mapSceneToView(ev.scenePos()).x() # Replace with "poincare Disk"
+            #     y = self.PlotWidgetIn_pageMHyperGeodesicMotion.plotItem.vb.mapSceneToView(ev.scenePos()).y()
+            # elif len(twoClicks) == 1:
+            #     x = self.PlotWidgetIn_pageMHyperGeodesicMotion.plotItem.vb.mapSceneToView(ev.scenePos()).x() # Replace with "tangent plane"
+            #     y = self.PlotWidgetIn_pageMHyperGeodesicMotion.plotItem.vb.mapSceneToView(ev.scenePos()).y()
+
+            x = self.PlotWidgetIn_pageMHyperGeodesicMotion.plotItem.vb.mapSceneToView(ev.scenePos()).x()
+            y = self.PlotWidgetIn_pageMHyperGeodesicMotion.plotItem.vb.mapSceneToView(ev.scenePos()).y()
+
+            if x**2+y**2 >= 1:
+                pass
+            else:
+                twoClicks.append([x, y])
+                print(twoClicks)
+                if len(twoClicks) == 2:
+
+                    #Animation index and projection activation (replace with button?)
+
+                    index = 0
+                    #project = True
+
+                    #Point and vector selection
+
+                    FirstPos = MinkHyper_HP.Hyperboloid().mapToHyp((twoClicks[0]))
+                    tan_vector = MinkHyper_HP.Hyperboloid().tangentVector(FirstPos, twoClicks[1])
+                    hypPoint = gl.GLScatterPlotItem(pos=FirstPos, size=pointSize, color=(1, 1, 1, 1), pxMode=False)
+                    self.openGLWidgetIn_pageMHyper.addItem(hypPoint)
+
+                    #Precomputation of geodesic
+
+                    numberOfSteps = 500
+                    interval = numpy.linspace(0, 20, numberOfSteps)
+                    geodesicData = numpy.array([MinkHyper_HP.Hyperboloid().geodesic(FirstPos, tan_vector, s) for s in interval])
+                    geodesicDrawing  = gl.GLLinePlotItem(pos=geodesicData[0:index], color=(1, 1, 1, 1), width=2, antialias=True)
+                    self.openGLWidgetIn_pageMHyper.addItem(geodesicDrawing)
+
+                    #Projection line and projected geodesic
+
+                    sP = [0, 0, -1]
+                    ProjectionPoint = geodesicData[index]
+                    vertices = numpy.array([sP, ProjectionPoint])
+                    projectionLine = gl.GLLinePlotItem(pos=vertices, color=(0, 1, 0.1, 1), width=1, antialias=True)
+                    self.openGLWidgetIn_pageMHyper.addItem(projectionLine)
+
+                    # Projected geodesic
+
+                    diskPoints = numpy.array([MinkHyper_HP.Hyperboloid().mapToDisk(pt) for pt in geodesicData])
+                    diskCurve = gl.GLLinePlotItem(pos=diskPoints[0:index], color=(0, 0.8, 0.8, 1), width=2, antialias=True)
+                    self.openGLWidgetIn_pageMHyper.addItem(diskCurve)
+
+                    # View of projected geodesic on copy of poincare Disk
+
+                    diskCurve_copy = pg.PlotCurveItem([pt[0] for pt in diskPoints[0:index]], [pt[1] for pt in diskPoints[0:index]], pen=pg.mkPen('m', width=self.widthLinesUHPGM), clickable=True)
+                    self.PlotWidgetIn_pageMHyperGeodesicMotion.addItem(diskCurve_copy) # Replace with "poincare disk" in actualized window.ui
+
+                    twoClicks = []
+
+                    def update():
+                        nonlocal index
+                        animationLimit = 180
+                        hypPoint.setData(pos=geodesicData[index])
+                        geodesicDrawing.setData(pos=geodesicData[0:index])
+                        projectionLine.setData(pos=numpy.array([sP, geodesicData[index]]))
+                        diskCurve.setData(pos=diskPoints[0:index])
+                        proj_xcoord = [pt[0] for pt in diskPoints[0:index]]
+                        proj_ycoord = [pt[1] for pt in diskPoints[0:index]]
+                        diskCurve_copy.setData(proj_xcoord, proj_ycoord)
+                        if index < animationLimit: # updating is pointless when the curve is no longer in the viewbox. 281 is an empiric limit
+                            index += 1
+                        # if index == animationLimit:
+                        #     self.openGLWidgetIn_pageMHyper.removeItem(projectionLine)
+                        #     project = False
+
+                    if self.timer:
+                        self.timer.stop()
+                        self.timer.deleteLater()
+                    self.timer = QtCore.QTimer(self)
+                    self.timer.timeout.connect(update)
+                    #self.timer.start(1000*s/numberOfSteps)
+                    self.timer.start(60)
+
+      
         
         
         
@@ -3022,6 +3219,24 @@ class appMainWindow(QtWidgets.QDialog, Window.Ui_MainWindow):
             
             
                         
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     
                     
                     
