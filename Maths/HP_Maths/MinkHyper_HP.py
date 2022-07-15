@@ -2,10 +2,8 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Jul 12 15:19:38 2022
-
 @author: caesar
 """
-
 
 import numpy as np
 
@@ -35,14 +33,16 @@ class Hyperboloid:
 
 
     def geodesic(self, pt, tan_vector, t):
-        mag = np.sqrt(minkowski(pt, tan_vector, tan_vector))
-        vx, vy = tan_vector[0], tan_vector[1]
-        vz = vx*pt[0]/pt[2] + vy*pt[1]/pt[2]
+        mag = np.sqrt(self.minkowski(pt, tan_vector, tan_vector))
+        #vz = vx*pt[0]/pt[2] + vy*pt[1]/pt[2]
+        a = np.cosh(mag*t)
+        b = np.sinh(mag*t)/mag
+        return [a*pt[i] + b*tan_vector[i] for i in range(0, 3)]
 
-        x = np.cosh(mag*t)*pt[0] + np.sinh(mag*t)*tan_vector[0]/mag
-        y = np.cosh(mag*t)*pt[1] + np.sinh(mag*t)*tan_vector[1]/mag
-        z = np.cosh(mag*t)*pt[2] + np.sinh(mag*t)*vz/mag
-        return [x, y, z]
+        # x = np.cosh(mag*t)*pt[0] + np.sinh(mag*t)*tan_vector[0]/mag
+        # y = np.cosh(mag*t)*pt[1] + np.sinh(mag*t)*tan_vector[1]/mag
+        # z = np.cosh(mag*t)*pt[2] + np.sinh(mag*t)*tan_vector[2]/mag
+        # return [x, y, z]
 
     def mapToDisk(self, pt):
         d = pt[2]+1
@@ -50,14 +50,22 @@ class Hyperboloid:
         y = pt[1]/d
         return [x, y]
 
+    def mapToHyp(self, pt):
+        mag2 = pt[0]**2 + pt[1]**2
+        s = 1/(1-mag2)
+        point = [s*2*pt[0], s*2*pt[1], s*(1 + mag2)]
+        return point
+
     def pointFromXY(self, px, py):
-        pz = np.sqrt(np.sqrt(px*px+py*py+1))
+        pz = np.sqrt(px*px+py*py+1)
         return [px, py, pz]
 
 
-    def tangentVector(self, pt, vx, vy): # We identify R2 with the tangent plane of M at p
+    def tangentVector(self, pt, vec): # We identify R2 with the tangent plane of M at p
         x = pt[0]
         y = pt[1]
         z = pt[2]
+        vx = vec[0]
+        vy = vec[1]
         v = [vx, vy, vx*x/z+vy*y/z]
         return v

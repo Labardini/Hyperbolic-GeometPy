@@ -13,8 +13,8 @@ import numpy
 from exception_handling import myInputError
 from Maths.CP_Maths import extended_complex_plane_CP
 from Maths.CP_Maths import Mobius_CP
-from Maths.HP_Maths import UHP_PD_Hyper_Isometries_HP
 from Maths.HP_Maths.UHP_HP import UHPGeodesicMotion
+from Maths.HP_Maths import UHP_PD_Hyper_Isometries_HP
 
 
 
